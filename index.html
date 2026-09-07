@@ -1,0 +1,2791 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>English Class</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:Tahoma,Arial,sans-serif;
+    background:#f4f7fb;
+    color:#172033
+}
+button,input,textarea{font-family:inherit}
+button{
+    border:0;
+    border-radius:10px;
+    padding:10px 15px;
+    cursor:pointer;
+    background:#2563eb;
+    color:white;
+    font-size:14px
+}
+button:hover{opacity:.9}
+.hidden{display:none!important}
+
+.auth{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px
+}
+.auth-box{
+    width:100%;
+    max-width:420px;
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 40px #0002
+}
+.logo{
+    text-align:center;
+    font-size:30px;
+    font-weight:bold;
+    margin-bottom:25px
+}
+input,textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #d5dbe7;
+    border-radius:10px;
+    outline:none;
+    margin:6px 0 12px;
+    font-size:15px
+}
+input:focus,textarea:focus{border-color:#2563eb}
+.auth-box button{width:100%;margin-top:5px}
+.switch{
+    text-align:center;
+    margin-top:15px;
+    color:#2563eb;
+    cursor:pointer
+}
+
+#app{min-height:100vh}
+.topbar{
+    background:#111827;
+    color:white;
+    padding:14px 18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap
+}
+.topbar-title{font-size:20px;font-weight:bold}
+.container{padding:20px;max-width:1400px;margin:auto}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:18px
+}
+.card{
+    background:white;
+    padding:20px;
+    border-radius:16px;
+    box-shadow:0 5px 20px #0001
+}
+.card h3{margin-top:0}
+
+.row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap
+}
+.row>*{flex:1}
+
+.item{
+    background:#f8fafc;
+    padding:14px;
+    border-radius:12px;
+    margin:8px 0;
+    border:1px solid #e5e7eb
+}
+
+.meeting{
+    position:fixed;
+    inset:0;
+    background:#0b1020;
+    color:white;
+    z-index:50;
+    display:none;
+    flex-direction:column
+}
+.meeting.show{display:flex}
+
+.meeting-head{
+    padding:12px 15px;
+    background:#111827;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap
+}
+
+.video-area{
+    flex:1;
+    overflow:auto;
+    padding:12px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:12px;
+    align-content:start
+}
+
+.video-box{
+    position:relative;
+    background:#020617;
+    border-radius:14px;
+    overflow:hidden;
+    min-height:160px;
+    border:1px solid #334155
+}
+.video-box video{
+    width:100%;
+    height:100%;
+    min-height:160px;
+    object-fit:cover;
+    display:block
+}
+.video-name{
+    position:absolute;
+    bottom:8px;
+    right:8px;
+    background:#000b;
+    padding:5px 9px;
+    border-radius:7px;
+    font-size:12px
+}
+
+.controls{
+    background:#111827;
+    padding:10px;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap
+}
+.controls button{background:#334155}
+.controls .danger{background:#dc2626}
+.controls .active{background:#16a34a}
+
+.side-panel{
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    width:min(420px,95vw);
+    background:white;
+    color:#172033;
+    z-index:80;
+    box-shadow:10px 0 30px #0004;
+    display:none;
+    flex-direction:column
+}
+.side-panel.show{display:flex}
+.panel-head{
+    padding:15px;
+    background:#111827;
+    color:white;
+    display:flex;
+    justify-content:space-between
+}
+.panel-body{
+    flex:1;
+    overflow:auto;
+    padding:15px
+}
+
+.chat-messages{
+    display:flex;
+    flex-direction:column;
+    gap:8px
+}
+.message{
+    background:#eef2ff;
+    padding:8px 11px;
+    border-radius:10px
+}
+.message b{display:block;font-size:12px;color:#3730a3}
+.message small{display:block;color:#64748b;margin-top:3px}
+
+.whiteboard{
+    position:fixed;
+    inset:0;
+    background:#0009;
+    z-index:90;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:10px
+}
+.whiteboard.show{display:flex}
+.board-box{
+    width:min(1100px,100%);
+    height:min(90vh,800px);
+    background:white;
+    border-radius:16px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column
+}
+.board-tools{
+    padding:8px;
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    border-bottom:1px solid #ddd
+}
+.board-tools button{padding:8px 11px}
+.board-tools input[type=color]{
+    width:45px;
+    height:38px;
+    padding:2px;
+    margin:0
+}
+.board-tools input[type=range]{
+    width:120px;
+    margin:0
+}
+.canvas-wrap{
+    position:relative;
+    flex:1;
+    overflow:auto;
+    background:white
+}
+#boardCanvas{
+    display:block;
+    background:white;
+    touch-action:none;
+    width:100%;
+    height:100%
+}
+
+.pdf-modal{
+    position:fixed;
+    inset:0;
+    background:#000b;
+    z-index:100;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:10px
+}
+.pdf-modal.show{display:flex}
+.pdf-box{
+    width:min(1000px,100%);
+    height:min(92vh,900px);
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column
+}
+.pdf-head{
+    padding:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    border-bottom:1px solid #ddd
+}
+.pdf-view{
+    flex:1;
+    overflow:auto;
+    text-align:center;
+    background:#64748b;
+    padding:15px
+}
+#pdfCanvas{
+    max-width:100%;
+    background:white;
+    box-shadow:0 5px 20px #0004
+}
+
+.pdf-mini{
+    position:fixed;
+    right:15px;
+    bottom:90px;
+    width:180px;
+    background:white;
+    color:#111827;
+    border-radius:12px;
+    padding:8px;
+    z-index:30;
+    box-shadow:0 5px 20px #0005;
+    cursor:pointer
+}
+.pdf-mini canvas{
+    width:100%;
+    display:block
+}
+.pdf-mini-title{
+    font-size:12px;
+    padding:5px
+}
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:20px;
+    transform:translateX(-50%);
+    background:#111827;
+    color:white;
+    padding:12px 18px;
+    border-radius:10px;
+    z-index:200;
+    display:none
+}
+.toast.show{display:block}
+
+.status{
+    padding:10px;
+    background:#eff6ff;
+    border-radius:10px;
+    margin:10px 0;
+    color:#1e40af
+}
+
+@media(max-width:600px){
+    .container{padding:12px}
+    .video-area{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:7px
+    }
+    .video-box,.video-box video{
+        min-height:120px
+    }
+    .controls button{
+        padding:8px 9px;
+        font-size:12px
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="loginPage" class="auth">
+<div class="auth-box">
+<div class="logo">📚 English Class</div>
+
+<input id="loginUsername" placeholder="نام کاربری">
+<input id="loginPassword" type="password" placeholder="رمز عبور">
+
+<button onclick="login()">ورود</button>
+
+<div class="switch" onclick="showRegister()">ساخت حساب جدید</div>
+</div>
+</div>
+
+<!-- REGISTER -->
+<div id="registerPage" class="auth hidden">
+<div class="auth-box">
+<div class="logo">📝 ثبت‌نام</div>
+
+<input id="regName" placeholder="نام و نام خانوادگی">
+<input id="regUsername" placeholder="نام کاربری">
+<input id="regPassword" type="password" placeholder="رمز عبور">
+
+<button onclick="register()">ثبت‌نام</button>
+
+<div class="switch" onclick="showLogin()">قبلاً حساب دارم</div>
+</div>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+
+<div class="topbar">
+<div class="topbar-title">📚 English Class</div>
+<div>
+<span id="welcome"></span>
+<button onclick="logout()">خروج</button>
+</div>
+</div>
+
+<div class="container">
+
+<div class="cards">
+
+<div class="card">
+<h3>👥 گروه‌ها</h3>
+
+<input id="groupName" placeholder="نام گروه">
+<input id="groupPassword" placeholder="رمز گروه">
+
+<button onclick="createGroup()">ساخت گروه</button>
+
+<div id="groupsList"></div>
+</div>
+
+<div class="card">
+<h3>🎥 جلسات</h3>
+
+<input id="meetingName" placeholder="نام جلسه">
+
+<button onclick="createMeeting()">ساخت جلسه</button>
+
+<div id="meetingsList"></div>
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- MEETING -->
+<div id="meeting" class="meeting">
+
+<div class="meeting-head">
+<div>
+<b id="meetingTitle">کلاس آنلاین</b>
+<div id="connectionStatus">در حال اتصال...</div>
+</div>
+
+<div>
+<button onclick="togglePanel('chatPanel')">💬 چت</button>
+<button onclick="openWhiteboard()">🖊️ تخته</button>
+<button onclick="openPdf()">📄 PDF</button>
+</div>
+</div>
+
+<div id="videoArea" class="video-area"></div>
+
+<div class="controls">
+<button id="micBtn" onclick="toggleMic()">🎤 میکروفون</button>
+<button id="camBtn" onclick="toggleCamera()">📷 دوربین</button>
+<button onclick="shareScreen()">🖥️ اشتراک صفحه</button>
+<button onclick="startRecording()">🔴 ضبط</button>
+<button onclick="stopRecording()">⏹️ توقف ضبط</button>
+<button onclick="openWhiteboard()">🖊️ تخته</button>
+<button onclick="uploadPDF()">📄 ارسال PDF</button>
+<button class="danger" onclick="leaveMeeting()">🚪 خروج از کلاس</button>
+</div>
+
+</div>
+
+<!-- CHAT -->
+<div id="chatPanel" class="side-panel">
+
+<div class="panel-head">
+<b>💬 چت کلاس</b>
+<button onclick="togglePanel('chatPanel')">✕</button>
+</div>
+
+<div class="panel-body">
+
+<div id="chatMessages" class="chat-messages"></div>
+
+<div style="margin-top:15px">
+<textarea id="chatInput" rows="3" placeholder="پیام خود را بنویسید..."></textarea>
+<button onclick="sendMessage()">ارسال</button>
+</div>
+
+</div>
+</div>
+
+<!-- WHITEBOARD -->
+<div id="whiteboard" class="whiteboard">
+
+<div class="board-box">
+
+<div class="board-tools">
+
+<button onclick="setBoardTool('pen')">✏️ قلم</button>
+<button onclick="setBoardTool('eraser')">🧽 پاک‌کن</button>
+<button onclick="setBoardTool('text')">🔤 تایپ</button>
+
+<label>
+رنگ
+<input id="boardColor" type="color" value="#000000">
+</label>
+
+<label>
+ضخامت
+<input id="boardSize" type="range" min="1" max="30" value="4">
+</label>
+
+<button onclick="clearBoard()">🗑️ پاک کردن</button>
+<button onclick="closeWhiteboard()">✕ بستن</button>
+
+</div>
+
+<div class="canvas-wrap">
+<canvas id="boardCanvas"></canvas>
+</div>
+
+</div>
+</div>
+
+<!-- PDF -->
+<div id="pdfModal" class="pdf-modal">
+
+<div class="pdf-box">
+
+<div class="pdf-head">
+<div>
+<b id="pdfTitle">PDF کلاس</b>
+<span id="pdfPageInfo"></span>
+</div>
+
+<div>
+<button onclick="prevPdf()">⬅️</button>
+<button onclick="nextPdf()">➡️</button>
+<button onclick="closePdf()">✕</button>
+</div>
+</div>
+
+<div class="pdf-view">
+<canvas id="pdfCanvas"></canvas>
+</div>
+
+</div>
+</div>
+
+<div id="pdfMini" class="pdf-mini hidden" onclick="openPdf()">
+<canvas id="pdfMiniCanvas"></canvas>
+<div id="pdfMiniTitle" class="pdf-mini-title"></div>
+</div>
+
+<input id="pdfInput" type="file" accept="application/pdf" class="hidden">
+
+<div id="toast" class="toast"></div>
+
+<script>
+/* =========================
+   SUPABASE
+========================= */
+
+const SUPABASE_URL =
+"https://uqqumhmzndgyoigcqnti.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_R3LAX7EYbdYUwjQRgkmesA_QJ2ZmPtD";
+
+const supabaseClient =
+supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+/* =========================
+   STATE
+========================= */
+
+let currentUser=null;
+let currentGroup=null;
+let currentMeeting=null;
+
+let localStream=null;
+let cameraStream=null;
+let screenStream=null;
+
+let signalChannel=null;
+let presenceChannel=null;
+let chatChannel=null;
+let whiteboardChannel=null;
+
+let peers={};
+let pendingCandidates={};
+
+let micEnabled=true;
+let cameraEnabled=true;
+
+let boardCtx=null;
+let boardDrawing=false;
+let boardTool="pen";
+let boardCanvas=null;
+
+let pdfDoc=null;
+let pdfPage=1;
+let pdfTotal=0;
+let pdfFileName="";
+
+let mediaRecorder=null;
+let recordingChunks=[];
+
+let remoteStreams={};
+
+/* =========================
+   HELPERS
+========================= */
+
+function $(id){
+    return document.getElementById(id);
+}
+
+function toast(text){
+    $("toast").textContent=text;
+    $("toast").classList.add("show");
+
+    setTimeout(()=>{
+        $("toast").classList.remove("show");
+    },3000);
+}
+
+function escapeHtml(text){
+    return String(text)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+/* =========================
+   AUTH
+========================= */
+
+function showRegister(){
+    $("loginPage").classList.add("hidden");
+    $("registerPage").classList.remove("hidden");
+}
+
+function showLogin(){
+    $("registerPage").classList.add("hidden");
+    $("loginPage").classList.remove("hidden");
+}
+
+async function register(){
+
+    const name=$("regName").value.trim();
+    const username=$("regUsername").value.trim();
+    const password=$("regPassword").value;
+
+    if(!name || !username || !password){
+        toast("همه فیلدها را پر کنید");
+        return;
+    }
+
+    const {data:exists}=await supabaseClient
+    .from("users")
+    .select("id")
+    .eq("username",username)
+    .maybeSingle();
+
+    if(exists){
+        toast("این نام کاربری قبلاً استفاده شده");
+        return;
+    }
+
+    const {data,error}=await supabaseClient
+    .from("users")
+    .insert({
+        name:name,
+        username:username,
+        password:password
+    })
+    .select()
+    .single();
+
+    if(error){
+        toast("خطا در ثبت‌نام");
+        console.error(error);
+        return;
+    }
+
+    currentUser=data;
+
+    localStorage.setItem(
+        "english_class_user",
+        JSON.stringify(data)
+    );
+
+    showApp();
+}
+
+async function login(){
+
+    const username=$("loginUsername").value.trim();
+    const password=$("loginPassword").value;
+
+    if(!username || !password){
+        toast("نام کاربری و رمز را وارد کنید");
+        return;
+    }
+
+    const {data,error}=await supabaseClient
+    .from("users")
+    .select("*")
+    .eq("username",username)
+    .eq("password",password)
+    .maybeSingle();
+
+    if(error || !data){
+        toast("نام کاربری یا رمز عبور اشتباه است");
+        return;
+    }
+
+    currentUser=data;
+
+    localStorage.setItem(
+        "english_class_user",
+        JSON.stringify(data)
+    );
+
+    showApp();
+}
+
+function logout(){
+
+    leaveMeeting();
+
+    currentUser=null;
+
+    localStorage.removeItem("english_class_user");
+
+    $("app").classList.add("hidden");
+    $("loginPage").classList.remove("hidden");
+}
+
+async function checkLogin(){
+
+    const saved=localStorage.getItem(
+        "english_class_user"
+    );
+
+    if(saved){
+
+        try{
+            currentUser=JSON.parse(saved);
+            showApp();
+        }catch{
+            localStorage.removeItem(
+                "english_class_user"
+            );
+        }
+    }
+}
+
+function showApp(){
+
+    $("loginPage").classList.add("hidden");
+    $("registerPage").classList.add("hidden");
+    $("app").classList.remove("hidden");
+
+    $("welcome").textContent=
+        "سلام "+currentUser.name;
+
+    loadGroups();
+    loadMeetings();
+}
+
+/* =========================
+   GROUPS
+========================= */
+
+async function createGroup(){
+
+    const name=$("groupName").value.trim();
+    const password=$("groupPassword").value;
+
+    if(!name || !password){
+        toast("نام و رمز گروه را وارد کنید");
+        return;
+    }
+
+    const {error}=await supabaseClient
+    .from("groups")
+    .insert({
+        name:name,
+        password:password,
+        owner_id:currentUser.id,
+        owner_name:currentUser.name
+    });
+
+    if(error){
+        toast("ساخت گروه ناموفق بود");
+        console.error(error);
+        return;
+    }
+
+    $("groupName").value="";
+    $("groupPassword").value="";
+
+    toast("گروه ساخته شد");
+    loadGroups();
+}
+
+async function loadGroups(){
+
+    const {data,error}=await supabaseClient
+    .from("groups")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+    if(error){
+        console.error(error);
+        return;
+    }
+
+    $("groupsList").innerHTML="";
+
+    (data||[]).forEach(group=>{
+
+        const div=document.createElement("div");
+        div.className="item";
+
+        div.innerHTML=`
+            <b>${escapeHtml(group.name)}</b>
+            <br>
+            <small>سازنده: ${escapeHtml(group.owner_name||"")}</small>
+            <br><br>
+            <button>ورود به گروه</button>
+        `;
+
+        div.querySelector("button")
+        .onclick=()=>joinGroup(group);
+
+        $("groupsList").appendChild(div);
+    });
+}
+
+async function joinGroup(group){
+
+    const password=prompt(
+        "رمز گروه «"+group.name+"» را وارد کنید:"
+    );
+
+    if(password===null)return;
+
+    if(password!==group.password){
+        toast("رمز گروه اشتباه است");
+        return;
+    }
+
+    currentGroup=group;
+
+    toast("وارد گروه شدید");
+
+    loadMeetings(group.id);
+}
+
+/* =========================
+   MEETINGS
+========================= */
+
+async function createMeeting(){
+
+    const name=$("meetingName").value.trim();
+
+    if(!name){
+        toast("نام جلسه را وارد کنید");
+        return;
+    }
+
+    if(!currentGroup){
+        toast("ابتدا وارد یک گروه شوید");
+        return;
+    }
+
+    const {error}=await supabaseClient
+    .from("meetings")
+    .insert({
+        name:name,
+        password:currentGroup.password,
+        owner_id:currentUser.id,
+        owner_name:currentUser.name
+    });
+
+    if(error){
+        toast("ساخت جلسه ناموفق بود");
+        console.error(error);
+        return;
+    }
+
+    $("meetingName").value="";
+    toast("جلسه ساخته شد");
+    loadMeetings();
+}
+
+async function loadMeetings(groupId=null){
+
+    let query=supabaseClient
+    .from("meetings")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+    const {data,error}=await query;
+
+    if(error){
+        console.error(error);
+        return;
+    }
+
+    $("meetingsList").innerHTML="";
+
+    (data||[]).forEach(meeting=>{
+
+        const div=document.createElement("div");
+        div.className="item";
+
+        div.innerHTML=`
+            <b>${escapeHtml(meeting.name)}</b>
+            <br>
+            <small>سازنده: ${escapeHtml(meeting.owner_name||"")}</small>
+            <br><br>
+            <button>ورود به جلسه</button>
+        `;
+
+        div.querySelector("button")
+        .onclick=()=>joinMeeting(meeting);
+
+        $("meetingsList").appendChild(div);
+    });
+}
+
+async function joinMeeting(meeting){
+
+    const password=prompt(
+        "رمز جلسه را وارد کنید:"
+    );
+
+    if(password===null)return;
+
+    if(password!==meeting.password){
+        toast("رمز جلسه اشتباه است");
+        return;
+    }
+
+    currentMeeting=meeting;
+
+    $("meetingTitle").textContent=
+        "🎥 "+meeting.name;
+
+    $("meeting").classList.add("show");
+
+    $("connectionStatus").textContent=
+        "در حال دریافت دوربین و میکروفون...";
+
+    await startLocalMedia();
+
+    setupSignal();
+    setupPresence();
+    setupChat();
+    setupWhiteboardChannel();
+
+    loadMeetingPdf();
+
+    $("connectionStatus").textContent=
+        "متصل";
+
+}
+
+/* =========================
+   MEDIA
+========================= */
+
+async function startLocalMedia(){
+
+    try{
+
+        cameraStream=
+            await navigator.mediaDevices.getUserMedia({
+                video:{
+                    width:{ideal:1280},
+                    height:{ideal:720}
+                },
+                audio:true
+            });
+
+        localStream=cameraStream;
+
+        addVideo(
+            "local",
+            localStream,
+            currentUser.name,
+            true
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        toast(
+            "دسترسی دوربین/میکروفون داده نشد. اجازه دسترسی را فعال کنید."
+        );
+
+        try{
+
+            cameraStream=
+                await navigator.mediaDevices.getUserMedia({
+                    video:true
+                });
+
+            localStream=cameraStream;
+
+            addVideo(
+                "local",
+                localStream,
+                currentUser.name,
+                true
+            );
+
+        }catch{
+
+            toast("دوربین قابل دسترسی نیست");
+        }
+    }
+}
+
+function addVideo(
+    id,
+    stream,
+    name,
+    muted=false
+){
+
+    let box=$("video-"+id);
+
+    if(box){
+        const video=box.querySelector("video");
+        video.srcObject=stream;
+        return;
+    }
+
+    box=document.createElement("div");
+    box.className="video-box";
+    box.id="video-"+id;
+
+    const video=document.createElement("video");
+
+    video.autoplay=true;
+    video.playsInline=true;
+    video.muted=muted;
+    video.srcObject=stream;
+
+    const label=document.createElement("div");
+    label.className="video-name";
+    label.textContent=name;
+
+    box.appendChild(video);
+    box.appendChild(label);
+
+    $("videoArea").appendChild(box);
+
+    video.play().catch(()=>{});
+}
+
+function removeVideo(id){
+
+    const box=$("video-"+id);
+
+    if(box)box.remove();
+}
+
+/* =========================
+   WEBRTC SIGNALING
+========================= */
+
+function setupSignal(){
+
+    if(signalChannel)
+        signalChannel.unsubscribe();
+
+    signalChannel=
+        supabaseClient.channel(
+            "signal-"+currentMeeting.id
+        );
+
+    signalChannel
+    .on(
+        "broadcast",
+        {event:"signal"},
+        async({payload})=>{
+
+            if(!payload)return;
+
+            if(payload.from===String(currentUser.id))
+                return;
+
+            const from=String(payload.from);
+
+            if(payload.type==="offer"){
+                await receiveOffer(
+                    from,
+                    payload.offer,
+                    payload.name
+                );
+            }
+
+            if(payload.type==="answer"){
+                await receiveAnswer(
+                    from,
+                    payload.answer
+                );
+            }
+
+            if(payload.type==="candidate"){
+                await receiveCandidate(
+                    from,
+                    payload.candidate
+                );
+            }
+
+            if(payload.type==="leave"){
+                closePeer(from);
+            }
+        }
+    )
+    .subscribe();
+}
+
+function sendSignal(payload){
+
+    if(!signalChannel)return;
+
+    signalChannel.send({
+        type:"broadcast",
+        event:"signal",
+        payload:payload
+    });
+}
+
+function setupPresence(){
+
+    if(presenceChannel)
+        presenceChannel.unsubscribe();
+
+    presenceChannel=
+        supabaseClient.channel(
+            "presence-"+currentMeeting.id,
+            {
+                config:{
+                    presence:{
+                        key:String(currentUser.id)
+                    }
+                }
+            }
+        );
+
+    presenceChannel
+    .on(
+        "presence",
+        {event:"sync"},
+        async()=>{
+
+            const state=
+                presenceChannel.presenceState();
+
+            const ids=[];
+
+            Object.keys(state).forEach(key=>{
+                if(String(key)!==String(currentUser.id))
+                    ids.push(String(key));
+            });
+
+            for(const id of ids){
+
+                if(!peers[id]){
+
+                    /*
+                     Deterministic initiator:
+                     user with smaller ID creates offer.
+                    */
+
+                    if(
+                        Number(currentUser.id) <
+                        Number(id)
+                    ){
+                        await createPeer(id,true);
+                    }
+                }
+            }
+        }
+    )
+    .on(
+        "presence",
+        {event:"join"},
+        async({key})=>{
+
+            const id=String(key);
+
+            if(
+                id!==String(currentUser.id) &&
+                Number(currentUser.id)<Number(id)
+            ){
+                await createPeer(id,true);
+            }
+        }
+    )
+    .on(
+        "presence",
+        {event:"leave"},
+        ({key})=>{
+            closePeer(String(key));
+        }
+    )
+    .subscribe(async(status)=>{
+
+        if(status==="SUBSCRIBED"){
+
+            await presenceChannel.track({
+                user_id:String(currentUser.id),
+                name:currentUser.name
+            });
+        }
+    });
+}
+
+async function createPeer(remoteId,initiator){
+
+    remoteId=String(remoteId);
+
+    if(peers[remoteId])
+        return peers[remoteId];
+
+    const pc=
+        new RTCPeerConnection({
+            iceServers:[
+                {
+                    urls:"stun:stun.l.google.com:19302"
+                },
+                {
+                    urls:"stun:stun.cloudflare.com:3478"
+                }
+            ]
+        });
+
+    peers[remoteId]=pc;
+    pendingCandidates[remoteId]=[];
+
+    if(localStream){
+
+        localStream.getTracks()
+        .forEach(track=>{
+            pc.addTrack(track,localStream);
+        });
+    }
+
+    pc.onicecandidate=event=>{
+
+        if(event.candidate){
+
+            sendSignal({
+                type:"candidate",
+                from:String(currentUser.id),
+                to:remoteId,
+                candidate:event.candidate
+            });
+        }
+    };
+
+    pc.ontrack=event=>{
+
+        const stream=event.streams[0];
+
+        if(!stream)return;
+
+        remoteStreams[remoteId]=stream;
+
+        addVideo(
+            remoteId,
+            stream,
+            "شرکت‌کننده "+remoteId,
+            false
+        );
+    };
+
+    pc.onconnectionstatechange=()=>{
+
+        const state=pc.connectionState;
+
+        if(state==="failed"){
+
+            closePeer(remoteId);
+
+            setTimeout(()=>{
+                if(
+                    currentMeeting &&
+                    Number(currentUser.id) <
+                    Number(remoteId)
+                ){
+                    createPeer(remoteId,true);
+                }
+            },1500);
+        }
+    };
+
+    if(initiator){
+
+        const offer=await pc.createOffer();
+
+        await pc.setLocalDescription(offer);
+
+        sendSignal({
+            type:"offer",
+            from:String(currentUser.id),
+            to:remoteId,
+            name:currentUser.name,
+            offer:offer
+        });
+    }
+
+    return pc;
+}
+
+async function receiveOffer(
+    from,
+    offer,
+    name
+){
+
+    if(
+        offer===undefined ||
+        from===String(currentUser.id)
+    )return;
+
+    let pc=peers[from];
+
+    if(!pc){
+        pc=await createPeer(from,false);
+    }
+
+    await pc.setRemoteDescription(
+        new RTCSessionDescription(offer)
+    );
+
+    await flushCandidates(from);
+
+    const answer=await pc.createAnswer();
+
+    await pc.setLocalDescription(answer);
+
+    sendSignal({
+        type:"answer",
+        from:String(currentUser.id),
+        to:from,
+        answer:answer
+    });
+}
+
+async function receiveAnswer(from,answer){
+
+    const pc=peers[String(from)];
+
+    if(!pc)return;
+
+    if(pc.signalingState!=="have-local-offer")
+        return;
+
+    await pc.setRemoteDescription(
+        new RTCSessionDescription(answer)
+    );
+
+    await flushCandidates(String(from));
+}
+
+async function receiveCandidate(
+    from,
+    candidate
+){
+
+    const id=String(from);
+
+    const pc=peers[id];
+
+    if(
+        !pc ||
+        !pc.remoteDescription ||
+        !pc.remoteDescription.type
+    ){
+
+        if(!pendingCandidates[id])
+            pendingCandidates[id]=[];
+
+        pendingCandidates[id].push(candidate);
+
+        return;
+    }
+
+    try{
+        await pc.addIceCandidate(
+            new RTCIceCandidate(candidate)
+        );
+    }catch(error){
+        console.warn(error);
+    }
+}
+
+async function flushCandidates(id){
+
+    const list=pendingCandidates[id]||[];
+    const pc=peers[id];
+
+    if(!pc)return;
+
+    for(const candidate of list){
+
+        try{
+            await pc.addIceCandidate(
+                new RTCIceCandidate(candidate)
+            );
+        }catch{}
+    }
+
+    pendingCandidates[id]=[];
+}
+
+function closePeer(id){
+
+    id=String(id);
+
+    if(peers[id]){
+
+        try{
+            peers[id].close();
+        }catch{}
+
+        delete peers[id];
+    }
+
+    delete pendingCandidates[id];
+    delete remoteStreams[id];
+
+    removeVideo(id);
+}
+
+/* =========================
+   MICROPHONE / CAMERA
+========================= */
+
+function toggleMic(){
+
+    if(!localStream)return;
+
+    const tracks=localStream.getAudioTracks();
+
+    if(!tracks.length)return;
+
+    micEnabled=!micEnabled;
+
+    tracks.forEach(t=>{
+        t.enabled=micEnabled;
+    });
+
+    $("micBtn").classList.toggle(
+        "active",
+        micEnabled
+    );
+
+    $("micBtn").textContent=
+        micEnabled
+        ? "🎤 میکروفون"
+        : "🔇 میکروفون خاموش";
+}
+
+function toggleCamera(){
+
+    if(!localStream)return;
+
+    const tracks=localStream.getVideoTracks();
+
+    if(!tracks.length)return;
+
+    cameraEnabled=!cameraEnabled;
+
+    tracks.forEach(t=>{
+        t.enabled=cameraEnabled;
+    });
+
+    $("camBtn").classList.toggle(
+        "active",
+        cameraEnabled
+    );
+
+    $("camBtn").textContent=
+        cameraEnabled
+        ? "📷 دوربین"
+        : "🚫 دوربین خاموش";
+}
+
+/* =========================
+   SCREEN SHARE
+========================= */
+
+async function shareScreen(){
+
+    if(!navigator.mediaDevices ||
+       !navigator.mediaDevices.getDisplayMedia){
+
+        toast(
+            "مرورگر این دستگاه از اشتراک‌گذاری صفحه پشتیبانی نمی‌کند. Chrome یا Edge روی HTTPS را امتحان کنید."
+        );
+
+        return;
+    }
+
+    if(!window.isSecureContext){
+
+        toast(
+            "برای اشتراک صفحه، سایت باید روی HTTPS اجرا شود."
+        );
+
+        return;
+    }
+
+    try{
+
+        screenStream=
+            await navigator.mediaDevices.getDisplayMedia({
+                video:true,
+                audio:true
+            });
+
+        const screenTrack=
+            screenStream.getVideoTracks()[0];
+
+        for(const id in peers){
+
+            const pc=peers[id];
+
+            const sender=
+                pc.getSenders()
+                .find(s=>
+                    s.track &&
+                    s.track.kind==="video"
+                );
+
+            if(sender){
+                await sender.replaceTrack(
+                    screenTrack
+                );
+            }
+        }
+
+        addVideo(
+            "screen",
+            screenStream,
+            "🖥️ صفحه من",
+            true
+        );
+
+        screenTrack.onended=()=>{
+            stopScreenShare();
+        };
+
+        toast("اشتراک صفحه شروع شد");
+
+    }catch(error){
+
+        console.error(error);
+
+        if(error.name==="NotAllowedError"){
+            toast("اشتراک صفحه لغو شد");
+        }else{
+            toast(
+                "اشتراک صفحه در این مرورگر یا محیط در دسترس نیست."
+            );
+        }
+    }
+}
+
+async function stopScreenShare(){
+
+    if(!screenStream)return;
+
+    screenStream.getTracks()
+    .forEach(track=>track.stop());
+
+    screenStream=null;
+
+    if(!cameraStream)return;
+
+    const cameraTrack=
+        cameraStream.getVideoTracks()[0];
+
+    for(const id in peers){
+
+        const pc=peers[id];
+
+        const sender=
+            pc.getSenders()
+            .find(s=>
+                s.track &&
+                s.track.kind==="video"
+            );
+
+        if(sender){
+            await sender.replaceTrack(
+                cameraTrack
+            );
+        }
+    }
+
+    removeVideo("screen");
+
+    toast("اشتراک صفحه متوقف شد");
+}
+
+/* =========================
+   CHAT
+========================= */
+
+function setupChat(){
+
+    if(chatChannel)
+        chatChannel.unsubscribe();
+
+    chatChannel=
+        supabaseClient.channel(
+            "chat-"+currentMeeting.id
+        );
+
+    chatChannel
+    .on(
+        "broadcast",
+        {event:"message"},
+        ({payload})=>{
+            addChatMessage(payload);
+        }
+    )
+    .subscribe();
+
+    loadMessages();
+}
+
+async function loadMessages(){
+
+    $("chatMessages").innerHTML="";
+
+    let query=
+        supabaseClient
+        .from("messages")
+        .select("*")
+        .eq(
+            "meeting_id",
+            currentMeeting.id
+        )
+        .order(
+            "created_at",
+            {ascending:true}
+        );
+
+    const {data,error}=await query;
+
+    if(error)return;
+
+    (data||[]).forEach(addChatMessage);
+}
+
+function addChatMessage(message){
+
+    const div=document.createElement("div");
+    div.className="message";
+
+    div.innerHTML=`
+        <b>${escapeHtml(message.user_name||"کاربر")}</b>
+        <span>${escapeHtml(message.text||"")}</span>
+        <small>${new Date(
+            message.created_at||Date.now()
+        ).toLocaleTimeString("fa-IR")}</small>
+    `;
+
+    $("chatMessages").appendChild(div);
+
+    $("chatMessages").scrollTop=
+        $("chatMessages").scrollHeight;
+}
+
+async function sendMessage(){
+
+    const input=$("chatInput");
+    const text=input.value.trim();
+
+    if(!text)return;
+
+    const message={
+        meeting_id:currentMeeting.id,
+        user_id:currentUser.id,
+        user_name:currentUser.name,
+        text:text
+    };
+
+    const {error}=await supabaseClient
+    .from("messages")
+    .insert(message);
+
+    if(error){
+        toast("ارسال پیام ناموفق بود");
+        return;
+    }
+
+    if(chatChannel){
+
+        chatChannel.send({
+            type:"broadcast",
+            event:"message",
+            payload:{
+                ...message,
+                created_at:new Date().toISOString()
+            }
+        });
+    }
+
+    input.value="";
+}
+
+/* =========================
+   PANELS
+========================= */
+
+function togglePanel(id){
+
+    $(id).classList.toggle("show");
+}
+
+/* =========================
+   WHITEBOARD
+========================= */
+
+function openWhiteboard(){
+
+    $("whiteboard").classList.add("show");
+
+    setTimeout(()=>{
+        setupBoardCanvas();
+    },50);
+}
+
+function closeWhiteboard(){
+    $("whiteboard").classList.remove("show");
+}
+
+function setupBoardCanvas(){
+
+    boardCanvas=$("boardCanvas");
+
+    const rect=
+        boardCanvas.parentElement.getBoundingClientRect();
+
+    const dpr=
+        Math.max(1,window.devicePixelRatio||1);
+
+    boardCanvas.width=
+        rect.width*dpr;
+
+    boardCanvas.height=
+        rect.height*dpr;
+
+    boardCanvas.style.width=
+        rect.width+"px";
+
+    boardCanvas.style.height=
+        rect.height+"px";
+
+    boardCtx=
+        boardCanvas.getContext("2d");
+
+    boardCtx.scale(dpr,dpr);
+
+    boardCtx.lineCap="round";
+    boardCtx.lineJoin="round";
+
+    boardCanvas.onpointerdown=boardPointerDown;
+    boardCanvas.onpointermove=boardPointerMove;
+    boardCanvas.onpointerup=boardPointerUp;
+    boardCanvas.onpointercancel=boardPointerUp;
+}
+
+function boardPosition(e){
+
+    const rect=
+        boardCanvas.getBoundingClientRect();
+
+    return {
+        x:e.clientX-rect.left,
+        y:e.clientY-rect.top
+    };
+}
+
+function boardPointerDown(e){
+
+    if(!boardCtx)return;
+
+    const p=boardPosition(e);
+
+    if(boardTool==="text"){
+
+        addBoardText(p.x,p.y);
+        return;
+    }
+
+    boardDrawing=true;
+
+    boardCtx.beginPath();
+    boardCtx.moveTo(p.x,p.y);
+
+    drawBoardPoint(
+        p.x,
+        p.y,
+        true
+    );
+}
+
+function boardPointerMove(e){
+
+    if(!boardDrawing ||
+       boardTool==="text")return;
+
+    const p=boardPosition(e);
+
+    drawBoardPoint(
+        p.x,
+        p.y,
+        false
+    );
+}
+
+function boardPointerUp(){
+
+    if(!boardDrawing)return;
+
+    boardDrawing=false;
+
+    boardCtx.closePath();
+}
+
+function drawBoardPoint(
+    x,
+    y,
+    first
+){
+
+    const color=$("boardColor").value;
+    const size=Number($("boardSize").value);
+
+    boardCtx.strokeStyle=
+        boardTool==="eraser"
+        ? "#ffffff"
+        : color;
+
+    boardCtx.lineWidth=
+        boardTool==="eraser"
+        ? size*3
+        : size;
+
+    if(first){
+
+        boardCtx.beginPath();
+        boardCtx.moveTo(x,y);
+    }else{
+
+        boardCtx.lineTo(x,y);
+        boardCtx.stroke();
+    }
+
+    broadcastBoard({
+        type:"draw",
+        x:x,
+        y:y,
+        color:boardCtx.strokeStyle,
+        size:boardCtx.lineWidth
+    });
+}
+
+function setBoardTool(tool){
+
+    boardTool=tool;
+
+    toast(
+        tool==="pen"
+        ?"قلم انتخاب شد"
+        :tool==="eraser"
+        ?"پاک‌کن انتخاب شد"
+        :"ابزار تایپ انتخاب شد"
+    );
+}
+
+function addBoardText(x,y){
+
+    const text=prompt(
+        "متن را وارد کنید:"
+    );
+
+    if(!text)return;
+
+    const size=
+        Math.max(
+            16,
+            Number($("boardSize").value)*5
+        );
+
+    const color=$("boardColor").value;
+
+    drawBoardText(
+        x,
+        y,
+        text,
+        color,
+        size
+    );
+
+    broadcastBoard({
+        type:"text",
+        x:x,
+        y:y,
+        text:text,
+        color:color,
+        size:size
+    });
+}
+
+function drawBoardText(
+    x,
+    y,
+    text,
+    color,
+    size
+){
+
+    boardCtx.fillStyle=color;
+    boardCtx.font=
+        "bold "+size+"px Tahoma,Arial,sans-serif";
+
+    boardCtx.textBaseline="top";
+
+    boardCtx.fillText(
+        text,
+        x,
+        y
+    );
+}
+
+function clearBoard(){
+
+    if(!boardCtx)return;
+
+    const rect=
+        boardCanvas.getBoundingClientRect();
+
+    boardCtx.clearRect(
+        0,
+        0,
+        rect.width,
+        rect.height
+    );
+
+    boardCtx.fillStyle="white";
+
+    boardCtx.fillRect(
+        0,
+        0,
+        rect.width,
+        rect.height
+    );
+
+    broadcastBoard({
+        type:"clear"
+    });
+}
+
+function setupWhiteboardChannel(){
+
+    if(whiteboardChannel)
+        whiteboardChannel.unsubscribe();
+
+    whiteboardChannel=
+        supabaseClient.channel(
+            "whiteboard-"+currentMeeting.id
+        );
+
+    /*
+      مهم:
+      listener داخل همین تابع ثبت می‌شود تا
+      کانال واقعاً آماده شده باشد.
+    */
+
+    whiteboardChannel
+    .on(
+        "broadcast",
+        {event:"board"},
+        ({payload})=>{
+
+            if(!payload || !boardCtx)
+                return;
+
+            if(payload.type==="draw"){
+
+                boardCtx.strokeStyle=
+                    payload.color;
+
+                boardCtx.lineWidth=
+                    payload.size;
+
+                boardCtx.lineCap="round";
+
+                boardCtx.lineTo(
+                    payload.x,
+                    payload.y
+                );
+
+                boardCtx.stroke();
+
+                boardCtx.beginPath();
+
+                boardCtx.moveTo(
+                    payload.x,
+                    payload.y
+                );
+            }
+
+            if(payload.type==="text"){
+
+                drawBoardText(
+                    payload.x,
+                    payload.y,
+                    payload.text,
+                    payload.color,
+                    payload.size
+                );
+            }
+
+            if(payload.type==="clear"){
+
+                const rect=
+                    boardCanvas.getBoundingClientRect();
+
+                boardCtx.clearRect(
+                    0,
+                    0,
+                    rect.width,
+                    rect.height
+                );
+
+                boardCtx.fillStyle="white";
+
+                boardCtx.fillRect(
+                    0,
+                    0,
+                    rect.width,
+                    rect.height
+                );
+            }
+        }
+    )
+    .subscribe();
+}
+
+function broadcastBoard(payload){
+
+    if(!whiteboardChannel)return;
+
+    whiteboardChannel.send({
+        type:"broadcast",
+        event:"board",
+        payload:payload
+    });
+}
+
+/* =========================
+   PDF
+========================= */
+
+function uploadPDF(){
+
+    $("pdfInput").value="";
+    $("pdfInput").click();
+}
+
+$("pdfInput").addEventListener(
+    "change",
+    async function(){
+
+        const file=this.files[0];
+
+        if(!file)return;
+
+        if(
+            file.type!=="application/pdf" &&
+            !file.name.toLowerCase().endsWith(".pdf")
+        ){
+            toast("فقط فایل PDF انتخاب کنید");
+            return;
+        }
+
+        try{
+
+            const buffer=
+                await file.arrayBuffer();
+
+            /*
+              PDF در مرورگر باز می‌شود.
+              برای اینکه سایر کاربران هم فایل را ببینند،
+              فایل باید روی Storage عمومی Supabase
+              ذخیره شود.
+            */
+
+            const path=
+                "meeting-"+currentMeeting.id+
+                "/"+Date.now()+"-"+file.name;
+
+            const {data,error}=
+                await supabaseClient
+                .storage
+                .from("class-files")
+                .upload(
+                    path,
+                    buffer,
+                    {
+                        contentType:"application/pdf",
+                        upsert:false
+                    }
+                );
+
+            if(error){
+
+                console.error(error);
+
+                /*
+                  اگر Storage تنظیم نشده باشد،
+                  حداقل PDF روی دستگاه خود کاربر باز می‌شود.
+                */
+
+                await openPdfFromBytes(
+                    buffer,
+                    file.name
+                );
+
+                toast(
+                    "PDF روی دستگاه شما باز شد. برای نمایش برای همه، Storage کلاس را بسازید."
+                );
+
+                return;
+            }
+
+            const {data:urlData}=
+                supabaseClient
+                .storage
+                .from("class-files")
+                .getPublicUrl(data.path);
+
+            await savePdfRecord(
+                file.name,
+                urlData.publicUrl
+            );
+
+            await openPdfFromUrl(
+                urlData.publicUrl,
+                file.name
+            );
+
+            toast("PDF برای کلاس ارسال شد");
+
+        }catch(error){
+
+            console.error(error);
+
+            toast("باز کردن PDF ناموفق بود");
+        }
+    }
+);
+
+async function savePdfRecord(
+    name,
+    url
+){
+
+    /*
+      از جدول recordings برای نگهداری
+      اطلاعات فایل استفاده می‌کنیم.
+      فایل واقعی داخل Storage است.
+    */
+
+    try{
+
+        await supabaseClient
+        .from("recordings")
+        .insert({
+            meeting_id:currentMeeting.id,
+            user_id:currentUser.id,
+            user_name:currentUser.name,
+            name:name,
+            file_url:url
+        });
+
+    }catch(error){
+        console.warn(error);
+    }
+}
+
+async function loadMeetingPdf(){
+
+    try{
+
+        const {data,error}=
+            await supabaseClient
+            .from("recordings")
+            .select("*")
+            .eq(
+                "meeting_id",
+                currentMeeting.id
+            )
+            .order(
+                "created_at",
+                {ascending:false}
+            )
+            .limit(1);
+
+        if(error || !data || !data.length)
+            return;
+
+        const file=data[0];
+
+        if(!file.file_url)return;
+
+        await openPdfFromUrl(
+            file.file_url,
+            file.name
+        );
+
+    }catch(error){
+
+        console.warn(error);
+    }
+}
+
+async function openPdf(){
+
+    if(pdfDoc){
+
+        $("pdfModal").classList.add("show");
+        return;
+    }
+
+    uploadPDF();
+}
+
+async function openPdfFromUrl(
+    url,
+    name
+){
+
+    try{
+
+        const loadingTask=
+            pdfjsLib.getDocument(url);
+
+        pdfDoc=
+            await loadingTask.promise;
+
+        pdfTotal=pdfDoc.numPages;
+        pdfPage=1;
+        pdfFileName=name;
+
+        $("pdfTitle").textContent=
+            "📄 "+name;
+
+        $("pdfMiniTitle").textContent=name;
+
+        $("pdfMini").classList.remove("hidden");
+
+        $("pdfModal").classList.add("show");
+
+        await renderPdfPage();
+
+        /*
+          اطلاع به کاربران دیگر:
+          فایل در Storage قرار گرفته و
+          همه می‌توانند آن را از DB بگیرند.
+        */
+
+        if(whiteboardChannel){
+
+            whiteboardChannel.send({
+                type:"broadcast",
+                event:"pdf",
+                payload:{
+                    url:url,
+                    name:name
+                }
+            });
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        toast(
+            "PDF قابل نمایش نیست. فایل را دوباره انتخاب کنید."
+        );
+    }
+}
+
+async function openPdfFromBytes(
+    bytes,
+    name
+){
+
+    try{
+
+        pdfDoc=
+            await pdfjsLib.getDocument({
+                data:bytes
+            }).promise;
+
+        pdfTotal=pdfDoc.numPages;
+        pdfPage=1;
+        pdfFileName=name;
+
+        $("pdfTitle").textContent=
+            "📄 "+name;
+
+        $("pdfMiniTitle").textContent=name;
+
+        $("pdfMini").classList.remove("hidden");
+        $("pdfModal").classList.add("show");
+
+        await renderPdfPage();
+
+    }catch(error){
+
+        console.error(error);
+
+        toast("PDF خراب یا غیرقابل خواندن است");
+    }
+}
+
+async function renderPdfPage(){
+
+    if(!pdfDoc)return;
+
+    const page=
+        await pdfDoc.getPage(pdfPage);
+
+    const viewport=
+        page.getViewport({
+            scale:1.5
+        });
+
+    const canvas=$("pdfCanvas");
+
+    const ctx=
+        canvas.getContext("2d");
+
+    canvas.width=viewport.width;
+    canvas.height=viewport.height;
+
+    await page.render({
+        canvasContext:ctx,
+        viewport:viewport
+    }).promise;
+
+    $("pdfPageInfo").textContent=
+        " — صفحه "+
+        pdfPage+
+        " از "+
+        pdfTotal;
+
+    /*
+      mini preview
+    */
+
+    const mini=$("pdfMiniCanvas");
+    const miniCtx=mini.getContext("2d");
+
+    const miniViewport=
+        page.getViewport({
+            scale:.35
+        });
+
+    mini.width=miniViewport.width;
+    mini.height=miniViewport.height;
+
+    await page.render({
+        canvasContext:miniCtx,
+        viewport:miniViewport
+    }).promise;
+}
+
+async function nextPdf(){
+
+    if(!pdfDoc)return;
+
+    if(pdfPage>=pdfTotal)return;
+
+    pdfPage++;
+
+    await renderPdfPage();
+}
+
+async function prevPdf(){
+
+    if(!pdfDoc)return;
+
+    if(pdfPage<=1)return;
+
+    pdfPage--;
+
+    await renderPdfPage();
+}
+
+function closePdf(){
+
+    $("pdfModal").classList.remove("show");
+}
+
+/* =========================
+   RECORDING
+========================= */
+
+async function startRecording(){
+
+    if(mediaRecorder &&
+       mediaRecorder.state==="recording"){
+
+        toast("ضبط از قبل فعال است");
+        return;
+    }
+
+    try{
+
+        /*
+          این ضبط، تصویر کلاس فعلی را از
+          canvas و صدا را از میکروفون می‌گیرد.
+          برای ضبط کامل صدای شرکت‌کنندگان،
+          مرورگر باید امکان دریافت صدای خروجی
+          را در محیط مربوطه داشته باشد.
+        */
+
+        const canvas=
+            document.createElement("canvas");
+
+        canvas.width=1280;
+        canvas.height=720;
+
+        const ctx=canvas.getContext("2d");
+
+        const videoStream=
+            canvas.captureStream(25);
+
+        const audioContext=
+            new AudioContext();
+
+        const destination=
+            audioContext.createMediaStreamDestination();
+
+        if(localStream){
+
+            const localAudio=
+                localStream.getAudioTracks();
+
+            if(localAudio.length){
+
+                const source=
+                    audioContext.createMediaStreamSource(
+                        new MediaStream(localAudio)
+                    );
+
+                source.connect(destination);
+            }
+        }
+
+        function draw(){
+
+            if(
+                !mediaRecorder ||
+                mediaRecorder.state!=="recording"
+            )return;
+
+            ctx.fillStyle="#111827";
+            ctx.fillRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+            const boxes=
+                document.querySelectorAll(
+                    ".video-box"
+                );
+
+            const videos=[];
+
+            boxes.forEach(box=>{
+
+                const video=
+                    box.querySelector("video");
+
+                if(video &&
+                   video.readyState>=2){
+
+                    videos.push({
+                        video:video,
+                        name:
+                        box.querySelector(
+                            ".video-name"
+                        )?.textContent||""
+                    });
+                }
+            });
+
+            const cols=
+                Math.max(
+                    1,
+                    Math.ceil(
+                        Math.sqrt(videos.length)
+                    )
+                );
+
+            const rows=
+                Math.max(
+                    1,
+                    Math.ceil(
+                        videos.length/cols
+                    )
+                );
+
+            const w=
+                canvas.width/cols;
+
+            const h=
+                canvas.height/rows;
+
+            videos.forEach((v,i)=>{
+
+                const x=(i%cols)*w;
+                const y=Math.floor(i/cols)*h;
+
+                try{
+
+                    ctx.drawImage(
+                        v.video,
+                        x,
+                        y,
+                        w,
+                        h
+                    );
+
+                }catch{}
+
+                ctx.fillStyle="#000b";
+
+                ctx.fillRect(
+                    x,
+                    y+h-35,
+                    w,
+                    35
+                );
+
+                ctx.fillStyle="white";
+                ctx.font="16px Tahoma";
+
+                ctx.fillText(
+                    v.name,
+                    x+10,
+                    y+h-12
+                );
+            });
+
+            requestAnimationFrame(draw);
+        }
+
+        const mixedStream=
+            new MediaStream([
+                ...videoStream.getVideoTracks(),
+                ...destination.stream.getAudioTracks()
+            ]);
+
+        mediaRecorder=
+            new MediaRecorder(
+                mixedStream,
+                {
+                    mimeType:
+                    MediaRecorder.isTypeSupported(
+                        "video/webm;codecs=vp9,opus"
+                    )
+                    ?
+                    "video/webm;codecs=vp9,opus"
+                    :
+                    "video/webm"
+                }
+            );
+
+        recordingChunks=[];
+
+        mediaRecorder.ondataavailable=
+            e=>{
+                if(e.data.size>0)
+                    recordingChunks.push(e.data);
+            };
+
+        mediaRecorder.onstop=
+            async()=>{
+
+                const blob=
+                    new Blob(
+                        recordingChunks,
+                        {
+                            type:"video/webm"
+                        }
+                    );
+
+                const url=
+                    URL.createObjectURL(blob);
+
+                const a=
+                    document.createElement("a");
+
+                a.href=url;
+
+                a.download=
+                    "English-Class-"+
+                    Date.now()+
+                    ".webm";
+
+                a.click();
+
+                setTimeout(()=>{
+                    URL.revokeObjectURL(url);
+                },10000);
+
+                toast("فایل ضبط‌شده آماده شد");
+            };
+
+        mediaRecorder.start(1000);
+
+        draw();
+
+        toast("ضبط کلاس شروع شد");
+
+    }catch(error){
+
+        console.error(error);
+
+        toast(
+            "ضبط در این مرورگر قابل اجرا نیست"
+        );
+    }
+}
+
+function stopRecording(){
+
+    if(
+        mediaRecorder &&
+        mediaRecorder.state==="recording"
+    ){
+
+        mediaRecorder.stop();
+
+        toast("در حال آماده‌سازی فایل ضبط...");
+    }
+}
+
+/* =========================
+   LEAVE MEETING
+========================= */
+
+function leaveMeeting(){
+
+    if(!currentMeeting)return;
+
+    sendSignal({
+        type:"leave",
+        from:String(currentUser.id)
+    });
+
+    Object.keys(peers)
+    .forEach(closePeer);
+
+    if(localStream){
+
+        localStream.getTracks()
+        .forEach(track=>track.stop());
+    }
+
+    if(screenStream){
+
+        screenStream.getTracks()
+        .forEach(track=>track.stop());
+    }
+
+    if(signalChannel)
+        signalChannel.unsubscribe();
+
+    if(presenceChannel)
+        presenceChannel.unsubscribe();
+
+    if(chatChannel)
+        chatChannel.unsubscribe();
+
+    if(whiteboardChannel)
+        whiteboardChannel.unsubscribe();
+
+    signalChannel=null;
+    presenceChannel=null;
+    chatChannel=null;
+    whiteboardChannel=null;
+
+    peers={};
+    pendingCandidates={};
+
+    $("videoArea").innerHTML="";
+
+    $("meeting").classList.remove("show");
+
+    $("chatPanel").classList.remove("show");
+    $("whiteboard").classList.remove("show");
+    $("pdfModal").classList.remove("show");
+    $("pdfMini").classList.add("hidden");
+
+    localStream=null;
+    cameraStream=null;
+    screenStream=null;
+
+    currentMeeting=null;
+}
+
+/* =========================
+   KEYBOARD CHAT
+========================= */
+
+$("chatInput").addEventListener(
+    "keydown",
+    e=>{
+
+        if(
+            e.key==="Enter" &&
+            !e.shiftKey
+        ){
+
+            e.preventDefault();
+            sendMessage();
+        }
+    }
+);
+
+/* =========================
+   START
+========================= */
+
+window.addEventListener(
+    "load",
+    checkLogin
+);
+
+window.addEventListener(
+    "resize",
+    ()=>{
+        if(
+            $("whiteboard").classList.contains("show")
+        ){
+            /*
+              canvas را در resize دوباره
+              تنظیم نمی‌کنیم تا نقاشی پاک نشود.
+            */
+        }
+    }
+);
+
+</script>
+
+</body>
+</html>
