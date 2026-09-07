@@ -1,0 +1,5436 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>English Class</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    margin:0;
+    width:100%;
+    min-height:100%;
+    font-family:Tahoma,Arial,sans-serif;
+    background:#f2f4f8;
+    color:#17202a;
+}
+
+button,input,textarea{
+    font-family:inherit;
+}
+
+button{
+    cursor:pointer;
+    border:0;
+}
+
+.hidden{
+    display:none!important;
+}
+
+/* ================= LOGIN ================= */
+
+#loginPage,
+#registerPage{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.loginBox{
+    width:100%;
+    max-width:420px;
+    background:white;
+    border-radius:22px;
+    padding:25px;
+    box-shadow:0 10px 40px rgba(0,0,0,.12);
+}
+
+.logo{
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:25px;
+}
+
+.input{
+    width:100%;
+    border:1px solid #d8dde5;
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:12px;
+    outline:none;
+    font-size:16px;
+}
+
+.input:focus{
+    border-color:#4263eb;
+}
+
+.primary{
+    width:100%;
+    padding:14px;
+    background:#4263eb;
+    color:white;
+    border-radius:12px;
+    font-weight:bold;
+    font-size:16px;
+}
+
+.secondary{
+    padding:10px 14px;
+    background:#edf0f5;
+    color:#202735;
+    border-radius:10px;
+}
+
+/* ================= APP ================= */
+
+#app{
+    display:none;
+    min-height:100vh;
+}
+
+.topbar{
+    height:60px;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 12px;
+    position:sticky;
+    top:0;
+    z-index:100;
+    box-shadow:0 2px 12px rgba(0,0,0,.08);
+}
+
+.topTitle{
+    font-size:18px;
+    font-weight:bold;
+}
+
+.menuBtn{
+    background:#edf0f5;
+    padding:9px 12px;
+    border-radius:10px;
+}
+
+.layout{
+    display:flex;
+    min-height:calc(100vh - 60px);
+}
+
+.sidebar{
+    width:245px;
+    background:#fff;
+    border-left:1px solid #e2e6ec;
+    padding:12px;
+}
+
+.navBtn{
+    width:100%;
+    padding:13px;
+    background:transparent;
+    border-radius:11px;
+    text-align:right;
+    margin-bottom:5px;
+    font-size:15px;
+}
+
+.navBtn.active{
+    background:#e8edff;
+    color:#3153d8;
+}
+
+.content{
+    flex:1;
+    min-width:0;
+    padding:18px;
+}
+
+.pageTitle{
+    font-size:24px;
+    font-weight:bold;
+    margin-bottom:18px;
+}
+
+.card{
+    background:#fff;
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:15px;
+    box-shadow:0 3px 15px rgba(0,0,0,.06);
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+    gap:14px;
+}
+
+.groupCard{
+    background:#fff;
+    border-radius:16px;
+    padding:17px;
+    box-shadow:0 3px 15px rgba(0,0,0,.07);
+}
+
+.groupName{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:12px;
+}
+
+/* ================= ROOM ================= */
+
+.meetingRoom{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 320px;
+    gap:12px;
+}
+
+.videoArea{
+    background:#111820;
+    min-height:420px;
+    border-radius:18px;
+    padding:10px;
+}
+
+.videos{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:10px;
+}
+
+.videoTile{
+    position:relative;
+    background:#202832;
+    border-radius:14px;
+    overflow:hidden;
+    min-height:160px;
+}
+
+.videoTile video{
+    width:100%;
+    height:100%;
+    min-height:160px;
+    object-fit:cover;
+    display:block;
+}
+
+.videoName{
+    position:absolute;
+    bottom:7px;
+    right:7px;
+    background:rgba(0,0,0,.65);
+    color:white;
+    padding:5px 8px;
+    border-radius:7px;
+    font-size:12px;
+}
+
+.controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:10px;
+}
+
+.controlBtn{
+    padding:10px 13px;
+    background:#edf0f5;
+    border-radius:10px;
+}
+
+.controlBtn.danger{
+    background:#ffe1e1;
+    color:#b42323;
+}
+
+/* ================= CHAT ================= */
+
+.chatBox{
+    height:500px;
+    background:#fff;
+    border-radius:18px;
+    display:flex;
+    flex-direction:column;
+}
+
+.chatMessages{
+    flex:1;
+    overflow:auto;
+    padding:12px;
+}
+
+.msg{
+    background:#eef1f5;
+    padding:9px;
+    border-radius:10px;
+    margin-bottom:8px;
+}
+
+.msgName{
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:4px;
+}
+
+.chatInput{
+    display:flex;
+    gap:6px;
+    padding:10px;
+    border-top:1px solid #eee;
+}
+
+.chatInput input{
+    flex:1;
+    min-width:0;
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:11px;
+}
+
+/* ================= WHITEBOARD ================= */
+
+.whiteboard{
+    background:#dfe4eb;
+    border-radius:18px;
+    padding:9px;
+}
+
+.toolbar{
+    background:#fff;
+    border-radius:13px;
+    padding:8px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    align-items:center;
+    margin-bottom:8px;
+}
+
+.tool{
+    background:#edf0f5;
+    padding:9px 11px;
+    border-radius:9px;
+    font-size:13px;
+    flex-shrink:0;
+}
+
+.tool.active{
+    background:#4263eb;
+    color:#fff;
+}
+
+.colorPicker{
+    width:42px;
+    height:38px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:2px;
+}
+
+.sizePicker{
+    width:65px;
+    height:38px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:5px;
+}
+
+#board{
+    width:100%;
+    height:65vh;
+    min-height:400px;
+    background:#fff;
+    border-radius:13px;
+    position:relative;
+    overflow:hidden;
+    touch-action:none;
+}
+
+#canvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    background:white;
+}
+
+#textEditor{
+    display:none;
+    position:absolute;
+    z-index:50;
+    min-width:130px;
+    min-height:45px;
+    max-width:80%;
+    border:2px solid #4263eb;
+    border-radius:8px;
+    padding:7px;
+    outline:none;
+    background:rgba(255,255,255,.96);
+    resize:both;
+    direction:rtl;
+}
+
+.boardHelp{
+    font-size:12px;
+    color:#59636f;
+    padding:7px 3px 0;
+}
+
+/* ================= RECORDINGS ================= */
+
+.recording{
+    border:1px solid #e1e5eb;
+    border-radius:15px;
+    padding:12px;
+    margin-bottom:12px;
+}
+
+.recording video{
+    width:100%;
+    max-width:650px;
+    border-radius:10px;
+    background:#111;
+}
+
+.recordingActions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:9px;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:850px){
+
+    .sidebar{
+        position:fixed;
+        right:-255px;
+        top:60px;
+        bottom:0;
+        z-index:300;
+        transition:.25s;
+        box-shadow:0 5px 25px rgba(0,0,0,.2);
+    }
+
+    .sidebar.open{
+        right:0;
+    }
+
+    .content{
+        padding:10px;
+    }
+
+    .meetingRoom{
+        grid-template-columns:1fr;
+    }
+
+    .videoArea{
+        min-height:350px;
+    }
+
+    .chatBox{
+        height:400px;
+    }
+
+    #board{
+        height:60vh;
+        min-height:370px;
+    }
+
+    .toolbar{
+        overflow-x:auto;
+        flex-wrap:nowrap;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= LOGIN ================= -->
+
+<section id="loginPage">
+
+<div class="loginBox">
+
+<div class="logo">
+📚 English Class
+</div>
+
+<input id="loginUsername"
+       class="input"
+       placeholder="نام کاربری">
+
+<input id="loginPassword"
+       class="input"
+       type="password"
+       placeholder="رمز عبور">
+
+<button class="primary"
+        onclick="login()">
+ورود
+</button>
+
+<br><br>
+
+<button class="secondary"
+        style="width:100%"
+        onclick="showRegister()">
+ساخت حساب
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ================= REGISTER ================= -->
+
+<section id="registerPage"
+         class="hidden">
+
+<div class="loginBox">
+
+<div class="logo">
+ثبت‌نام
+</div>
+
+<input id="registerName"
+       class="input"
+       placeholder="نام">
+
+<input id="registerUsername"
+       class="input"
+       placeholder="نام کاربری">
+
+<input id="registerPassword"
+       class="input"
+       type="password"
+       placeholder="رمز عبور">
+
+<button class="primary"
+        onclick="registerUser()">
+ثبت‌نام
+</button>
+
+<br><br>
+
+<button class="secondary"
+        style="width:100%"
+        onclick="showLogin()">
+بازگشت
+</button>
+
+</div>
+
+</section>
+
+
+<!-- ================= APP ================= -->
+
+<section id="app">
+
+<header class="topbar">
+
+<button class="menuBtn"
+        onclick="toggleSidebar()">
+☰
+</button>
+
+<div class="topTitle">
+📚 English Class
+</div>
+
+<div id="userLabel"></div>
+
+</header>
+
+
+<div class="layout">
+
+<aside id="sidebar"
+       class="sidebar">
+
+<button id="navHome"
+        class="navBtn active"
+        onclick="showPage('home')">
+🏠 خانه
+</button>
+
+<button id="navGroups"
+        class="navBtn"
+        onclick="showPage('groups')">
+👥 کلاس‌ها
+</button>
+
+<button id="navMeetings"
+        class="navBtn"
+        onclick="showPage('meetings')">
+🎥 جلسات
+</button>
+
+<button id="navRecordings"
+        class="navBtn"
+        onclick="showPage('recordings')">
+🎬 کلاس‌های ضبط‌شده
+</button>
+
+<button class="navBtn"
+        onclick="logout()">
+🚪 خروج
+</button>
+
+</aside>
+
+
+<main class="content">
+
+<!-- ================= HOME ================= -->
+
+<section id="page-home">
+
+<div class="pageTitle">
+🏠 خانه
+</div>
+
+<div class="card">
+
+<h2>
+به English Class خوش آمدید
+</h2>
+
+<p>
+از اینجا می‌توانی وارد کلاس‌ها و جلسات شوی.
+</p>
+
+</div>
+
+</section>
+
+
+<!-- ================= GROUPS ================= -->
+
+<section id="page-groups"
+         class="hidden">
+
+<div class="pageTitle">
+👥 کلاس‌ها
+</div>
+
+<div class="card">
+
+<input id="groupName"
+       class="input"
+       placeholder="نام کلاس">
+
+<input id="groupPassword"
+       class="input"
+       type="password"
+       placeholder="رمز کلاس">
+
+<button class="primary"
+        onclick="createGroup()">
+ساخت کلاس
+</button>
+
+</div>
+
+<div id="groupsList"
+     class="grid">
+</div>
+
+</section>
+
+
+<!-- ================= MEETINGS ================= -->
+
+<section id="page-meetings"
+         class="hidden">
+
+<div class="pageTitle">
+🎥 جلسات
+</div>
+
+<div class="card">
+
+<input id="meetingName"
+       class="input"
+       placeholder="نام جلسه">
+
+<button class="primary"
+        onclick="createMeeting()">
+ساخت جلسه
+</button>
+
+</div>
+
+<div id="meetingsList"
+     class="grid">
+</div>
+
+</section>
+
+
+<!-- ================= RECORDINGS ================= -->
+
+<section id="page-recordings"
+         class="hidden">
+
+<div class="pageTitle">
+🎬 کلاس‌های ضبط‌شده
+</div>
+
+<div class="card">
+
+<div id="recordingsList">
+در حال بارگذاری...
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= ROOM ================= -->
+
+<section id="page-room"
+         class="hidden">
+
+<div class="pageTitle">
+
+<span id="roomTitle">
+جلسه
+</span>
+
+</div>
+
+
+<div class="meetingRoom">
+
+<div>
+
+<!-- VIDEO -->
+
+<div class="videoArea">
+
+<div id="videos"
+     class="videos">
+
+<div id="localTile"
+     class="videoTile">
+
+<video id="localVideo"
+       autoplay
+       muted
+       playsinline>
+</video>
+
+<div class="videoName">
+شما
+</div>
+
+</div>
+
+</div>
+
+
+<div class="controls">
+
+<button class="controlBtn"
+        onclick="enableCamera()">
+📷 فعال‌کردن دوربین
+</button>
+
+<button class="controlBtn"
+        onclick="enableMicrophone()">
+🎤 فعال‌کردن میکروفون
+</button>
+
+<button class="controlBtn"
+        onclick="toggleCamera()">
+📷 دوربین
+</button>
+
+<button class="controlBtn"
+        onclick="toggleMicrophone()">
+🎤 میکروفون
+</button>
+
+<button class="controlBtn"
+        onclick="startScreenShare()">
+🖥️ اشتراک صفحه
+</button>
+
+<button class="controlBtn"
+        onclick="startRecording()">
+🔴 شروع ضبط
+</button>
+
+<button class="controlBtn danger"
+        onclick="stopRecording()">
+⏹️ توقف ضبط
+</button>
+
+<button class="controlBtn danger"
+        onclick="leaveMeeting()">
+🚪 خروج
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ================= WHITEBOARD ================= -->
+
+<div class="card">
+
+<h2>
+🧑‍🏫 تخته کلاس
+</h2>
+
+<div class="whiteboard">
+
+<div class="toolbar">
+
+<button class="tool active"
+        data-tool="pen"
+        onclick="setTool('pen')">
+✏️ قلم
+</button>
+
+<button class="tool"
+        data-tool="highlighter"
+        onclick="setTool('highlighter')">
+🖍️ هایلایتر
+</button>
+
+<button class="tool"
+        data-tool="eraser"
+        onclick="setTool('eraser')">
+🧽 پاک‌کن
+</button>
+
+<button class="tool"
+        data-tool="select"
+        onclick="setTool('select')">
+👆 انتخاب
+</button>
+
+<button class="tool"
+        data-tool="text"
+        onclick="setTool('text')">
+📝 متن
+</button>
+
+<button class="tool"
+        data-tool="line"
+        onclick="setTool('line')">
+📏 خط
+</button>
+
+<button class="tool"
+        data-tool="arrow"
+        onclick="setTool('arrow')">
+➡️ فلش
+</button>
+
+<button class="tool"
+        data-tool="rect"
+        onclick="setTool('rect')">
+▭ مستطیل
+</button>
+
+<button class="tool"
+        data-tool="circle"
+        onclick="setTool('circle')">
+◯ دایره
+</button>
+
+<input id="boardColor"
+       class="colorPicker"
+       type="color"
+       value="#111111">
+
+<input id="boardSize"
+       class="sizePicker"
+       type="number"
+       value="4"
+       min="1"
+       max="60">
+
+<button class="tool"
+        onclick="toggleBold()">
+<b>B</b>
+</button>
+
+<button class="tool"
+        onclick="undo()">
+↩️
+</button>
+
+<button class="tool"
+        onclick="redo()">
+↪️
+</button>
+
+<button class="tool"
+        onclick="deleteSelected()">
+🗑️
+</button>
+
+<button class="tool"
+        onclick="clearBoard()">
+🧹
+</button>
+
+<button class="tool"
+        onclick="resetZoom()">
+🔍 100%
+</button>
+
+</div>
+
+
+<div id="board">
+
+<canvas id="canvas"></canvas>
+
+<textarea id="textEditor"
+          placeholder="اینجا بنویس..."
+          autocomplete="off"></textarea>
+
+</div>
+
+
+<div class="boardHelp">
+
+📝 برای نوشتن، «متن» را بزن و سپس روی تخته لمس کن.
+کیبورد گوشی باز می‌شود. Enter متن را ثبت می‌کند.
+برای جابه‌جایی متن، «👆 انتخاب» را بزن و متن را بکش.
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ================= CHAT ================= -->
+
+<div>
+
+<div class="chatBox">
+
+<div id="chatMessages"
+     class="chatMessages">
+</div>
+
+<div class="chatInput">
+
+<input id="chatText"
+       placeholder="پیام..."
+       onkeydown="if(event.key==='Enter')sendMessage()">
+
+<button class="primary"
+        style="width:auto"
+        onclick="sendMessage()">
+ارسال
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+</section>
+
+
+<script>
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+"https://uqqumhmzndgyoigcqnti.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_R3LAX7EYbdYUwjQRgkmesA_QJ2ZmPtD";
+
+const supabaseClient =
+supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+let currentUser=null;
+let currentMeeting=null;
+
+let localStream=null;
+
+let peers={};
+let iceQueues={};
+
+let meetingChannel=null;
+let chatChannel=null;
+let boardChannel=null;
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+function showRegister(){
+
+    document
+        .getElementById("loginPage")
+        .style.display="none";
+
+    document
+        .getElementById("registerPage")
+        .classList.remove("hidden");
+
+}
+
+
+function showLogin(){
+
+    document
+        .getElementById("registerPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("loginPage")
+        .style.display="flex";
+
+}
+
+
+async function registerUser(){
+
+    const name=
+        document
+        .getElementById("registerName")
+        .value.trim();
+
+    const username=
+        document
+        .getElementById("registerUsername")
+        .value.trim();
+
+    const password=
+        document
+        .getElementById("registerPassword")
+        .value;
+
+
+    if(!name||!username||!password){
+
+        alert("همه قسمت‌ها را کامل کن.");
+        return;
+
+    }
+
+
+    const {data:existing,error:findError}=
+        await supabaseClient
+        .from("users")
+        .select("id")
+        .eq("username",username)
+        .maybeSingle();
+
+
+    if(findError){
+
+        alert(findError.message);
+        return;
+
+    }
+
+
+    if(existing){
+
+        alert("این نام کاربری قبلاً وجود دارد.");
+        return;
+
+    }
+
+
+    const {data,error}=
+        await supabaseClient
+        .from("users")
+        .insert({
+
+            name:name,
+            username:username,
+            password:password
+
+        })
+        .select()
+        .single();
+
+
+    if(error){
+
+        alert(error.message);
+        return;
+
+    }
+
+
+    currentUser=data;
+
+    localStorage.setItem(
+        "english_class_user",
+        JSON.stringify(data)
+    );
+
+    openApp();
+
+}
+
+
+async function login(){
+
+    const username=
+        document
+        .getElementById("loginUsername")
+        .value.trim();
+
+    const password=
+        document
+        .getElementById("loginPassword")
+        .value;
+
+
+    if(!username||!password){
+
+        alert("نام کاربری و رمز را وارد کن.");
+        return;
+
+    }
+
+
+    const {data,error}=
+        await supabaseClient
+        .from("users")
+        .select("*")
+        .eq("username",username)
+        .eq("password",password)
+        .maybeSingle();
+
+
+    if(error){
+
+        alert(error.message);
+        return;
+
+    }
+
+
+    if(!data){
+
+        alert("نام کاربری یا رمز اشتباه است.");
+        return;
+
+    }
+
+
+    currentUser=data;
+
+    localStorage.setItem(
+        "english_class_user",
+        JSON.stringify(data)
+    );
+
+    openApp();
+
+}
+
+
+function logout(){
+
+    localStorage.removeItem(
+        "english_class_user"
+    );
+
+    location.reload();
+
+}
+
+
+function openApp(){
+
+    document
+        .getElementById("loginPage")
+        .style.display="none";
+
+    document
+        .getElementById("registerPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("app")
+        .style.display="block";
+
+
+    document
+        .getElementById("userLabel")
+        .textContent=
+        currentUser.name;
+
+
+    loadGroups();
+    loadMeetings();
+    renderRecordings();
+
+}
+
+
+(function(){
+
+    try{
+
+        const saved=
+            localStorage.getItem(
+                "english_class_user"
+            );
+
+        if(saved){
+
+            currentUser=
+                JSON.parse(saved);
+
+            openApp();
+
+        }
+
+    }catch(e){}
+
+})();
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function toggleSidebar(){
+
+    document
+        .getElementById("sidebar")
+        .classList.toggle("open");
+
+}
+
+
+function showPage(page){
+
+    document
+        .querySelectorAll(
+            "main > section"
+        )
+        .forEach(
+            section=>
+            section.classList.add("hidden")
+        );
+
+
+    const target=
+        document.getElementById(
+            "page-"+page
+        );
+
+
+    if(target){
+        target.classList.remove("hidden");
+    }
+
+
+    document
+        .querySelectorAll(".navBtn")
+        .forEach(
+            button=>
+            button.classList.remove("active")
+        );
+
+
+    const navMap={
+        home:"navHome",
+        groups:"navGroups",
+        meetings:"navMeetings",
+        recordings:"navRecordings"
+    };
+
+
+    if(navMap[page]){
+
+        document
+            .getElementById(navMap[page])
+            .classList.add("active");
+
+    }
+
+
+    document
+        .getElementById("sidebar")
+        .classList.remove("open");
+
+
+    if(page==="recordings"){
+
+        renderRecordings();
+
+    }
+
+}
+
+
+/* =========================================================
+   GROUPS
+========================================================= */
+
+async function createGroup(){
+
+    const name=
+        document
+        .getElementById("groupName")
+        .value.trim();
+
+    const password=
+        document
+        .getElementById("groupPassword")
+        .value;
+
+
+    if(!name||!password){
+
+        alert("نام و رمز کلاس را وارد کن.");
+        return;
+
+    }
+
+
+    const {error}=
+        await supabaseClient
+        .from("groups")
+        .insert({
+
+            name:name,
+            password:password,
+            owner_id:currentUser.id,
+            owner_name:currentUser.name
+
+        });
+
+
+    if(error){
+
+        alert(error.message);
+        return;
+
+    }
+
+
+    document
+        .getElementById("groupName")
+        .value="";
+
+    document
+        .getElementById("groupPassword")
+        .value="";
+
+
+    loadGroups();
+
+}
+
+
+async function loadGroups(){
+
+    const {data,error}=
+        await supabaseClient
+        .from("groups")
+        .select("*")
+        .order(
+            "created_at",
+            {ascending:false}
+        );
+
+
+    if(error){
+
+        console.log(error);
+        return;
+
+    }
+
+
+    const box=
+        document
+        .getElementById("groupsList");
+
+    box.innerHTML="";
+
+
+    (data||[]).forEach(group=>{
+
+        const div=
+            document.createElement("div");
+
+        div.className="groupCard";
+
+        div.innerHTML=`
+
+        <div class="groupName">
+        ${escapeHTML(group.name)}
+        </div>
+
+        <button class="secondary"
+                onclick="enterGroup(${group.id})">
+        ورود به کلاس
+        </button>
+
+        `;
+
+        box.appendChild(div);
+
+    });
+
+}
+
+
+async function enterGroup(id){
+
+    const password=
+        prompt("رمز کلاس را وارد کن:");
+
+    if(password===null){
+        return;
+    }
+
+
+    const {data,error}=
+        await supabaseClient
+        .from("groups")
+        .select("*")
+        .eq("id",id)
+        .single();
+
+
+    if(error){
+
+        alert(error.message);
+        return;
+
+    }
+
+
+    if(password!==data.password){
+
+        alert("رمز کلاس اشتباه است.");
+        return;
+
+    }
+
+
+    alert("با موفقیت وارد کلاس شدی.");
+
+    showPage("meetings");
+
+}
+
+
+/* =========================================================
+   MEETINGS
+========================================================= */
+
+async function createMeeting(){
+
+    const name=
+        document
+        .getElementById("meetingName")
+        .value.trim();
+
+
+    if(!name){
+
+        alert("نام جلسه را وارد کن.");
+        return;
+
+    }
+
+
+    const {error}=
+        await supabaseClient
+        .from("meetings")
+        .insert({
+
+            name:name,
+            owner_id:currentUser.id,
+            owner_name:currentUser.name
+
+        });
+
+
+    if(error){
+
+        alert(error.message);
+        return;
+
+    }
+
+
+    document
+        .getElementById("meetingName")
+        .value="";
+
+
+    loadMeetings();
+
+}
+
+
+async function loadMeetings(){
+
+    const {data,error}=
+        await supabaseClient
+        .from("meetings")
+        .select("*")
+        .order(
+            "created_at",
+            {ascending:false}
+        );
+
+
+    if(error){
+
+        console.log(error);
+        return;
+
+    }
+
+
+    const box=
+        document
+        .getElementById("meetingsList");
+
+    box.innerHTML="";
+
+
+    (data||[]).forEach(meeting=>{
+
+        const div=
+            document.createElement("div");
+
+        div.className="groupCard";
+
+        div.innerHTML=`
+
+        <div class="groupName">
+        ${escapeHTML(meeting.name)}
+        </div>
+
+        <button class="secondary"
+                onclick="joinMeeting(${meeting.id})">
+        ورود به جلسه
+        </button>
+
+        `;
+
+        box.appendChild(div);
+
+    });
+
+}
+
+
+/* =========================================================
+   JOIN MEETING
+========================================================= */
+
+async function joinMeeting(id){
+
+    const {data,error}=
+        await supabaseClient
+        .from("meetings")
+        .select("*")
+        .eq("id",id)
+        .single();
+
+
+    if(error){
+
+        alert(error.message);
+        return;
+
+    }
+
+
+    currentMeeting=data;
+
+
+    document
+        .getElementById("roomTitle")
+        .textContent=data.name;
+
+
+    showPage("room");
+
+
+    await enableMedia();
+
+    await setupMeetingRealtime();
+
+    await setupChatRealtime();
+
+    await setupWhiteboardRealtime();
+
+}
+
+
+/* =========================================================
+   WEBRTC
+========================================================= */
+
+function createPeer(remoteId){
+
+    remoteId=String(remoteId);
+
+
+    if(peers[remoteId]){
+        return peers[remoteId];
+    }
+
+
+    const pc=
+        new RTCPeerConnection({
+
+            iceServers:[
+                {
+                    urls:
+                    "stun:stun.l.google.com:19302"
+                },
+                {
+                    urls:
+                    "stun:stun1.l.google.com:19302"
+                }
+            ]
+
+        });
+
+
+    peers[remoteId]=pc;
+    iceQueues[remoteId]=[];
+
+
+    if(localStream){
+
+        localStream
+            .getTracks()
+            .forEach(
+                track=>{
+                    pc.addTrack(
+                        track,
+                        localStream
+                    );
+                }
+            );
+
+    }
+
+
+    pc.ontrack=e=>{
+
+        if(e.streams[0]){
+
+            addRemoteVideo(
+                remoteId,
+                e.streams[0]
+            );
+
+        }
+
+    };
+
+
+    pc.onicecandidate=e=>{
+
+        if(e.candidate){
+
+            sendSignal(
+                remoteId,
+                {
+                    type:"ice",
+                    candidate:e.candidate
+                }
+            );
+
+        }
+
+    };
+
+
+    pc.onconnectionstatechange=()=>{
+
+        if(
+            pc.connectionState==="failed"
+        ){
+
+            recreatePeer(remoteId);
+
+        }
+
+    };
+
+
+    const shouldOffer=
+        Number(currentUser.id) <
+        Number(remoteId);
+
+
+    if(shouldOffer){
+
+        makeOffer(
+            remoteId,
+            pc
+        );
+
+    }
+
+
+    return pc;
+
+}
+
+
+async function makeOffer(id,pc){
+
+    try{
+
+        const offer=
+            await pc.createOffer();
+
+        await pc.setLocalDescription(
+            offer
+        );
+
+        sendSignal(
+            id,
+            {
+                type:"offer",
+                offer:offer
+            }
+        );
+
+    }catch(e){
+
+        console.log(e);
+
+    }
+
+}
+
+
+async function handleSignal(from,data){
+
+    from=String(from);
+
+    const pc=
+        peers[from]||
+        createPeer(from);
+
+
+    try{
+
+        if(data.type==="offer"){
+
+            await pc.setRemoteDescription(
+                data.offer
+            );
+
+            await flushIce(
+                from,
+                pc
+            );
+
+
+            const answer=
+                await pc.createAnswer();
+
+            await pc.setLocalDescription(
+                answer
+            );
+
+
+            sendSignal(
+                from,
+                {
+                    type:"answer",
+                    answer:answer
+                }
+            );
+
+        }
+
+
+        else if(data.type==="answer"){
+
+            await pc.setRemoteDescription(
+                data.answer
+            );
+
+            await flushIce(
+                from,
+                pc
+            );
+
+        }
+
+
+        else if(data.type==="ice"){
+
+            if(pc.remoteDescription){
+
+                await pc.addIceCandidate(
+                    data.candidate
+                );
+
+            }else{
+
+                iceQueues[from]
+                    .push(
+                        data.candidate
+                    );
+
+            }
+
+        }
+
+    }catch(e){
+
+        console.log(
+            "WebRTC:",
+            e
+        );
+
+    }
+
+}
+
+
+async function flushIce(id,pc){
+
+    const queue=
+        iceQueues[id]||[];
+
+
+    for(
+        const candidate of queue
+    ){
+
+        try{
+
+            await pc.addIceCandidate(
+                candidate
+            );
+
+        }catch(e){}
+
+    }
+
+
+    iceQueues[id]=[];
+
+}
+
+
+function sendSignal(to,data){
+
+    if(!meetingChannel){
+        return;
+    }
+
+
+    meetingChannel.send({
+
+        type:"broadcast",
+
+        event:"signal",
+
+        payload:{
+
+            from:String(
+                currentUser.id
+            ),
+
+            to:String(to),
+
+            data:data
+
+        }
+
+    });
+
+}
+
+
+async function recreatePeer(id){
+
+    id=String(id);
+
+
+    if(peers[id]){
+
+        try{
+            peers[id].close();
+        }catch(e){}
+
+        delete peers[id];
+
+    }
+
+
+    delete iceQueues[id];
+
+
+    createPeer(id);
+
+}
+
+
+function addRemoteVideo(id,stream){
+
+    const tileId=
+        "remote_"+id;
+
+
+    let tile=
+        document.getElementById(
+            tileId
+        );
+
+
+    if(!tile){
+
+        tile=
+            document.createElement("div");
+
+        tile.className="videoTile";
+        tile.id=tileId;
+
+
+        tile.innerHTML=`
+
+        <video
+            autoplay
+            playsinline>
+        </video>
+
+        <div class="videoName">
+        کاربر ${escapeHTML(id)}
+        </div>
+
+        `;
+
+
+        document
+            .getElementById("videos")
+            .appendChild(tile);
+
+    }
+
+
+    const video=
+        tile.querySelector("video");
+
+
+    if(video.srcObject!==stream){
+
+        video.srcObject=stream;
+
+        video.play()
+            .catch(()=>{});
+
+    }
+
+}
+
+
+async function setupMeetingRealtime(){
+
+    if(meetingChannel){
+
+        try{
+
+            await supabaseClient
+                .removeChannel(
+                    meetingChannel
+                );
+
+        }catch(e){}
+
+    }
+
+
+    meetingChannel=
+        supabaseClient.channel(
+            "meeting-"+currentMeeting.id,
+            {
+                config:{
+                    presence:{
+                        key:String(
+                            currentUser.id
+                        )
+                    }
+                }
+            }
+        );
+
+
+    meetingChannel
+    .on(
+        "broadcast",
+        {
+            event:"signal"
+        },
+        event=>{
+
+            const p=
+                event.payload;
+
+
+            if(
+                String(p.to)===
+                String(currentUser.id)
+            ){
+
+                handleSignal(
+                    p.from,
+                    p.data
+                );
+
+            }
+
+        }
+    )
+    .on(
+        "presence",
+        {
+            event:"sync"
+        },
+        ()=>{
+
+            const state=
+                meetingChannel
+                .presenceState();
+
+
+            Object.keys(state)
+                .forEach(id=>{
+
+                    if(
+                        String(id)!==
+                        String(currentUser.id)
+                    ){
+
+                        createPeer(id);
+
+                    }
+
+                });
+
+        }
+    )
+    .on(
+        "presence",
+        {
+            event:"join"
+        },
+        event=>{
+
+            const id=
+                String(event.key);
+
+
+            if(
+                id!==
+                String(currentUser.id)
+            ){
+
+                createPeer(id);
+
+            }
+
+        }
+    )
+    .subscribe(async status=>{
+
+        if(status==="SUBSCRIBED"){
+
+            await meetingChannel.track({
+
+                user_id:
+                String(currentUser.id),
+
+                name:
+                currentUser.name
+
+            });
+
+        }
+
+    });
+
+}
+
+
+/* =========================================================
+   MOBILE PERMISSIONS
+========================================================= */
+
+function isWebInto(){
+
+    return !!(
+        window.Native &&
+        typeof window.Native.call==="function"
+    );
+
+}
+
+
+function askNativePermission(permission){
+
+    return new Promise(resolve=>{
+
+        if(!isWebInto()){
+
+            resolve(true);
+            return;
+
+        }
+
+
+        try{
+
+            window.Native.call(
+
+                "permissions",
+
+                {
+                    action:
+                    "ASK_FOR_PERMISSION",
+
+                    payload:{
+                        permission:
+                        permission
+                    }
+                },
+
+                result=>{
+
+                    try{
+
+                        const r=
+                            typeof result==="string"
+                            ?JSON.parse(result)
+                            :result;
+
+
+                        if(
+                            r &&
+                            (
+                                r.granted===false ||
+                                r.status===false
+                            )
+                        ){
+
+                            resolve(false);
+
+                        }else{
+
+                            resolve(true);
+
+                        }
+
+                    }catch(e){
+
+                        resolve(true);
+
+                    }
+
+                }
+
+            );
+
+        }catch(e){
+
+            resolve(false);
+
+        }
+
+    });
+
+}
+
+
+function openAppSettings(){
+
+    if(!isWebInto()){
+        return;
+    }
+
+
+    try{
+
+        window.Native.call(
+
+            "permissions",
+
+            {
+                action:
+                "OPEN_APP_SETTINGS",
+
+                payload:{}
+
+            },
+
+            ()=>{}
+
+        );
+
+    }catch(e){}
+
+}
+
+
+async function enableMedia(){
+
+    if(
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia
+    ){
+
+        alert(
+            "این محیط اجازه استفاده از دوربین و میکروفون را نمی‌دهد."
+        );
+
+        return false;
+
+    }
+
+
+    if(isWebInto()){
+
+        const cameraOK=
+            await askNativePermission(
+                "VIDEO"
+            );
+
+
+        const microphoneOK=
+            await askNativePermission(
+                "AUDIO"
+            );
+
+
+        if(
+            !cameraOK ||
+            !microphoneOK
+        ){
+
+            if(
+                confirm(
+                    "مجوز دوربین یا میکروفون فعال نیست.\n\nتنظیمات برنامه باز شود؟"
+                )
+            ){
+
+                openAppSettings();
+
+            }
+
+            return false;
+
+        }
+
+    }
+
+
+    if(localStream){
+
+        return true;
+
+    }
+
+
+    try{
+
+        localStream=
+            await navigator.mediaDevices
+            .getUserMedia({
+
+                video:true,
+
+                audio:true
+
+            });
+
+
+        const video=
+            document.getElementById(
+                "localVideo"
+            );
+
+
+        video.srcObject=
+            localStream;
+
+        video.muted=true;
+        video.playsInline=true;
+
+
+        await video.play()
+            .catch(()=>{});
+
+
+        window.__englishClassMediaStream=
+            localStream;
+
+
+        return true;
+
+    }catch(e){
+
+        console.log(e);
+
+
+        alert(
+            "دسترسی دوربین و میکروفون داده نشد.\n\n"+
+            "در APK باید مجوز Camera و Microphone فعال باشد."
+        );
+
+
+        return false;
+
+    }
+
+}
+
+
+async function enableCamera(){
+
+    const ok=
+        await enableMedia();
+
+
+    if(!ok){
+        return;
+    }
+
+
+    const track=
+        localStream
+        .getVideoTracks()[0];
+
+
+    if(track){
+
+        track.enabled=true;
+
+    }
+
+}
+
+
+async function enableMicrophone(){
+
+    const ok=
+        await enableMedia();
+
+
+    if(!ok){
+        return;
+    }
+
+
+    const track=
+        localStream
+        .getAudioTracks()[0];
+
+
+    if(track){
+
+        track.enabled=true;
+
+    }
+
+}
+
+
+function toggleCamera(){
+
+    if(!localStream){
+
+        enableCamera();
+        return;
+
+    }
+
+
+    const track=
+        localStream
+        .getVideoTracks()[0];
+
+
+    if(track){
+
+        track.enabled=
+            !track.enabled;
+
+    }
+
+}
+
+
+function toggleMicrophone(){
+
+    if(!localStream){
+
+        enableMicrophone();
+        return;
+
+    }
+
+
+    const track=
+        localStream
+        .getAudioTracks()[0];
+
+
+    if(track){
+
+        track.enabled=
+            !track.enabled;
+
+    }
+
+}
+
+
+/* =========================================================
+   SCREEN SHARE
+========================================================= */
+
+async function startScreenShare(){
+
+    if(
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getDisplayMedia
+    ){
+
+        alert(
+            "این دستگاه یا محیط APK از اشتراک صفحه پشتیبانی نمی‌کند."
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+        const display=
+            await navigator.mediaDevices
+            .getDisplayMedia({
+
+                video:true,
+                audio:true
+
+            });
+
+
+        const screenTrack=
+            display.getVideoTracks()[0];
+
+
+        Object.values(peers)
+            .forEach(async pc=>{
+
+                const sender=
+                    pc.getSenders()
+                    .find(
+                        s=>
+                        s.track &&
+                        s.track.kind==="video"
+                    );
+
+
+                if(sender){
+
+                    await sender
+                        .replaceTrack(
+                            screenTrack
+                        );
+
+                }
+
+            });
+
+
+        const video=
+            document.getElementById(
+                "localVideo"
+            );
+
+
+        video.srcObject=
+            display;
+
+
+        screenTrack.onended=
+            async()=>{
+
+                if(!localStream){
+                    return;
+                }
+
+
+                const camera=
+                    localStream
+                    .getVideoTracks()[0];
+
+
+                if(!camera){
+                    return;
+                }
+
+
+                Object.values(peers)
+                    .forEach(async pc=>{
+
+                        const sender=
+                            pc.getSenders()
+                            .find(
+                                s=>
+                                s.track &&
+                                s.track.kind==="video"
+                            );
+
+
+                        if(sender){
+
+                            await sender
+                                .replaceTrack(
+                                    camera
+                                );
+
+                        }
+
+                    });
+
+
+                video.srcObject=
+                    localStream;
+
+            };
+
+
+    }catch(e){
+
+        console.log(e);
+
+    }
+
+}
+
+
+/* =========================================================
+   CHAT
+========================================================= */
+
+async function setupChatRealtime(){
+
+    if(chatChannel){
+
+        try{
+
+            await supabaseClient
+                .removeChannel(
+                    chatChannel
+                );
+
+        }catch(e){}
+
+    }
+
+
+    chatChannel=
+        supabaseClient.channel(
+            "chat-"+currentMeeting.id
+        );
+
+
+    chatChannel
+    .on(
+        "broadcast",
+        {
+            event:"message"
+        },
+        event=>{
+
+            addChatMessage(
+                event.payload
+            );
+
+        }
+    )
+    .subscribe();
+
+
+    loadMessages();
+
+}
+
+
+async function loadMessages(){
+
+    const {data,error}=
+        await supabaseClient
+        .from("messages")
+        .select("*")
+        .eq(
+            "meeting_id",
+            currentMeeting.id
+        )
+        .order(
+            "created_at",
+            {ascending:true}
+        );
+
+
+    if(error){
+        return;
+    }
+
+
+    const box=
+        document.getElementById(
+            "chatMessages"
+        );
+
+
+    box.innerHTML="";
+
+
+    (data||[]).forEach(
+        addChatMessage
+    );
+
+}
+
+
+function addChatMessage(msg){
+
+    const box=
+        document.getElementById(
+            "chatMessages"
+        );
+
+
+    if(
+        msg.id &&
+        box.querySelector(
+            '[data-id="'+msg.id+'"]'
+        )
+    ){
+
+        return;
+
+    }
+
+
+    const div=
+        document.createElement("div");
+
+
+    div.className="msg";
+
+
+    if(msg.id){
+
+        div.dataset.id=
+            msg.id;
+
+    }
+
+
+    div.innerHTML=`
+
+        <div class="msgName">
+        ${escapeHTML(
+            msg.user_name||"کاربر"
+        )}
+        </div>
+
+        <div>
+        ${escapeHTML(
+            msg.text||""
+        )}
+        </div>
+
+    `;
+
+
+    box.appendChild(div);
+
+    box.scrollTop=
+        box.scrollHeight;
+
+}
+
+
+async function sendMessage(){
+
+    const input=
+        document.getElementById(
+            "chatText"
+        );
+
+
+    const text=
+        input.value.trim();
+
+
+    if(
+        !text ||
+        !currentMeeting
+    ){
+
+        return;
+
+    }
+
+
+    input.value="";
+
+
+    const {data,error}=
+        await supabaseClient
+        .from("messages")
+        .insert({
+
+            meeting_id:
+            currentMeeting.id,
+
+            user_id:
+            currentUser.id,
+
+            user_name:
+            currentUser.name,
+
+            text:text
+
+        })
+        .select()
+        .single();
+
+
+    if(!error && data){
+
+        addChatMessage(data);
+
+
+        if(chatChannel){
+
+            chatChannel.send({
+
+                type:"broadcast",
+
+                event:"message",
+
+                payload:data
+
+            });
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   WHITEBOARD
+========================================================= */
+
+const canvas=
+    document.getElementById(
+        "canvas"
+    );
+
+const ctx=
+    canvas.getContext("2d");
+
+
+const board=
+    document.getElementById(
+        "board"
+    );
+
+
+const textEditor=
+    document.getElementById(
+        "textEditor"
+    );
+
+
+let objects=[];
+
+let undoStack=[];
+let redoStack=[];
+
+let tool="pen";
+
+let color="#111111";
+let size=4;
+
+let bold=false;
+
+let drawing=false;
+
+let startX=0;
+let startY=0;
+
+let activePath=null;
+
+let selectedId=null;
+
+let draggingObject=null;
+
+let dragOffsetX=0;
+let dragOffsetY=0;
+
+let scale=1;
+let offsetX=0;
+let offsetY=0;
+
+
+/* ================= RESIZE ================= */
+
+function resizeCanvas(){
+
+    const rect=
+        board.getBoundingClientRect();
+
+    const dpr=
+        window.devicePixelRatio||1;
+
+
+    canvas.width=
+        rect.width*dpr;
+
+    canvas.height=
+        rect.height*dpr;
+
+
+    canvas.style.width=
+        rect.width+"px";
+
+    canvas.style.height=
+        rect.height+"px";
+
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+
+    draw();
+
+}
+
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+/* ================= TOOL ================= */
+
+function setTool(newTool){
+
+    tool=newTool;
+
+
+    document
+        .querySelectorAll(
+            ".tool[data-tool]"
+        )
+        .forEach(button=>{
+
+            button.classList.toggle(
+                "active",
+                button.dataset.tool===
+                newTool
+            );
+
+        });
+
+}
+
+
+document
+    .getElementById("boardColor")
+    .addEventListener(
+        "input",
+        e=>{
+            color=e.target.value;
+        }
+    );
+
+
+document
+    .getElementById("boardSize")
+    .addEventListener(
+        "input",
+        e=>{
+
+            size=
+                Math.max(
+                    1,
+                    Math.min(
+                        60,
+                        Number(e.target.value)||4
+                    )
+                );
+
+        }
+    );
+
+
+function toggleBold(){
+
+    bold=!bold;
+
+}
+
+
+/* ================= POINT ================= */
+
+function point(e){
+
+    const rect=
+        board.getBoundingClientRect();
+
+
+    let x,y;
+
+
+    if(
+        e.touches &&
+        e.touches.length
+    ){
+
+        x=e.touches[0].clientX;
+        y=e.touches[0].clientY;
+
+    }
+
+    else if(
+        e.changedTouches &&
+        e.changedTouches.length
+    ){
+
+        x=
+            e.changedTouches[0].clientX;
+
+        y=
+            e.changedTouches[0].clientY;
+
+    }
+
+    else{
+
+        x=e.clientX;
+        y=e.clientY;
+
+    }
+
+
+    return {
+
+        x:
+        (x-rect.left-offsetX)
+        /scale,
+
+        y:
+        (y-rect.top-offsetY)
+        /scale
+
+    };
+
+}
+
+
+/* ================= DRAW ================= */
+
+function draw(){
+
+    const rect=
+        board.getBoundingClientRect();
+
+
+    ctx.save();
+
+
+    ctx.clearRect(
+        0,
+        0,
+        rect.width,
+        rect.height
+    );
+
+
+    ctx.translate(
+        offsetX,
+        offsetY
+    );
+
+
+    ctx.scale(
+        scale,
+        scale
+    );
+
+
+    objects.forEach(
+        drawObject
+    );
+
+
+    ctx.restore();
+
+}
+
+
+function drawObject(obj){
+
+    ctx.save();
+
+
+    if(obj.type==="path"){
+
+        if(!obj.points.length){
+
+            ctx.restore();
+            return;
+
+        }
+
+
+        ctx.beginPath();
+
+
+        ctx.moveTo(
+            obj.points[0].x,
+            obj.points[0].y
+        );
+
+
+        for(
+            let i=1;
+            i<obj.points.length;
+            i++
+        ){
+
+            ctx.lineTo(
+                obj.points[i].x,
+                obj.points[i].y
+            );
+
+        }
+
+
+        ctx.lineCap="round";
+        ctx.lineJoin="round";
+
+        ctx.strokeStyle=
+            obj.color;
+
+        ctx.lineWidth=
+            obj.size;
+
+
+        if(obj.highlighter){
+
+            ctx.globalAlpha=.25;
+
+        }
+
+
+        ctx.stroke();
+
+    }
+
+
+    else if(obj.type==="line"){
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            obj.x,
+            obj.y
+        );
+
+        ctx.lineTo(
+            obj.x2,
+            obj.y2
+        );
+
+        ctx.strokeStyle=
+            obj.color;
+
+        ctx.lineWidth=
+            obj.size;
+
+        ctx.lineCap="round";
+
+        ctx.stroke();
+
+    }
+
+
+    else if(obj.type==="arrow"){
+
+        drawArrow(
+            obj.x,
+            obj.y,
+            obj.x2,
+            obj.y2,
+            obj.color,
+            obj.size
+        );
+
+    }
+
+
+    else if(obj.type==="rect"){
+
+        ctx.strokeStyle=
+            obj.color;
+
+        ctx.lineWidth=
+            obj.size;
+
+        ctx.strokeRect(
+            obj.x,
+            obj.y,
+            obj.w,
+            obj.h
+        );
+
+    }
+
+
+    else if(obj.type==="circle"){
+
+        ctx.beginPath();
+
+
+        ctx.ellipse(
+
+            obj.x+
+            obj.w/2,
+
+            obj.y+
+            obj.h/2,
+
+            Math.abs(
+                obj.w/2
+            ),
+
+            Math.abs(
+                obj.h/2
+            ),
+
+            0,
+            0,
+            Math.PI*2
+
+        );
+
+
+        ctx.strokeStyle=
+            obj.color;
+
+        ctx.lineWidth=
+            obj.size;
+
+        ctx.stroke();
+
+    }
+
+
+    else if(obj.type==="text"){
+
+        ctx.font=
+            (obj.bold?"bold ":"")+
+            obj.size+
+            "px Tahoma";
+
+
+        ctx.fillStyle=
+            obj.color;
+
+
+        ctx.textBaseline=
+            "top";
+
+
+        const lines=
+            String(obj.text)
+            .split("\n");
+
+
+        lines.forEach(
+            (line,i)=>{
+
+                ctx.fillText(
+
+                    line,
+
+                    obj.x,
+
+                    obj.y+
+                    i*
+                    obj.size*
+                    1.25
+
+                );
+
+            }
+        );
+
+
+        if(
+            obj.id===
+            selectedId
+        ){
+
+            const width=
+                textWidth(obj);
+
+
+            const height=
+                lines.length*
+                obj.size*
+                1.25;
+
+
+            ctx.strokeStyle=
+                "#4263eb";
+
+            ctx.lineWidth=
+                2/scale;
+
+
+            ctx.strokeRect(
+
+                obj.x-6,
+
+                obj.y-6,
+
+                width+12,
+
+                height+12
+
+            );
+
+        }
+
+    }
+
+
+    ctx.restore();
+
+}
+
+
+/* ================= ARROW ================= */
+
+function drawArrow(
+    x1,y1,x2,y2,c,s
+){
+
+    const angle=
+        Math.atan2(
+            y2-y1,
+            x2-x1
+        );
+
+
+    const head=
+        Math.max(
+            12,
+            s*4
+        );
+
+
+    ctx.strokeStyle=c;
+    ctx.fillStyle=c;
+    ctx.lineWidth=s;
+    ctx.lineCap="round";
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x2,y2);
+
+    ctx.stroke();
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x2,
+        y2
+    );
+
+
+    ctx.lineTo(
+
+        x2-
+        head*
+        Math.cos(
+            angle-Math.PI/6
+        ),
+
+        y2-
+        head*
+        Math.sin(
+            angle-Math.PI/6
+        )
+
+    );
+
+
+    ctx.lineTo(
+
+        x2-
+        head*
+        Math.cos(
+            angle+Math.PI/6
+        ),
+
+        y2-
+        head*
+        Math.sin(
+            angle+Math.PI/6
+        )
+
+    );
+
+
+    ctx.closePath();
+
+    ctx.fill();
+
+}
+
+
+/* ================= TEXT WIDTH ================= */
+
+function textWidth(obj){
+
+    ctx.font=
+        (obj.bold?"bold ":"")+
+        obj.size+
+        "px Tahoma";
+
+
+    return Math.max(
+
+        30,
+
+        ...String(obj.text)
+            .split("\n")
+            .map(
+                line=>
+                ctx.measureText(line)
+                    .width
+            )
+
+    );
+
+}
+
+
+/* ================= ID ================= */
+
+function id(){
+
+    return (
+        Date.now().toString(36)+
+        Math.random()
+            .toString(36)
+            .slice(2)
+    );
+
+}
+
+
+/* ================= UNDO ================= */
+
+function cloneObjects(){
+
+    return JSON.parse(
+        JSON.stringify(objects)
+    );
+
+}
+
+
+function saveUndo(){
+
+    undoStack.push(
+        cloneObjects()
+    );
+
+
+    if(
+        undoStack.length>50
+    ){
+
+        undoStack.shift();
+
+    }
+
+
+    redoStack=[];
+
+}
+
+
+function undo(){
+
+    if(!undoStack.length){
+        return;
+    }
+
+
+    redoStack.push(
+        cloneObjects()
+    );
+
+
+    objects=
+        undoStack.pop();
+
+
+    selectedId=null;
+
+    draw();
+
+    sendBoard();
+
+}
+
+
+function redo(){
+
+    if(!redoStack.length){
+        return;
+    }
+
+
+    undoStack.push(
+        cloneObjects()
+    );
+
+
+    objects=
+        redoStack.pop();
+
+
+    draw();
+
+    sendBoard();
+
+}
+
+
+/* ================= POINTER DOWN ================= */
+
+function pointerDown(e){
+
+    e.preventDefault();
+
+
+    const p=
+        point(e);
+
+
+    /* TEXT */
+
+    if(tool==="text"){
+
+        openTextEditor(
+            p.x,
+            p.y
+        );
+
+        return;
+
+    }
+
+
+    /* SELECT */
+
+    if(tool==="select"){
+
+        const hit=
+            findObject(
+                p.x,
+                p.y
+            );
+
+
+        if(hit){
+
+            selectedId=
+                hit.id;
+
+
+            if(hit.type==="text"){
+
+                draggingObject=
+                    hit;
+
+
+                dragOffsetX=
+                    p.x-hit.x;
+
+                dragOffsetY=
+                    p.y-hit.y;
+
+            }
+
+
+            draw();
+
+        }
+
+
+        return;
+
+    }
+
+
+    /* ERASER */
+
+    if(tool==="eraser"){
+
+        const hit=
+            findObject(
+                p.x,
+                p.y
+            );
+
+
+        if(hit){
+
+            saveUndo();
+
+
+            objects=
+                objects.filter(
+                    x=>
+                    x.id!==hit.id
+                );
+
+
+            selectedId=null;
+
+            draw();
+
+            sendBoard();
+
+        }
+
+
+        return;
+
+    }
+
+
+    /* DRAW */
+
+    drawing=true;
+
+    startX=p.x;
+    startY=p.y;
+
+
+    if(
+        tool==="pen" ||
+        tool==="highlighter"
+    ){
+
+        saveUndo();
+
+
+        activePath={
+
+            id:id(),
+
+            type:"path",
+
+            color:color,
+
+            size:size,
+
+            highlighter:
+                tool==="highlighter",
+
+            points:[
+
+                {
+                    x:p.x,
+                    y:p.y
+                }
+
+            ]
+
+        };
+
+
+        objects.push(
+            activePath
+        );
+
+    }
+
+}
+
+
+/* ================= POINTER MOVE ================= */
+
+function pointerMove(e){
+
+    e.preventDefault();
+
+
+    const p=
+        point(e);
+
+
+    /* MOVE TEXT */
+
+    if(
+        tool==="select" &&
+        draggingObject
+    ){
+
+        draggingObject.x=
+            p.x-dragOffsetX;
+
+        draggingObject.y=
+            p.y-dragOffsetY;
+
+
+        draw();
+
+        return;
+
+    }
+
+
+    if(!drawing){
+        return;
+    }
+
+
+    /* FREEHAND */
+
+    if(
+        tool==="pen" ||
+        tool==="highlighter"
+    ){
+
+        activePath.points.push({
+
+            x:p.x,
+            y:p.y
+
+        });
+
+
+        draw();
+
+        return;
+
+    }
+
+
+    /* SHAPES PREVIEW */
+
+    draw();
+
+
+    ctx.save();
+
+
+    ctx.translate(
+        offsetX,
+        offsetY
+    );
+
+
+    ctx.scale(
+        scale,
+        scale
+    );
+
+
+    ctx.strokeStyle=
+        color;
+
+    ctx.lineWidth=
+        size;
+
+
+    const w=
+        p.x-startX;
+
+    const h=
+        p.y-startY;
+
+
+    if(tool==="line"){
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            startX,
+            startY
+        );
+
+        ctx.lineTo(
+            p.x,
+            p.y
+        );
+
+        ctx.stroke();
+
+    }
+
+
+    else if(tool==="arrow"){
+
+        drawArrow(
+
+            startX,
+            startY,
+
+            p.x,
+            p.y,
+
+            color,
+            size
+
+        );
+
+    }
+
+
+    else if(tool==="rect"){
+
+        ctx.strokeRect(
+
+            startX,
+            startY,
+
+            w,
+            h
+
+        );
+
+    }
+
+
+    else if(tool==="circle"){
+
+        ctx.beginPath();
+
+
+        ctx.ellipse(
+
+            startX+
+            w/2,
+
+            startY+
+            h/2,
+
+            Math.abs(w/2),
+
+            Math.abs(h/2),
+
+            0,
+            0,
+            Math.PI*2
+
+        );
+
+
+        ctx.stroke();
+
+    }
+
+
+    ctx.restore();
+
+}
+
+
+/* ================= POINTER UP ================= */
+
+function pointerUp(e){
+
+    e.preventDefault();
+
+
+    if(
+        tool==="select" &&
+        draggingObject
+    ){
+
+        draggingObject=null;
+
+        sendBoard();
+
+        draw();
+
+        return;
+
+    }
+
+
+    if(!drawing){
+        return;
+    }
+
+
+    drawing=false;
+
+
+    const p=
+        point(e);
+
+
+    if(
+        tool==="pen" ||
+        tool==="highlighter"
+    ){
+
+        activePath=null;
+
+        sendBoard();
+
+        draw();
+
+        return;
+
+    }
+
+
+    const w=
+        p.x-startX;
+
+    const h=
+        p.y-startY;
+
+
+    if(
+        Math.abs(w)<5 &&
+        Math.abs(h)<5
+    ){
+
+        draw();
+
+        return;
+
+    }
+
+
+    let obj=null;
+
+
+    if(tool==="line"){
+
+        obj={
+
+            id:id(),
+
+            type:"line",
+
+            x:startX,
+            y:startY,
+
+            x2:p.x,
+            y2:p.y,
+
+            color:color,
+            size:size
+
+        };
+
+    }
+
+
+    else if(tool==="arrow"){
+
+        obj={
+
+            id:id(),
+
+            type:"arrow",
+
+            x:startX,
+            y:startY,
+
+            x2:p.x,
+            y2:p.y,
+
+            color:color,
+            size:size
+
+        };
+
+    }
+
+
+    else if(tool==="rect"){
+
+        obj={
+
+            id:id(),
+
+            type:"rect",
+
+            x:startX,
+            y:startY,
+
+            w:w,
+            h:h,
+
+            color:color,
+            size:size
+
+        };
+
+    }
+
+
+    else if(tool==="circle"){
+
+        obj={
+
+            id:id(),
+
+            type:"circle",
+
+            x:startX,
+            y:startY,
+
+            w:w,
+            h:h,
+
+            color:color,
+            size:size
+
+        };
+
+    }
+
+
+    if(obj){
+
+        objects.push(obj);
+
+        draw();
+
+        sendBoard();
+
+    }
+
+}
+
+
+/* ================= EVENTS ================= */
+
+board.addEventListener(
+    "mousedown",
+    pointerDown
+);
+
+board.addEventListener(
+    "mousemove",
+    pointerMove
+);
+
+board.addEventListener(
+    "mouseup",
+    pointerUp
+);
+
+board.addEventListener(
+    "mouseleave",
+    pointerUp
+);
+
+
+board.addEventListener(
+    "touchstart",
+    pointerDown,
+    {passive:false}
+);
+
+board.addEventListener(
+    "touchmove",
+    pointerMove,
+    {passive:false}
+);
+
+board.addEventListener(
+    "touchend",
+    pointerUp,
+    {passive:false}
+);
+
+
+/* ================= FIND OBJECT ================= */
+
+function findObject(x,y){
+
+    for(
+        let i=
+        objects.length-1;
+
+        i>=0;
+
+        i--
+    ){
+
+        const obj=
+            objects[i];
+
+
+        if(obj.type==="text"){
+
+            const width=
+                textWidth(obj);
+
+
+            const height=
+                String(obj.text)
+                .split("\n")
+                .length*
+                obj.size*
+                1.25;
+
+
+            if(
+
+                x>=obj.x-12 &&
+
+                x<=obj.x+
+                width+
+                12 &&
+
+                y>=obj.y-12 &&
+
+                y<=obj.y+
+                height+
+                12
+
+            ){
+
+                return obj;
+
+            }
+
+        }
+
+
+        else if(
+            obj.type==="rect" ||
+            obj.type==="circle"
+        ){
+
+            const minX=
+                Math.min(
+                    obj.x,
+                    obj.x+obj.w
+                );
+
+            const maxX=
+                Math.max(
+                    obj.x,
+                    obj.x+obj.w
+                );
+
+            const minY=
+                Math.min(
+                    obj.y,
+                    obj.y+obj.h
+                );
+
+            const maxY=
+                Math.max(
+                    obj.y,
+                    obj.y+obj.h
+                );
+
+
+            if(
+
+                x>=minX &&
+                x<=maxX &&
+                y>=minY &&
+                y<=maxY
+
+            ){
+
+                return obj;
+
+            }
+
+        }
+
+
+        else if(
+            obj.type==="line" ||
+            obj.type==="arrow"
+        ){
+
+            const d=
+                distanceToSegment(
+
+                    x,
+                    y,
+
+                    obj.x,
+                    obj.y,
+
+                    obj.x2,
+                    obj.y2
+
+                );
+
+
+            if(
+                d<=
+                Math.max(
+                    12,
+                    obj.size*2
+                )
+            ){
+
+                return obj;
+
+            }
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+function distanceToSegment(
+    px,py,x1,y1,x2,y2
+){
+
+    const dx=
+        x2-x1;
+
+    const dy=
+        y2-y1;
+
+
+    if(
+        dx===0 &&
+        dy===0
+    ){
+
+        return Math.hypot(
+            px-x1,
+            py-y1
+        );
+
+    }
+
+
+    const t=
+        Math.max(
+
+            0,
+
+            Math.min(
+
+                1,
+
+                (
+                    (px-x1)*dx+
+                    (py-y1)*dy
+                )/
+                (
+                    dx*dx+
+                    dy*dy
+                )
+
+            )
+
+        );
+
+
+    const x=
+        x1+t*dx;
+
+    const y=
+        y1+t*dy;
+
+
+    return Math.hypot(
+        px-x,
+        py-y
+    );
+
+}
+
+
+/* ================= TEXT ================= */
+
+function openTextEditor(x,y){
+
+    textEditor.style.display=
+        "block";
+
+
+    textEditor.value="";
+
+
+    textEditor.style.left=
+        (
+            x*scale+
+            offsetX
+        )+"px";
+
+
+    textEditor.style.top=
+        (
+            y*scale+
+            offsetY
+        )+"px";
+
+
+    textEditor.style.color=
+        color;
+
+
+    textEditor.style.fontSize=
+        Math.max(
+            15,
+            size*5
+        )+"px";
+
+
+    textEditor.style.fontWeight=
+        bold
+        ?"bold"
+        :"normal";
+
+
+    textEditor.focus();
+
+
+    setTimeout(
+        ()=>{
+            textEditor.focus();
+        },
+        100
+    );
+
+
+    textEditor.onkeydown=
+        function(e){
+
+            if(
+                e.key==="Enter" &&
+                !e.shiftKey
+            ){
+
+                e.preventDefault();
+
+                commitText(
+                    x,
+                    y
+                );
+
+            }
+
+
+            if(
+                e.key==="Escape"
+            ){
+
+                closeText();
+
+            }
+
+        };
+
+}
+
+
+function commitText(x,y){
+
+    const text=
+        textEditor.value.trim();
+
+
+    if(!text){
+
+        closeText();
+        return;
+
+    }
+
+
+    saveUndo();
+
+
+    const obj={
+
+        id:id(),
+
+        type:"text",
+
+        x:x,
+
+        y:y,
+
+        text:text,
+
+        color:color,
+
+        size:
+            Math.max(
+                14,
+                size*5
+            ),
+
+        bold:bold
+
+    };
+
+
+    objects.push(obj);
+
+    selectedId=
+        obj.id;
+
+
+    closeText();
+
+
+    setTool("select");
+
+
+    draw();
+
+    sendBoard();
+
+}
+
+
+function closeText(){
+
+    textEditor.value="";
+
+    textEditor.style.display=
+        "none";
+
+}
+
+
+/* ================= DELETE ================= */
+
+function deleteSelected(){
+
+    if(!selectedId){
+
+        alert(
+            "اول با ابزار انتخاب، یک شیء را انتخاب کن."
+        );
+
+        return;
+
+    }
+
+
+    saveUndo();
+
+
+    objects=
+        objects.filter(
+            obj=>
+            obj.id!==selectedId
+        );
+
+
+    selectedId=null;
+
+
+    draw();
+
+    sendBoard();
+
+}
+
+
+/* ================= CLEAR ================= */
+
+function clearBoard(){
+
+    if(!objects.length){
+        return;
+    }
+
+
+    if(
+        !confirm(
+            "کل تخته پاک شود؟"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    saveUndo();
+
+
+    objects=[];
+
+    selectedId=null;
+
+
+    draw();
+
+    sendBoard();
+
+}
+
+
+/* ================= ZOOM ================= */
+
+function resetZoom(){
+
+    scale=1;
+
+    offsetX=0;
+
+    offsetY=0;
+
+    draw();
+
+}
+
+
+/* ================= REALTIME BOARD ================= */
+
+async function setupWhiteboardRealtime(){
+
+    if(boardChannel){
+
+        try{
+
+            await supabaseClient
+                .removeChannel(
+                    boardChannel
+                );
+
+        }catch(e){}
+
+    }
+
+
+    boardChannel=
+        supabaseClient.channel(
+            "whiteboard-"+currentMeeting.id
+        );
+
+
+    boardChannel
+    .on(
+
+        "broadcast",
+
+        {
+            event:"board-state"
+        },
+
+        event=>{
+
+            const data=
+                event.payload;
+
+
+            if(
+                !data ||
+                String(data.sender)===
+                String(currentUser.id)
+            ){
+
+                return;
+
+            }
+
+
+            if(
+                Array.isArray(
+                    data.objects
+                )
+            ){
+
+                objects=
+                    data.objects;
+
+                selectedId=null;
+
+                draw();
+
+            }
+
+        }
+
+    )
+    .on(
+
+        "broadcast",
+
+        {
+            event:"board-request"
+        },
+
+        event=>{
+
+            const data=
+                event.payload;
+
+
+            if(
+                !data ||
+                String(data.sender)===
+                String(currentUser.id)
+            ){
+
+                return;
+
+            }
+
+
+            sendBoard();
+
+        }
+
+    )
+    .subscribe(
+        async status=>{
+
+            if(
+                status==="SUBSCRIBED"
+            ){
+
+                boardChannel.send({
+
+                    type:"broadcast",
+
+                    event:"board-request",
+
+                    payload:{
+
+                        sender:
+                        String(
+                            currentUser.id
+                        )
+
+                    }
+
+                });
+
+            }
+
+        }
+    );
+
+}
+
+
+function sendBoard(){
+
+    if(!boardChannel){
+        return;
+    }
+
+
+    boardChannel.send({
+
+        type:"broadcast",
+
+        event:"board-state",
+
+        payload:{
+
+            sender:
+            String(
+                currentUser.id
+            ),
+
+            objects:
+            objects
+
+        }
+
+    });
+
+}
+
+
+/* =========================================================
+   RECORDING
+========================================================= */
+
+let recorder=null;
+let chunks=[];
+let recordingStarted=0;
+let recordingTimer=null;
+
+
+function openRecordingDB(){
+
+    return new Promise(
+        (resolve,reject)=>{
+
+            const request=
+                indexedDB.open(
+                    "EnglishClassRecordingsDB",
+                    1
+                );
+
+
+            request.onupgradeneeded=
+                event=>{
+
+                    const db=
+                        event.target.result;
+
+
+                    if(
+                        !db.objectStoreNames
+                        .contains("recordings")
+                    ){
+
+                        db.createObjectStore(
+                            "recordings",
+                            {
+                                keyPath:"id"
+                            }
+                        );
+
+                    }
+
+                };
+
+
+            request.onsuccess=
+                ()=>{
+                    resolve(
+                        request.result
+                    );
+                };
+
+
+            request.onerror=
+                ()=>{
+                    reject(
+                        request.error
+                    );
+                };
+
+        }
+    );
+
+}
+
+
+async function startRecording(){
+
+    if(recorder){
+
+        alert(
+            "ضبط در حال انجام است."
+        );
+
+        return;
+
+    }
+
+
+    if(!localStream){
+
+        const ok=
+            await enableMedia();
+
+
+        if(!ok){
+            return;
+        }
+
+    }
+
+
+    try{
+
+        let options={};
+
+
+        if(
+            MediaRecorder.isTypeSupported(
+                "video/webm;codecs=vp9,opus"
+            )
+        ){
+
+            options.mimeType=
+                "video/webm;codecs=vp9,opus";
+
+        }
+
+
+        else if(
+            MediaRecorder.isTypeSupported(
+                "video/webm;codecs=vp8,opus"
+            )
+        ){
+
+            options.mimeType=
+                "video/webm;codecs=vp8,opus";
+
+        }
+
+
+        recorder=
+            new MediaRecorder(
+                localStream,
+                options
+            );
+
+
+        chunks=[];
+
+
+        recordingStarted=
+            Date.now();
+
+
+        recorder.ondataavailable=
+            event=>{
+
+                if(
+                    event.data &&
+                    event.data.size>0
+                ){
+
+                    chunks.push(
+                        event.data
+                    );
+
+                }
+
+            };
+
+
+        recorder.onstop=
+            async()=>{
+
+                clearInterval(
+                    recordingTimer
+                );
+
+
+                const duration=
+                    Math.max(
+
+                        1,
+
+                        Math.round(
+
+                            (
+                                Date.now()-
+                                recordingStarted
+                            )/
+                            1000
+
+                        )
+
+                    );
+
+
+                const blob=
+                    new Blob(
+                        chunks,
+                        {
+                            type:
+                            recorder.mimeType ||
+                            "video/webm"
+                        }
+                    );
+
+
+                await saveRecording(
+                    blob,
+                    duration
+                );
+
+
+                recorder=null;
+                chunks=[];
+
+
+                alert(
+                    "کلاس ذخیره شد.\nمدت: "+
+                    formatTime(duration)
+                );
+
+            };
+
+
+        recorder.start(1000);
+
+
+        recordingTimer=
+            setInterval(
+                ()=>{
+                    console.log(
+                        "Recording "+
+                        formatTime(
+                            Math.round(
+                                (
+                                    Date.now()-
+                                    recordingStarted
+                                )/
+                                1000
+                            )
+                        )
+                    );
+                },
+                1000
+            );
+
+
+        alert(
+            "ضبط کلاس شروع شد."
+        );
+
+
+    }catch(e){
+
+        console.log(e);
+
+        alert(
+            "ضبط شروع نشد:\n"+
+            e.message
+        );
+
+    }
+
+}
+
+
+function stopRecording(){
+
+    if(!recorder){
+
+        alert(
+            "ضبطی در حال انجام نیست."
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+        if(
+            recorder.state!=="inactive"
+        ){
+
+            recorder.requestData();
+
+
+            setTimeout(
+                ()=>{
+
+                    if(
+                        recorder &&
+                        recorder.state!==
+                        "inactive"
+                    ){
+
+                        recorder.stop();
+
+                    }
+
+                },
+                250
+            );
+
+        }
+
+    }catch(e){
+
+        console.log(e);
+
+    }
+
+}
+
+
+async function saveRecording(
+    blob,
+    duration
+){
+
+    const db=
+        await openRecordingDB();
+
+
+    const tx=
+        db.transaction(
+            "recordings",
+            "readwrite"
+        );
+
+
+    tx.objectStore(
+        "recordings"
+    ).put({
+
+        id:
+        Date.now().toString(),
+
+        name:
+        currentMeeting
+        ?currentMeeting.name
+        :"کلاس",
+
+        meetingId:
+        currentMeeting
+        ?currentMeeting.id
+        :null,
+
+        userId:
+        currentUser
+        ?currentUser.id
+        :null,
+
+        userName:
+        currentUser
+        ?currentUser.name
+        :"",
+
+        duration:
+        duration,
+
+        createdAt:
+        new Date().toISOString(),
+
+        blob:
+        blob
+
+    });
+
+}
+
+
+async function getRecordings(){
+
+    const db=
+        await openRecordingDB();
+
+
+    return new Promise(
+        (resolve,reject)=>{
+
+            const tx=
+                db.transaction(
+                    "recordings",
+                    "readonly"
+                );
+
+
+            const request=
+                tx.objectStore(
+                    "recordings"
+                ).getAll();
+
+
+            request.onsuccess=
+                ()=>{
+                    resolve(
+                        request.result||[]
+                    );
+                };
+
+
+            request.onerror=
+                ()=>{
+                    reject(
+                        request.error
+                    );
+                };
+
+        }
+    );
+
+}
+
+
+async function renderRecordings(){
+
+    const box=
+        document.getElementById(
+            "recordingsList"
+        );
+
+
+    if(!box){
+        return;
+    }
+
+
+    box.innerHTML=
+        "در حال بارگذاری...";
+
+
+    try{
+
+        const recordings=
+            await getRecordings();
+
+
+        recordings.sort(
+            (a,b)=>
+            new Date(b.createdAt)-
+            new Date(a.createdAt)
+        );
+
+
+        if(!recordings.length){
+
+            box.innerHTML=
+                "هنوز هیچ کلاسی ضبط نشده است.";
+
+            return;
+
+        }
+
+
+        box.innerHTML="";
+
+
+        recordings.forEach(
+            recording=>{
+
+                const url=
+                    URL.createObjectURL(
+                        recording.blob
+                    );
+
+
+                const div=
+                    document.createElement(
+                        "div"
+                    );
+
+
+                div.className=
+                    "recording";
+
+
+                div.innerHTML=`
+
+                <h3>
+                🎬 ${escapeHTML(
+                    recording.name
+                )}
+                </h3>
+
+                <p>
+                👤 ${escapeHTML(
+                    recording.userName||""
+                )}
+                </p>
+
+                <p>
+                ⏱️ ${formatTime(
+                    recording.duration
+                )}
+                </p>
+
+                <p>
+                📅 ${
+                    new Date(
+                        recording.createdAt
+                    ).toLocaleString(
+                        "fa-IR"
+                    )
+                }
+                </p>
+
+                <video
+                    controls
+                    playsinline
+                    src="${url}">
+                </video>
+
+                <div class="recordingActions">
+
+                <a
+                    class="secondary"
+                    href="${url}"
+                    download="${safeName(
+                        recording.name
+                    )}.webm">
+                    ⬇️ دانلود
+                </a>
+
+                <button
+                    class="secondary"
+                    onclick="deleteRecording('${recording.id}')">
+                    🗑️ حذف
+                </button>
+
+                </div>
+
+                `;
+
+
+                box.appendChild(div);
+
+            }
+        );
+
+
+    }catch(e){
+
+        console.log(e);
+
+        box.innerHTML=
+            "خطا در خواندن کلاس‌های ضبط‌شده.";
+
+    }
+
+}
+
+
+async function deleteRecording(id){
+
+    if(
+        !confirm(
+            "این ضبط حذف شود؟"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    const db=
+        await openRecordingDB();
+
+
+    const tx=
+        db.transaction(
+            "recordings",
+            "readwrite"
+        );
+
+
+    tx.objectStore(
+        "recordings"
+    ).delete(id);
+
+
+    tx.oncomplete=
+        ()=>{
+            renderRecordings();
+        };
+
+}
+
+
+/* =========================================================
+   LEAVE
+========================================================= */
+
+async function leaveMeeting(){
+
+    Object.values(peers)
+        .forEach(
+            pc=>{
+                try{
+                    pc.close();
+                }catch(e){}
+            }
+        );
+
+
+    peers={};
+    iceQueues={};
+
+
+    if(localStream){
+
+        localStream
+            .getTracks()
+            .forEach(
+                track=>
+                track.stop()
+            );
+
+        localStream=null;
+
+    }
+
+
+    if(meetingChannel){
+
+        try{
+
+            await supabaseClient
+                .removeChannel(
+                    meetingChannel
+                );
+
+        }catch(e){}
+
+        meetingChannel=null;
+
+    }
+
+
+    if(chatChannel){
+
+        try{
+
+            await supabaseClient
+                .removeChannel(
+                    chatChannel
+                );
+
+        }catch(e){}
+
+        chatChannel=null;
+
+    }
+
+
+    if(boardChannel){
+
+        try{
+
+            await supabaseClient
+                .removeChannel(
+                    boardChannel
+                );
+
+        }catch(e){}
+
+        boardChannel=null;
+
+    }
+
+
+    document
+        .querySelectorAll(
+            '[id^="remote_"]'
+        )
+        .forEach(
+            x=>x.remove()
+        );
+
+
+    objects=[];
+    undoStack=[];
+    redoStack=[];
+
+    currentMeeting=null;
+
+
+    showPage("meetings");
+
+}
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHTML(value){
+
+    return String(value)
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+
+}
+
+
+function formatTime(seconds){
+
+    seconds=
+        Math.max(
+            0,
+            Number(seconds)||0
+        );
+
+
+    const h=
+        Math.floor(
+            seconds/3600
+        );
+
+
+    const m=
+        Math.floor(
+            (seconds%3600)/60
+        );
+
+
+    const s=
+        seconds%60;
+
+
+    if(h){
+
+        return (
+            String(h).padStart(2,"0")+
+            ":"+
+            String(m).padStart(2,"0")+
+            ":"+
+            String(s).padStart(2,"0")
+        );
+
+    }
+
+
+    return (
+        String(m).padStart(2,"0")+
+        ":"+
+        String(s).padStart(2,"0")
+    );
+
+}
+
+
+function safeName(name){
+
+    return String(
+        name||"class"
+    )
+    .replace(
+        /[\\/:*?"<>|]/g,
+        "_"
+    );
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+setTimeout(
+    ()=>{
+        resizeCanvas();
+    },
+    300
+);
+
+</script>
+
+</body>
+</html>
