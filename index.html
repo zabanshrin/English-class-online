@@ -1,0 +1,3110 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>English Class Online</title>
+
+<style>
+:root{
+ --bg:#f4f7fb;
+ --card:#fff;
+ --primary:#2563eb;
+ --primary2:#1d4ed8;
+ --text:#172033;
+ --muted:#64748b;
+ --danger:#dc2626;
+ --border:#e2e8f0;
+ --success:#16a34a;
+}
+
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ font-family:Tahoma,Arial,sans-serif;
+ background:var(--bg);
+ color:var(--text);
+}
+
+button,input{
+ font:inherit;
+}
+
+button{
+ cursor:pointer;
+ border:0;
+}
+
+.screen{
+ min-height:100vh;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
+}
+
+.auth{
+ width:min(430px,100%);
+ background:white;
+ padding:30px;
+ border-radius:22px;
+ box-shadow:0 15px 45px #00000012;
+}
+
+.logo{
+ font-size:28px;
+ font-weight:800;
+ text-align:center;
+ color:var(--primary);
+ margin-bottom:8px;
+}
+
+.sub{
+ text-align:center;
+ color:var(--muted);
+ margin-bottom:25px;
+}
+
+label{
+ display:block;
+ font-size:14px;
+ font-weight:bold;
+ margin:14px 0 7px;
+}
+
+input{
+ width:100%;
+ padding:12px;
+ border:1px solid var(--border);
+ border-radius:11px;
+ outline:0;
+ background:white;
+}
+
+input:focus{
+ border-color:var(--primary);
+}
+
+.primary{
+ background:var(--primary);
+ color:white;
+ padding:12px 18px;
+ border-radius:11px;
+ font-weight:bold;
+}
+
+.primary:hover{
+ background:var(--primary2);
+}
+
+.secondary{
+ background:#eef2ff;
+ color:#1e40af;
+ padding:10px 15px;
+ border-radius:10px;
+}
+
+.danger{
+ background:#fee2e2;
+ color:#991b1b;
+ padding:10px 15px;
+ border-radius:10px;
+}
+
+.success{
+ background:#dcfce7;
+ color:#166534;
+ padding:10px 15px;
+ border-radius:10px;
+}
+
+.full{
+ width:100%;
+ margin-top:18px;
+}
+
+.switch{
+ text-align:center;
+ margin-top:18px;
+ color:var(--muted);
+ font-size:14px;
+}
+
+.link{
+ color:var(--primary);
+ font-weight:bold;
+ cursor:pointer;
+}
+
+.error{
+ color:var(--danger);
+ font-size:13px;
+ margin-top:10px;
+}
+
+.hidden{
+ display:none!important;
+}
+
+#app{
+ min-height:100vh;
+}
+
+.topbar{
+ height:70px;
+ background:white;
+ border-bottom:1px solid var(--border);
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:0 22px;
+ position:sticky;
+ top:0;
+ z-index:5;
+}
+
+.brand{
+ font-weight:800;
+ color:var(--primary);
+ font-size:19px;
+}
+
+.userbox{
+ display:flex;
+ align-items:center;
+ gap:10px;
+}
+
+.avatar{
+ width:38px;
+ height:38px;
+ border-radius:50%;
+ background:#dbeafe;
+ color:#1d4ed8;
+ display:grid;
+ place-items:center;
+ font-weight:bold;
+}
+
+.layout{
+ display:flex;
+ min-height:calc(100vh - 70px);
+}
+
+.sidebar{
+ width:230px;
+ background:white;
+ border-left:1px solid var(--border);
+ padding:18px;
+}
+
+.nav{
+ display:flex;
+ flex-direction:column;
+ gap:8px;
+}
+
+.nav button{
+ background:transparent;
+ text-align:right;
+ padding:13px;
+ border-radius:10px;
+ color:#334155;
+}
+
+.nav button.active,
+.nav button:hover{
+ background:#eff6ff;
+ color:var(--primary);
+ font-weight:bold;
+}
+
+main{
+ flex:1;
+ padding:25px;
+ max-width:1250px;
+ margin:auto;
+ width:100%;
+}
+
+.page-title{
+ margin:0 0 6px;
+ font-size:27px;
+}
+
+.page-sub{
+ color:var(--muted);
+ margin:0 0 22px;
+}
+
+.cards{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:15px;
+}
+
+.card{
+ background:white;
+ border:1px solid var(--border);
+ border-radius:17px;
+ padding:20px;
+ box-shadow:0 5px 20px #00000008;
+}
+
+.stat{
+ font-size:30px;
+ font-weight:800;
+ color:var(--primary);
+ margin-top:8px;
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+ gap:17px;
+}
+
+.empty{
+ text-align:center;
+ color:var(--muted);
+ padding:35px;
+ border:2px dashed var(--border);
+ border-radius:15px;
+ grid-column:1/-1;
+}
+
+.item{
+ background:white;
+ border:1px solid var(--border);
+ border-radius:15px;
+ padding:18px;
+}
+
+.item h3{
+ margin:0 0 8px;
+}
+
+.meta{
+ color:var(--muted);
+ font-size:13px;
+ margin:6px 0 14px;
+}
+
+.actions{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+}
+
+.modal{
+ position:fixed;
+ inset:0;
+ background:#0f172a99;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
+ z-index:20;
+}
+
+.modalbox{
+ background:white;
+ border-radius:18px;
+ padding:23px;
+ width:min(500px,100%);
+ max-height:90vh;
+ overflow:auto;
+}
+
+.modalhead{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+.close{
+ background:#f1f5f9;
+ border-radius:9px;
+ padding:7px 11px;
+}
+
+.meeting{
+ position:fixed;
+ inset:0;
+ background:#0f172a;
+ z-index:30;
+ color:white;
+ display:flex;
+ flex-direction:column;
+}
+
+.meeting-head{
+ padding:14px 18px;
+ background:#111827;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+.meeting-body{
+ flex:1;
+ display:grid;
+ grid-template-columns:1fr 310px;
+ gap:12px;
+ padding:12px;
+ min-height:0;
+}
+
+.videoarea{
+ background:#020617;
+ border-radius:15px;
+ position:relative;
+ display:grid;
+ place-items:center;
+ min-height:300px;
+}
+
+.videoarea video{
+ width:100%;
+ height:100%;
+ object-fit:contain;
+ border-radius:15px;
+}
+
+.videonote{
+ position:absolute;
+ color:#94a3b8;
+ text-align:center;
+ padding:20px;
+}
+
+.chat{
+ background:white;
+ color:#111827;
+ border-radius:15px;
+ display:flex;
+ flex-direction:column;
+ min-height:0;
+}
+
+.chat-title{
+ padding:14px;
+ border-bottom:1px solid var(--border);
+ font-weight:bold;
+}
+
+.messages{
+ flex:1;
+ overflow:auto;
+ padding:12px;
+}
+
+.msg{
+ background:#f1f5f9;
+ padding:9px;
+ border-radius:10px;
+ margin-bottom:8px;
+}
+
+.msg b{
+ display:block;
+ font-size:12px;
+ color:var(--primary);
+}
+
+.chat-send{
+ display:flex;
+ gap:6px;
+ padding:10px;
+ border-top:1px solid var(--border);
+}
+
+.chat-send input{
+ flex:1;
+}
+
+.meeting-controls{
+ padding:12px;
+ background:#111827;
+ display:flex;
+ justify-content:center;
+ gap:9px;
+ flex-wrap:wrap;
+}
+
+.control{
+ background:#334155;
+ color:white;
+ padding:11px 15px;
+ border-radius:10px;
+}
+
+.control.on{
+ background:#166534;
+}
+
+.control.leave{
+ background:#b91c1c;
+}
+
+.record-card{
+ background:white;
+ border:1px solid var(--border);
+ border-radius:17px;
+ padding:15px;
+ margin-bottom:15px;
+}
+
+.record-card video{
+ width:100%;
+ max-height:400px;
+ background:#000;
+ border-radius:12px;
+ margin-top:12px;
+}
+
+.record-actions{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+ margin-top:12px;
+}
+
+.record-time{
+ display:inline-block;
+ background:#eff6ff;
+ color:#1d4ed8;
+ padding:5px 9px;
+ border-radius:8px;
+ font-size:12px;
+}
+
+.recording-indicator{
+ background:#fee2e2;
+ color:#991b1b;
+ padding:8px 12px;
+ border-radius:10px;
+ font-weight:bold;
+}
+
+@media(max-width:800px){
+
+ .sidebar{
+  width:75px;
+  padding:10px;
+ }
+
+ .nav button{
+  font-size:0;
+  text-align:center;
+ }
+
+ .nav button:first-letter{
+  font-size:20px;
+ }
+
+ .cards{
+  grid-template-columns:repeat(2,1fr);
+ }
+
+ .meeting-body{
+  grid-template-columns:1fr;
+ }
+
+ .chat{
+  height:260px;
+ }
+
+ .meeting-body{
+  overflow:auto;
+ }
+}
+
+@media(max-width:500px){
+
+ main{
+  padding:16px;
+ }
+
+ .cards{
+  grid-template-columns:1fr 1fr;
+ }
+
+ .topbar{
+  padding:0 12px;
+ }
+
+ .brand{
+  font-size:15px;
+ }
+
+ .welcomeText{
+  display:none;
+ }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="authScreen" class="screen">
+
+ <div class="auth">
+
+  <div class="logo">🌐 English Class Online</div>
+
+  <div class="sub" id="authSub">
+   حساب خودت را بساز و وارد کلاس زبان شو
+  </div>
+
+  <div id="registerBox">
+
+   <label>نام و نام خانوادگی</label>
+   <input id="regName" placeholder="مثلاً علی رضایی">
+
+   <label>نام کاربری</label>
+   <input id="regUser" placeholder="مثلاً ali123">
+
+   <label>رمز عبور</label>
+   <input id="regPass" type="password">
+
+   <button class="primary full" onclick="register()">
+    ثبت نام
+   </button>
+
+   <div class="switch">
+    حساب داری؟
+    <span class="link" onclick="showLogin()">ورود</span>
+   </div>
+
+  </div>
+
+  <div id="loginBox" class="hidden">
+
+   <label>نام کاربری</label>
+   <input id="loginUser">
+
+   <label>رمز عبور</label>
+   <input id="loginPass" type="password">
+
+   <button class="primary full" onclick="login()">
+    ورود به سایت
+   </button>
+
+   <div class="switch">
+    حساب نداری؟
+    <span class="link" onclick="showRegister()">ثبت نام</span>
+   </div>
+
+  </div>
+
+  <div id="authError" class="error"></div>
+
+ </div>
+
+</div>
+
+
+<!-- APP -->
+<div id="app" class="hidden">
+
+<header class="topbar">
+
+ <div class="brand">
+  🌐 English Class Online
+ </div>
+
+ <div class="userbox">
+
+  <span id="welcome" class="welcomeText"></span>
+
+  <div class="avatar" id="avatar">?</div>
+
+  <button class="secondary" onclick="logout()">
+   خروج
+  </button>
+
+ </div>
+
+</header>
+
+
+<div class="layout">
+
+<aside class="sidebar">
+
+ <div class="nav">
+
+  <button id="navHome" onclick="showPage('home')">
+   🏠 خانه
+  </button>
+
+  <button id="navChat" onclick="showPage('groups')">
+   💬 گروه‌های گفتگو
+  </button>
+
+  <button id="navMeet" onclick="showPage('meetings')">
+   🎥 کلاس آنلاین
+  </button>
+
+  <button id="navRecord" onclick="showPage('recordings')">
+   📚 کلاس‌های ضبط‌شده
+  </button>
+
+  <button id="navAdmin" onclick="openAdmin()">
+   ⚙️ پنل مدیریت
+  </button>
+
+ </div>
+
+</aside>
+
+<main id="content"></main>
+
+</div>
+
+</div>
+
+
+<!-- MODAL -->
+<div id="modal"
+ class="modal hidden"
+ onclick="if(event.target===this)closeModal()">
+
+ <div class="modalbox" id="modalBox"></div>
+
+</div>
+
+
+<!-- MEETING -->
+<div id="meeting" class="meeting hidden">
+
+ <div class="meeting-head">
+
+  <b id="meetingTitle">کلاس</b>
+
+  <span id="meetingStatus">
+   آماده
+  </span>
+
+ </div>
+
+
+ <div class="meeting-body">
+
+  <div class="videoarea">
+
+   <video
+    id="localVideo"
+    autoplay
+    muted
+    playsinline>
+   </video>
+
+   <div
+    class="videonote"
+    id="videoNote">
+
+    برای فعال کردن دوربین و میکروفون،
+    دکمه مربوطه را بزن.
+
+   </div>
+
+  </div>
+
+
+  <div class="chat">
+
+   <div class="chat-title">
+    💬 چت کلاس
+   </div>
+
+   <div
+    class="messages"
+    id="meetingMessages">
+   </div>
+
+   <div class="chat-send">
+
+    <input
+     id="meetingChatInput"
+     placeholder="پیام بنویس...">
+
+    <button
+     class="primary"
+     onclick="sendMeetingMessage()">
+
+     ارسال
+
+    </button>
+
+   </div>
+
+  </div>
+
+ </div>
+
+
+ <div class="meeting-controls">
+
+  <button
+   class="control"
+   onclick="enableMedia()">
+
+   🎤📷 فعال‌سازی دوربین و میکروفون
+
+  </button>
+
+  <button
+   class="control"
+   id="micBtn"
+   onclick="toggleMic()">
+
+   🎤 میکروفون
+
+  </button>
+
+  <button
+   class="control"
+   id="camBtn"
+   onclick="toggleCam()">
+
+   📷 دوربین
+
+  </button>
+
+  <button
+   class="control"
+   id="recordStartBtn"
+   onclick="startRecording()">
+
+   🔴 شروع ضبط
+
+  </button>
+
+  <button
+   class="control hidden"
+   id="recordStopBtn"
+   onclick="stopRecording()">
+
+   ⏹ توقف ضبط
+
+  </button>
+
+  <span
+   id="recordTimer"
+   class="recording-indicator hidden">
+
+   🔴 00:00
+
+  </span>
+
+  <button
+   class="control leave"
+   onclick="leaveMeeting()">
+
+   🚪 خروج از کلاس
+
+  </button>
+
+ </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   DATABASE LOCAL
+========================================================= */
+
+const KEY='englishClassFixed_v3';
+
+let db=JSON.parse(localStorage.getItem(KEY)||'null')||{
+ users:[],
+ groups:[],
+ meetings:[],
+ messages:[],
+ adminPassword:'admin231'
+};
+
+let currentUser=null;
+let currentMeeting=null;
+
+let stream=null;
+
+let recorder=null;
+let chunks=[];
+
+let recordingStartedAt=0;
+let recordingTimerInterval=null;
+
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+function save(){
+ localStorage.setItem(KEY,JSON.stringify(db));
+}
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function esc(s){
+ return String(s||'').replace(
+  /[&<>"']/g,
+  m=>({
+   '&':'&amp;',
+   '<':'&lt;',
+   '>':'&gt;',
+   '"':'&quot;',
+   "'":'&#039;'
+  }[m])
+ );
+}
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+function showRegister(){
+
+ document.getElementById('registerBox')
+  .classList.remove('hidden');
+
+ document.getElementById('loginBox')
+  .classList.add('hidden');
+
+ document.getElementById('authSub')
+  .textContent='حساب خودت را بساز و وارد کلاس زبان شو';
+
+ err('');
+}
+
+
+function showLogin(){
+
+ document.getElementById('registerBox')
+  .classList.add('hidden');
+
+ document.getElementById('loginBox')
+  .classList.remove('hidden');
+
+ document.getElementById('authSub')
+  .textContent='به حساب کلاس زبانت وارد شو';
+
+ err('');
+}
+
+
+function err(x){
+ document.getElementById('authError')
+  .textContent=x||'';
+}
+
+
+function register(){
+
+ const name=
+  document.getElementById('regName').value.trim();
+
+ const u=
+  document.getElementById('regUser').value.trim();
+
+ const p=
+  document.getElementById('regPass').value;
+
+ if(!name||!u||p.length<4){
+  return err('نام، نام کاربری و رمز معتبر وارد کن.');
+ }
+
+ if(db.users.some(
+  x=>x.username.toLowerCase()===u.toLowerCase()
+  )){
+  return err('این نام کاربری قبلاً ثبت شده است.');
+ }
+
+ const user={
+  id:Date.now(),
+  name,
+  username:u,
+  password:p,
+  created:new Date().toLocaleString('fa-IR')
+ };
+
+ db.users.push(user);
+
+ save();
+
+ currentUser=user;
+
+ enterApp();
+}
+
+
+function login(){
+
+ const u=
+  document.getElementById('loginUser').value.trim();
+
+ const p=
+  document.getElementById('loginPass').value;
+
+ const user=
+  db.users.find(
+   x=>x.username===u&&x.password===p
+  );
+
+ if(!user){
+  return err('نام کاربری یا رمز عبور اشتباه است.');
+ }
+
+ currentUser=user;
+
+ enterApp();
+}
+
+
+function enterApp(){
+
+ document.getElementById('authScreen')
+  .classList.add('hidden');
+
+ document.getElementById('app')
+  .classList.remove('hidden');
+
+ document.getElementById('welcome')
+  .textContent=currentUser.name;
+
+ document.getElementById('avatar')
+  .textContent=currentUser.name[0]||'?';
+
+ showPage('home');
+}
+
+
+function logout(){
+
+ currentUser=null;
+
+ document.getElementById('app')
+  .classList.add('hidden');
+
+ document.getElementById('authScreen')
+  .classList.remove('hidden');
+
+ showLogin();
+}
+
+
+/* =========================================================
+   PAGES
+========================================================= */
+
+function showPage(page){
+
+ [
+  'navHome',
+  'navChat',
+  'navMeet',
+  'navRecord'
+ ].forEach(
+  x=>document.getElementById(x).classList.remove('active')
+ );
+
+ const map={
+  home:'navHome',
+  groups:'navChat',
+  meetings:'navMeet',
+  recordings:'navRecord'
+ };
+
+ if(map[page]){
+  document.getElementById(map[page])
+   .classList.add('active');
+ }
+
+ if(page==='home')homePage();
+ if(page==='groups')groupsPage();
+ if(page==='meetings')meetingsPage();
+ if(page==='recordings')recordingsPage();
+}
+
+
+/* =========================================================
+   HOME
+========================================================= */
+
+function homePage(){
+
+ document.getElementById('content').innerHTML=`
+
+ <h1 class="page-title">
+ سلام، ${esc(currentUser.name)} 👋
+ </h1>
+
+ <p class="page-sub">
+ به سامانه کلاس زبان خوش آمدی.
+ </p>
+
+ <div class="cards">
+
+  <div class="card">
+   💬 گروه‌ها
+   <div class="stat">
+    ${db.groups.length}
+   </div>
+  </div>
+
+  <div class="card">
+   🎥 جلسات
+   <div class="stat">
+    ${db.meetings.length}
+   </div>
+  </div>
+
+  <div class="card">
+   📚 ضبط‌ها
+   <div class="stat"
+    id="recordCount">
+    ...
+   </div>
+  </div>
+
+  <div class="card">
+   👤 کاربران
+   <div class="stat">
+    ${db.users.length}
+   </div>
+  </div>
+
+ </div>
+
+ <div class="grid" style="margin-top:20px">
+
+  <div class="card">
+   <h3>💬 گفتگو</h3>
+   <p class="meta">
+    گروه زبان خودت را بساز یا وارد یک گروه شو.
+   </p>
+
+   <button
+    class="primary"
+    onclick="showPage('groups')">
+
+    رفتن به گروه‌ها
+
+   </button>
+  </div>
+
+  <div class="card">
+   <h3>🎥 کلاس آنلاین</h3>
+   <p class="meta">
+    جلسه بساز یا وارد یکی از جلسات شو.
+   </p>
+
+   <button
+    class="primary"
+    onclick="showPage('meetings')">
+
+    مشاهده جلسات
+
+   </button>
+  </div>
+
+  <div class="card">
+   <h3>📚 کلاس‌های ضبط‌شده</h3>
+   <p class="meta">
+    ضبط‌های قبلی را ببین و دانلود کن.
+   </p>
+
+   <button
+    class="primary"
+    onclick="showPage('recordings')">
+
+    مشاهده ضبط‌ها
+
+   </button>
+  </div>
+
+ </div>
+ `;
+
+ updateRecordCount();
+}
+
+
+/* =========================================================
+   GROUPS
+========================================================= */
+
+function groupsPage(){
+
+ const cards=db.groups.map(
+  g=>`
+
+  <div class="item">
+
+   <h3>
+    💬 ${esc(g.name)}
+   </h3>
+
+   <div class="meta">
+    ${g.password?'🔒 رمزدار':'🔓 بدون رمز'}
+    · سازنده:
+    ${esc(g.ownerName)}
+   </div>
+
+   <div class="actions">
+
+    <button
+     class="primary"
+     onclick="joinGroup(${g.id})">
+
+     ورود به گروه
+
+    </button>
+
+   </div>
+
+  </div>
+
+ `
+ ).join('');
+
+ document.getElementById('content').innerHTML=`
+
+ <h1 class="page-title">
+ گروه‌های گفتگو
+ </h1>
+
+ <p class="page-sub">
+ برای تمرین زبان گروه بسازید.
+ </p>
+
+ <button
+  class="primary"
+  onclick="newGroup()">
+
+  ➕ ساخت گروه جدید
+
+ </button>
+
+ <div
+  class="grid"
+  style="margin-top:18px">
+
+  ${cards||`
+   <div class="empty">
+    هنوز گروهی ساخته نشده است.
+   </div>
+  `}
+
+ </div>
+ `;
+}
+
+
+function newGroup(){
+
+ openModal(`
+
+ <div class="modalhead">
+
+  <h2>
+   ساخت گروه جدید
+  </h2>
+
+  <button
+   class="close"
+   onclick="closeModal()">
+
+   ✕
+
+  </button>
+
+ </div>
+
+ <label>نام گروه</label>
+
+ <input
+  id="groupName"
+  placeholder="English Conversation">
+
+ <label>
+  رمز گروه (اختیاری)
+ </label>
+
+ <input
+  id="groupPass"
+  type="password">
+
+ <button
+  class="primary full"
+  onclick="createGroup()">
+
+  ساخت گروه
+
+ </button>
+
+ `);
+}
+
+
+function createGroup(){
+
+ const name=
+  document.getElementById('groupName')
+   .value.trim();
+
+ const pass=
+  document.getElementById('groupPass')
+   .value;
+
+ if(!name)
+  return alert('نام گروه را وارد کن.');
+
+ db.groups.push({
+  id:Date.now(),
+  name,
+  password:pass,
+  owner:currentUser.id,
+  ownerName:currentUser.name,
+  created:new Date().toLocaleString('fa-IR')
+ });
+
+ save();
+
+ closeModal();
+
+ groupsPage();
+}
+
+
+function joinGroup(id){
+
+ const g=
+  db.groups.find(x=>x.id===id);
+
+ if(!g)return;
+
+ if(g.password){
+
+  openModal(`
+
+   <h2>🔒 ورود به گروه</h2>
+
+   <p>
+    رمز گروه «${esc(g.name)}»
+   </p>
+
+   <input
+    id="joinPass"
+    type="password">
+
+   <button
+    class="primary full"
+    onclick="checkGroup(${id})">
+
+    ورود
+
+   </button>
+
+  `);
+
+ }else{
+  openGroup(g);
+ }
+}
+
+
+function checkGroup(id){
+
+ const g=
+  db.groups.find(x=>x.id===id);
+
+ if(
+  document.getElementById('joinPass').value
+  !==g.password
+ ){
+  return alert('رمز اشتباه است.');
+ }
+
+ closeModal();
+
+ openGroup(g);
+}
+
+
+function openGroup(g){
+
+ const msgs=
+  db.messages.filter(
+   m=>m.groupId===g.id
+  );
+
+ openModal(`
+
+  <div class="modalhead">
+
+   <h2>
+    💬 ${esc(g.name)}
+   </h2>
+
+   <button
+    class="close"
+    onclick="closeModal()">
+
+    ✕
+
+   </button>
+
+  </div>
+
+  <div
+   id="groupMessages"
+   style="
+    height:300px;
+    overflow:auto;
+    border:1px solid var(--border);
+    padding:10px;
+    border-radius:12px
+   ">
+
+   ${
+    msgs.map(messageHTML).join('')
+    ||
+    '<div class="empty">هنوز پیامی نیست.</div>'
+   }
+
+  </div>
+
+  <div
+   style="
+    display:flex;
+    gap:7px;
+    margin-top:10px
+   ">
+
+   <input
+    id="groupInput"
+    placeholder="پیام بنویس..."
+    onkeydown="
+     if(event.key==='Enter')
+     sendGroup(${g.id})
+    ">
+
+   <button
+    class="primary"
+    onclick="sendGroup(${g.id})">
+
+    ارسال
+
+   </button>
+
+  </div>
+
+ `);
+}
+
+
+function messageHTML(m){
+
+ return `
+  <div class="msg">
+   <b>${esc(m.userName)}</b>
+   ${esc(m.text)}
+  </div>
+ `;
+}
+
+
+function sendGroup(id){
+
+ const input=
+  document.getElementById('groupInput');
+
+ const text=input.value.trim();
+
+ if(!text)return;
+
+ db.messages.push({
+  id:Date.now(),
+  groupId:id,
+  userId:currentUser.id,
+  userName:currentUser.name,
+  text
+ });
+
+ save();
+
+ input.value='';
+
+ openGroup(
+  db.groups.find(g=>g.id===id)
+ );
+}
+
+
+/* =========================================================
+   MEETINGS
+========================================================= */
+
+function meetingsPage(){
+
+ const cards=
+  db.meetings.map(
+   m=>`
+
+   <div class="item">
+
+    <h3>
+     🎥 ${esc(m.name)}
+    </h3>
+
+    <div class="meta">
+     سازنده:
+     ${esc(m.ownerName)}
+     ·
+     ${esc(m.created)}
+    </div>
+
+    <div class="meta">
+     ${m.password?'🔒 رمزدار':'🔓 بدون رمز'}
+    </div>
+
+    <button
+     class="primary"
+     onclick="joinMeeting(${m.id})">
+
+     ورود به جلسه
+
+    </button>
+
+   </div>
+
+  `
+  ).join('');
+
+ document.getElementById('content').innerHTML=`
+
+ <h1 class="page-title">
+ کلاس‌های آنلاین
+ </h1>
+
+ <p class="page-sub">
+ جلسه جدید بساز یا وارد یکی از جلسات شو.
+ </p>
+
+ <button
+  class="primary"
+  onclick="newMeeting()">
+
+  ➕ برگزاری جلسه جدید
+
+ </button>
+
+ <div
+  class="grid"
+  style="margin-top:18px">
+
+  ${cards||`
+   <div class="empty">
+    هنوز جلسه‌ای ساخته نشده است.
+   </div>
+  `}
+
+ </div>
+ `;
+}
+
+
+function newMeeting(){
+
+ openModal(`
+
+ <div class="modalhead">
+
+  <h2>
+   🎥 برگزاری جلسه جدید
+  </h2>
+
+  <button
+   class="close"
+   onclick="closeModal()">
+
+   ✕
+
+  </button>
+
+ </div>
+
+ <label>
+  نام جلسه
+ </label>
+
+ <input
+  id="meetingName"
+  placeholder="مثلاً جلسه اول">
+
+ <label>
+  رمز جلسه (اختیاری)
+ </label>
+
+ <input
+  id="meetingPass"
+  type="password">
+
+ <button
+  class="primary full"
+  onclick="createMeeting()">
+
+  ساخت جلسه
+
+ </button>
+
+ `);
+}
+
+
+function createMeeting(){
+
+ const name=
+  document.getElementById('meetingName')
+   .value.trim();
+
+ const pass=
+  document.getElementById('meetingPass')
+   .value;
+
+ if(!name)
+  return alert('نام جلسه را وارد کن.');
+
+ db.meetings.push({
+  id:Date.now(),
+  name,
+  password:pass,
+  owner:currentUser.id,
+  ownerName:currentUser.name,
+  created:new Date().toLocaleString('fa-IR')
+ });
+
+ save();
+
+ closeModal();
+
+ meetingsPage();
+}
+
+
+function joinMeeting(id){
+
+ const m=
+  db.meetings.find(x=>x.id===id);
+
+ if(!m)return;
+
+ if(m.password){
+
+  openModal(`
+
+   <h2>🔒 ورود به جلسه</h2>
+
+   <p>
+    رمز جلسه «${esc(m.name)}»
+   </p>
+
+   <input
+    id="meetPass"
+    type="password">
+
+   <button
+    class="primary full"
+    onclick="checkMeeting(${id})">
+
+    ورود
+
+   </button>
+
+  `);
+
+ }else{
+  openMeeting(m);
+ }
+}
+
+
+function checkMeeting(id){
+
+ const m=
+  db.meetings.find(x=>x.id===id);
+
+ if(
+  document.getElementById('meetPass').value
+  !==m.password
+ ){
+  return alert('رمز اشتباه است.');
+ }
+
+ closeModal();
+
+ openMeeting(m);
+}
+
+
+function openMeeting(m){
+
+ currentMeeting=m;
+
+ document.getElementById('meeting')
+  .classList.remove('hidden');
+
+ document.getElementById('meetingTitle')
+  .textContent=m.name;
+
+ document.getElementById('meetingStatus')
+  .textContent='آماده';
+
+ renderMeetingMessages();
+}
+
+
+/* =========================================================
+   CHAT
+========================================================= */
+
+function renderMeetingMessages(){
+
+ if(!currentMeeting)return;
+
+ const box=
+  document.getElementById('meetingMessages');
+
+ const msgs=
+  db.messages.filter(
+   x=>x.meetingId===currentMeeting.id
+  );
+
+ box.innerHTML=
+  msgs.map(messageHTML).join('')
+  ||
+  '<div style="color:#64748b;text-align:center;padding:20px">هنوز پیامی نیست.</div>';
+
+ box.scrollTop=box.scrollHeight;
+}
+
+
+function sendMeetingMessage(){
+
+ if(!currentMeeting)return;
+
+ const input=
+  document.getElementById('meetingChatInput');
+
+ const text=input.value.trim();
+
+ if(!text)return;
+
+ db.messages.push({
+  id:Date.now(),
+  meetingId:currentMeeting.id,
+  userId:currentUser.id,
+  userName:currentUser.name,
+  text
+ });
+
+ save();
+
+ input.value='';
+
+ renderMeetingMessages();
+}
+
+
+/* =========================================================
+   WEBINTO APP PERMISSIONS
+========================================================= */
+
+function isWebInto(){
+
+ return !!(
+  window.Native &&
+  typeof window.Native.call==='function'
+ );
+}
+
+
+function askWebIntoPermission(permission){
+
+ return new Promise(resolve=>{
+
+  if(!isWebInto()){
+   resolve(true);
+   return;
+  }
+
+  try{
+
+   window.Native.call(
+    "permissions",
+    {
+     action:"ASK_FOR_PERMISSION",
+     payload:{
+      permission:permission
+     }
+    },
+    result=>{
+
+     try{
+
+      const r=
+       typeof result==='string'
+       ?JSON.parse(result)
+       :result;
+
+      if(
+       r &&
+       (
+        r.status===false ||
+        r.granted===false
+       )
+      ){
+       resolve(false);
+      }else{
+       resolve(true);
+      }
+
+     }catch(e){
+
+      resolve(true);
+
+     }
+
+    }
+   );
+
+  }catch(e){
+
+   resolve(false);
+
+  }
+
+ });
+}
+
+
+function openNativeSettings(){
+
+ if(!isWebInto())return;
+
+ try{
+
+  window.Native.call(
+   "permissions",
+   {
+    action:"OPEN_APP_SETTINGS",
+    payload:{}
+   },
+   ()=>{}
+  );
+
+ }catch(e){}
+}
+
+
+/* =========================================================
+   CAMERA + MICROPHONE
+========================================================= */
+
+async function enableMedia(){
+
+ if(
+  !navigator.mediaDevices ||
+  !navigator.mediaDevices.getUserMedia
+ ){
+
+  return alert(
+   'این محیط اجازه استفاده از دوربین و میکروفون را نمی‌دهد.'
+  );
+
+ }
+
+ if(isWebInto()){
+
+  const videoOK=
+   await askWebIntoPermission('VIDEO');
+
+  const audioOK=
+   await askWebIntoPermission('AUDIO');
+
+  if(!videoOK||!audioOK){
+
+   const go=
+    confirm(
+     'مجوز دوربین یا میکروفون داده نشده است.\n\n' +
+     'آیا تنظیمات برنامه را باز کنم؟'
+    );
+
+   if(go)openNativeSettings();
+
+   return;
+  }
+ }
+
+
+ try{
+
+  if(stream){
+
+   updateMediaButtons();
+
+   return;
+  }
+
+  stream=
+   await navigator.mediaDevices.getUserMedia({
+    video:true,
+    audio:true
+   });
+
+  const video=
+   document.getElementById('localVideo');
+
+  video.srcObject=stream;
+
+  video.muted=true;
+
+  video.playsInline=true;
+
+  try{
+   await video.play();
+  }catch(e){}
+
+  updateMediaButtons();
+
+  document.getElementById('meetingStatus')
+   .textContent='دوربین و میکروفون فعال است';
+
+ }catch(e){
+
+  console.log(e);
+
+  alert(
+   'دوربین یا میکروفون فعال نشد.\n\n' +
+   'اگر داخل APK هستی، مجوز Camera و Microphone را از تنظیمات برنامه فعال کن.'
+  );
+
+ }
+
+}
+
+
+async function toggleCam(){
+
+ if(!stream){
+
+  await enableMedia();
+
+  return;
+ }
+
+ const tracks=
+  stream.getVideoTracks();
+
+ if(!tracks.length){
+
+  await enableMedia();
+
+  return;
+ }
+
+ tracks.forEach(
+  t=>t.enabled=!t.enabled
+ );
+
+ updateMediaButtons();
+}
+
+
+async function toggleMic(){
+
+ if(!stream){
+
+  await enableMedia();
+
+  return;
+ }
+
+ const tracks=
+  stream.getAudioTracks();
+
+ if(!tracks.length){
+
+  await enableMedia();
+
+  return;
+ }
+
+ tracks.forEach(
+  t=>t.enabled=!t.enabled
+ );
+
+ updateMediaButtons();
+}
+
+
+function updateMediaButtons(){
+
+ if(!stream){
+
+  document.getElementById('micBtn')
+   .classList.remove('on');
+
+  document.getElementById('camBtn')
+   .classList.remove('on');
+
+  return;
+ }
+
+ const mic=
+  stream.getAudioTracks()[0];
+
+ const cam=
+  stream.getVideoTracks()[0];
+
+ const micOn=
+  !!(mic&&mic.enabled);
+
+ const camOn=
+  !!(cam&&cam.enabled);
+
+ document.getElementById('micBtn')
+  .classList.toggle('on',micOn);
+
+ document.getElementById('camBtn')
+  .classList.toggle('on',camOn);
+
+ document.getElementById('videoNote')
+  .style.display=camOn?'none':'block';
+}
+
+
+/* =========================================================
+   RECORDING - INDEXED DB
+========================================================= */
+
+const RECORD_DB='EnglishClassRecordingsDB';
+
+const RECORD_STORE='recordings';
+
+
+function openRecordingDB(){
+
+ return new Promise((resolve,reject)=>{
+
+  const request=
+   indexedDB.open(RECORD_DB,1);
+
+  request.onupgradeneeded=function(){
+
+   const database=request.result;
+
+   if(
+    !database.objectStoreNames
+     .contains(RECORD_STORE)
+   ){
+
+    database.createObjectStore(
+     RECORD_STORE,
+     {keyPath:'id'}
+    );
+
+   }
+
+  };
+
+  request.onsuccess=function(){
+   resolve(request.result);
+  };
+
+  request.onerror=function(){
+   reject(request.error);
+  };
+
+ });
+}
+
+
+async function saveRecordingFile(record){
+
+ const database=
+  await openRecordingDB();
+
+ return new Promise(
+  (resolve,reject)=>{
+
+   const transaction=
+    database.transaction(
+     RECORD_STORE,
+     'readwrite'
+    );
+
+   transaction.objectStore(RECORD_STORE)
+    .put(record);
+
+   transaction.oncomplete=()=>{
+    database.close();
+    resolve();
+   };
+
+   transaction.onerror=()=>{
+    database.close();
+    reject(transaction.error);
+   };
+
+  }
+ );
+}
+
+
+async function getAllRecordingFiles(){
+
+ const database=
+  await openRecordingDB();
+
+ return new Promise(
+  (resolve,reject)=>{
+
+   const transaction=
+    database.transaction(
+     RECORD_STORE,
+     'readonly'
+    );
+
+   const request=
+    transaction.objectStore(RECORD_STORE)
+     .getAll();
+
+   request.onsuccess=()=>{
+    database.close();
+
+    const result=
+     request.result||[];
+
+    result.sort(
+     (a,b)=>b.created-a.created
+    );
+
+    resolve(result);
+   };
+
+   request.onerror=()=>{
+    database.close();
+    reject(request.error);
+   };
+
+  }
+ );
+}
+
+
+async function deleteRecordingFile(id){
+
+ const database=
+  await openRecordingDB();
+
+ return new Promise(
+  (resolve,reject)=>{
+
+   const transaction=
+    database.transaction(
+     RECORD_STORE,
+     'readwrite'
+    );
+
+   transaction.objectStore(RECORD_STORE)
+    .delete(id);
+
+   transaction.oncomplete=()=>{
+    database.close();
+    resolve();
+   };
+
+   transaction.onerror=()=>{
+    database.close();
+    reject(transaction.error);
+   };
+
+  }
+ );
+}
+
+
+/* =========================================================
+   START RECORDING
+========================================================= */
+
+async function startRecording(){
+
+ if(!stream){
+
+  await enableMedia();
+
+ }
+
+ if(!stream){
+
+  return alert(
+   'اول دوربین و میکروفون را فعال کن.'
+  );
+
+ }
+
+ if(
+  typeof MediaRecorder==='undefined'
+ ){
+
+  return alert(
+   'این مرورگر قابلیت ضبط ویدیو را ندارد.'
+  );
+
+ }
+
+ if(
+  recorder &&
+  recorder.state==='recording'
+ ){
+
+  return;
+ }
+
+ try{
+
+  chunks=[];
+
+  let options={};
+
+  if(
+   MediaRecorder.isTypeSupported &&
+   MediaRecorder.isTypeSupported(
+    'video/webm;codecs=vp8,opus'
+   )
+  ){
+
+   options={
+    mimeType:'video/webm;codecs=vp8,opus'
+   };
+
+  }else if(
+   MediaRecorder.isTypeSupported &&
+   MediaRecorder.isTypeSupported(
+    'video/webm'
+   )
+  ){
+
+   options={
+    mimeType:'video/webm'
+   };
+
+  }
+
+
+  recorder=
+   Object.keys(options).length
+   ?new MediaRecorder(stream,options)
+   :new MediaRecorder(stream);
+
+
+  chunks=[];
+
+  recordingStartedAt=Date.now();
+
+
+  recorder.ondataavailable=function(event){
+
+   if(
+    event.data &&
+    event.data.size>0
+   ){
+
+    chunks.push(event.data);
+
+   }
+
+  };
+
+
+  recorder.onerror=function(event){
+
+   console.log(
+    'MediaRecorder error:',
+    event
+   );
+
+  };
+
+
+  recorder.onstop=function(){
+
+   finishRecording();
+
+  };
+
+
+  /*
+   * نکته مهم:
+   * timeslice باعث می‌شود اطلاعات ضبط
+   * مرتب وارد chunks شوند و مشکل
+   * فایل صفرثانیه‌ای کمتر شود.
+   */
+
+  recorder.start(1000);
+
+
+  document.getElementById(
+   'recordStartBtn'
+  ).classList.add('hidden');
+
+
+  document.getElementById(
+   'recordStopBtn'
+  ).classList.remove('hidden');
+
+
+  document.getElementById(
+   'recordTimer'
+  ).classList.remove('hidden');
+
+
+  document.getElementById(
+   'meetingStatus'
+  ).textContent='🔴 در حال ضبط کلاس';
+
+
+  updateRecordingTimer();
+
+
+  recordingTimerInterval=
+   setInterval(
+    updateRecordingTimer,
+    500
+   );
+
+ }catch(e){
+
+  console.log(e);
+
+  alert(
+   'شروع ضبط انجام نشد.'
+  );
+
+ }
+
+}
+
+
+/* =========================================================
+   TIMER
+========================================================= */
+
+function formatTime(seconds){
+
+ seconds=Math.max(
+  0,
+  Math.floor(seconds)
+ );
+
+ const h=
+  Math.floor(seconds/3600);
+
+ const m=
+  Math.floor((seconds%3600)/60);
+
+ const s=
+  seconds%60;
+
+ if(h>0){
+
+  return String(h).padStart(2,'0')
+   +':'+
+   String(m).padStart(2,'0')
+   +':'+
+   String(s).padStart(2,'0');
+
+ }
+
+ return String(m).padStart(2,'0')
+  +':'+
+  String(s).padStart(2,'0');
+}
+
+
+function updateRecordingTimer(){
+
+ if(!recordingStartedAt)return;
+
+ const seconds=
+  (Date.now()-recordingStartedAt)/1000;
+
+ document.getElementById(
+  'recordTimer'
+ ).textContent=
+  '🔴 '+formatTime(seconds);
+}
+
+
+/* =========================================================
+   STOP RECORDING
+========================================================= */
+
+function stopRecording(){
+
+ if(
+  !recorder ||
+  recorder.state!=='recording'
+ ){
+
+  return;
+ }
+
+ /*
+  * requestData باعث می‌شود آخرین
+  * قسمت ویدیو هم قبل از stop دریافت شود.
+ */
+
+ try{
+  recorder.requestData();
+ }catch(e){}
+
+ setTimeout(()=>{
+
+  if(
+   recorder &&
+   recorder.state==='recording'
+  ){
+
+   recorder.stop();
+
+  }
+
+ },300);
+
+}
+
+
+/* =========================================================
+   FINISH RECORDING
+========================================================= */
+
+async function finishRecording(){
+
+ if(recordingTimerInterval){
+
+  clearInterval(
+   recordingTimerInterval
+  );
+
+  recordingTimerInterval=null;
+
+ }
+
+
+ const duration=
+  Math.max(
+   1,
+   Math.round(
+    (Date.now()-recordingStartedAt)/1000
+   )
+  );
+
+
+ const mime=
+  recorder &&
+  recorder.mimeType
+  ?
+  recorder.mimeType
+  :
+  'video/webm';
+
+
+ const blob=
+  new Blob(
+   chunks,
+   {type:mime}
+  );
+
+
+ chunks=[];
+
+
+ if(blob.size===0){
+
+  alert(
+   'فایل ضبط‌شده خالی است. دوباره امتحان کن.'
+  );
+
+  resetRecordingUI();
+
+  return;
+ }
+
+
+ const id=
+  Date.now();
+
+
+ const record={
+
+  id:id,
+
+  meetingId:
+   currentMeeting
+   ?
+   currentMeeting.id
+   :null,
+
+  name:
+   currentMeeting
+   ?
+   currentMeeting.name
+   :'کلاس ضبط‌شده',
+
+  userId:
+   currentUser
+   ?
+   currentUser.id
+   :null,
+
+  userName:
+   currentUser
+   ?
+   currentUser.name
+   :'',
+
+  created:
+   Date.now(),
+
+  date:
+   new Date().toLocaleString('fa-IR'),
+
+  duration:
+   duration,
+
+  durationText:
+   formatTime(duration),
+
+  mime:
+   mime,
+
+  size:
+   blob.size,
+
+  blob:
+   blob
+
+ };
+
+
+ try{
+
+  await saveRecordingFile(record);
+
+  resetRecordingUI();
+
+  alert(
+   '✅ کلاس با موفقیت ضبط و ذخیره شد.\n\n' +
+   'مدت ضبط: '+
+   formatTime(duration)
+  );
+
+  showPage('recordings');
+
+ }catch(e){
+
+  console.log(e);
+
+  resetRecordingUI();
+
+  alert(
+   'فایل ضبط شد ولی ذخیره آن انجام نشد.'
+  );
+
+ }
+
+}
+
+
+/* =========================================================
+   RECORDING UI
+========================================================= */
+
+function resetRecordingUI(){
+
+ document.getElementById(
+  'recordStartBtn'
+ ).classList.remove('hidden');
+
+ document.getElementById(
+  'recordStopBtn'
+ ).classList.add('hidden');
+
+ document.getElementById(
+  'recordTimer'
+ ).classList.add('hidden');
+
+ document.getElementById(
+  'meetingStatus'
+ ).textContent='کلاس آماده است';
+
+ recordingStartedAt=0;
+}
+
+
+/* =========================================================
+   RECORDINGS PAGE
+========================================================= */
+
+async function recordingsPage(){
+
+ const el=
+  document.getElementById('content');
+
+ el.innerHTML=`
+
+  <h1 class="page-title">
+   📚 کلاس‌های ضبط‌شده
+  </h1>
+
+  <p class="page-sub">
+   تمام کلاس‌هایی که روی این دستگاه ضبط کرده‌ای
+   اینجا نمایش داده می‌شوند.
+  </p>
+
+  <div
+   id="recordingsContainer">
+
+   <div class="empty">
+    ⏳ در حال بارگذاری ضبط‌ها...
+   </div>
+
+  </div>
+
+ `;
+
+ await renderRecordings();
+}
+
+
+async function renderRecordings(){
+
+ const container=
+  document.getElementById(
+   'recordingsContainer'
+  );
+
+ if(!container)return;
+
+ try{
+
+  const records=
+   await getAllRecordingFiles();
+
+
+  if(!records.length){
+
+   container.innerHTML=`
+
+    <div class="empty">
+
+     📭 هنوز هیچ کلاسی ضبط نشده است.
+
+    </div>
+
+   `;
+
+   return;
+  }
+
+
+  container.innerHTML='';
+
+
+  records.forEach(record=>{
+
+   const card=
+    document.createElement('div');
+
+   card.className='record-card';
+
+
+   const title=
+    document.createElement('h3');
+
+   title.textContent=
+    '📚 '+(record.name||'کلاس ضبط‌شده');
+
+
+   const meta=
+    document.createElement('div');
+
+   meta.className='meta';
+
+   meta.innerHTML=
+    '👤 '+
+    esc(record.userName||'کاربر')+
+    ' · '+
+    '📅 '+
+    esc(record.date||'')+
+    ' · ';
+
+
+   const time=
+    document.createElement('span');
+
+   time.className='record-time';
+
+   time.textContent=
+    '⏱️ '+
+    (
+     record.durationText ||
+     formatTime(record.duration||0)
+    );
+
+
+   meta.appendChild(time);
+
+
+   const video=
+    document.createElement('video');
+
+   video.controls=true;
+   video.playsInline=true;
+
+
+   const url=
+    URL.createObjectURL(record.blob);
+
+   video.src=url;
+
+
+   const actions=
+    document.createElement('div');
+
+   actions.className='record-actions';
+
+
+   const download=
+    document.createElement('button');
+
+   download.className='primary';
+
+   download.textContent=
+    '⬇️ دانلود کلاس';
+
+
+   download.onclick=function(){
+
+    const a=
+     document.createElement('a');
+
+    a.href=url;
+
+    a.download=
+     sanitizeFileName(
+      record.name||'class'
+     )+
+     '-'+
+     record.id+
+     '.webm';
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+   };
+
+
+   const del=
+    document.createElement('button');
+
+   del.className='danger';
+
+   del.textContent=
+    '🗑️ حذف ضبط';
+
+
+   del.onclick=
+    async function(){
+
+     const ok=
+      confirm(
+       'این ضبط حذف شود؟'
+      );
+
+     if(!ok)return;
+
+     await deleteRecordingFile(
+      record.id
+     );
+
+     URL.revokeObjectURL(url);
+
+     renderRecordings();
+
+    };
+
+
+   actions.appendChild(download);
+   actions.appendChild(del);
+
+
+   card.appendChild(title);
+   card.appendChild(meta);
+   card.appendChild(video);
+   card.appendChild(actions);
+
+   container.appendChild(card);
+
+  });
+
+
+ }catch(e){
+
+  console.log(e);
+
+  container.innerHTML=`
+
+   <div class="empty">
+
+    ❌ خطا در خواندن کلاس‌های ضبط‌شده.
+
+   </div>
+
+  `;
+
+ }
+}
+
+
+function sanitizeFileName(name){
+
+ return String(name)
+  .replace(
+   /[\\/:*?"<>|]/g,
+   '_'
+  )
+  .replace(
+   /\s+/g,
+   '_'
+  )
+  .slice(0,80);
+}
+
+
+async function updateRecordCount(){
+
+ const el=
+  document.getElementById(
+   'recordCount'
+  );
+
+ if(!el)return;
+
+ try{
+
+  const records=
+   await getAllRecordingFiles();
+
+  el.textContent=
+   records.length;
+
+ }catch(e){
+
+  el.textContent='0';
+
+ }
+}
+
+
+/* =========================================================
+   LEAVE MEETING
+========================================================= */
+
+function leaveMeeting(){
+
+ if(
+  recorder &&
+  recorder.state==='recording'
+ ){
+
+  const leave=
+   confirm(
+    'ضبط هنوز در حال انجام است.\n\n' +
+    'اول ضبط را متوقف کنم؟'
+   );
+
+  if(leave){
+
+   stopRecording();
+
+   return;
+  }
+
+ }
+
+
+ if(stream){
+
+  stream.getTracks().forEach(
+   t=>t.stop()
+  );
+
+  stream=null;
+ }
+
+
+ const video=
+  document.getElementById(
+   'localVideo'
+  );
+
+ video.srcObject=null;
+
+
+ document.getElementById(
+  'meeting'
+ ).classList.add('hidden');
+
+
+ currentMeeting=null;
+
+ resetRecordingUI();
+}
+
+
+/* =========================================================
+   ADMIN
+========================================================= */
+
+function openAdmin(){
+
+ const pass=
+  prompt(
+   'رمز پنل مدیریت را وارد کن:'
+  );
+
+ if(pass!==db.adminPassword){
+
+  return alert(
+   'رمز مدیریت اشتباه است.'
+  );
+
+ }
+
+ document.getElementById(
+  'content'
+ ).innerHTML=`
+
+  <h1 class="page-title">
+   ⚙️ پنل مدیریت
+  </h1>
+
+  <p class="page-sub">
+   مدیریت اولیه سامانه
+  </p>
+
+  <div class="cards">
+
+   <div class="card">
+    👤 کاربران
+    <div class="stat">
+     ${db.users.length}
+    </div>
+   </div>
+
+   <div class="card">
+    💬 گروه‌ها
+    <div class="stat">
+     ${db.groups.length}
+    </div>
+   </div>
+
+   <div class="card">
+    🎥 جلسات
+    <div class="stat">
+     ${db.meetings.length}
+    </div>
+   </div>
+
+   <div class="card">
+    📚 ضبط‌ها
+    <div
+     class="stat"
+     id="adminRecordCount">
+
+     ...
+
+    </div>
+   </div>
+
+  </div>
+
+  <div
+   class="card"
+   style="margin-top:18px">
+
+   <h3>
+    کاربران ثبت‌نام‌شده
+   </h3>
+
+   <table style="width:100%">
+
+    <tr>
+     <th>نام</th>
+     <th>نام کاربری</th>
+     <th>تاریخ</th>
+    </tr>
+
+    ${db.users.map(
+     u=>`
+
+     <tr>
+
+      <td>
+       ${esc(u.name)}
+      </td>
+
+      <td>
+       ${esc(u.username)}
+      </td>
+
+      <td>
+       ${esc(u.created)}
+      </td>
+
+     </tr>
+
+     `
+    ).join('')}
+
+   </table>
+
+  </div>
+
+ `;
+
+
+ getAllRecordingFiles()
+  .then(
+   records=>{
+    const el=
+     document.getElementById(
+      'adminRecordCount'
+     );
+
+    if(el)
+     el.textContent=
+      records.length;
+   }
+  );
+}
+
+
+/* =========================================================
+   ADMIN PASSWORD
+========================================================= */
+
+function changeAdminPass(){
+
+ const p=
+  document.getElementById(
+   'newAdminPass'
+  ).value;
+
+ if(p.length<4){
+
+  return alert(
+   'رمز حداقل ۴ کاراکتر باشد.'
+  );
+
+ }
+
+ db.adminPassword=p;
+
+ save();
+
+ alert(
+  'رمز پنل تغییر کرد.'
+ );
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function openModal(html){
+
+ document.getElementById(
+  'modalBox'
+ ).innerHTML=html;
+
+ document.getElementById(
+  'modal'
+ ).classList.remove('hidden');
+}
+
+
+function closeModal(){
+
+ document.getElementById(
+  'modal'
+ ).classList.add('hidden');
+}
+
+
+/* =========================================================
+   CHAT ENTER KEY
+========================================================= */
+
+document.getElementById(
+ 'meetingChatInput'
+).addEventListener(
+ 'keydown',
+ function(event){
+
+  if(event.key==='Enter'){
+
+   sendMeetingMessage();
+
+  }
+
+ }
+);
+
+
+/* =========================================================
+   INITIAL
+========================================================= */
+
+window.addEventListener(
+ 'load',
+ function(){
+
+  updateRecordCount();
+
+ }
+);
+
+</script>
+
+</body>
+</html>
