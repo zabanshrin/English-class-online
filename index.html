@@ -1,0 +1,2467 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>زبان شین</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Tahoma,Arial,sans-serif;
+  background:#f4f7fb;
+  color:#172033;
+}
+button,input,textarea,select{font-family:inherit}
+button{
+  border:0;
+  border-radius:12px;
+  padding:11px 16px;
+  cursor:pointer;
+  font-weight:bold;
+}
+.hidden{display:none!important}
+
+#auth{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:linear-gradient(135deg,#172554,#2563eb,#06b6d4);
+}
+.authBox{
+  width:min(430px,100%);
+  background:white;
+  border-radius:25px;
+  padding:30px;
+  box-shadow:0 20px 60px #0004;
+}
+.logo{
+  text-align:center;
+  font-size:34px;
+  font-weight:900;
+  color:#2563eb;
+  margin-bottom:8px;
+}
+.subtitle{text-align:center;color:#667085;margin-bottom:25px}
+.tabs{display:flex;gap:8px;margin-bottom:18px}
+.tabs button{flex:1;background:#eef2ff;color:#334155}
+.tabs button.active{background:#2563eb;color:white}
+input,textarea,select{
+  width:100%;
+  padding:13px;
+  border:1px solid #d7dce5;
+  border-radius:12px;
+  outline:none;
+  margin-bottom:12px;
+  background:white;
+}
+input:focus,textarea:focus,select:focus{border-color:#2563eb}
+.primary{background:#2563eb;color:white}
+.danger{background:#dc2626;color:white}
+.success{background:#16a34a;color:white}
+.gray{background:#e5e7eb;color:#111827}
+.warning{background:#f59e0b;color:white}
+
+#app{min-height:100vh}
+.topbar{
+  height:65px;
+  background:white;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 15px;
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+.brand{
+  color:#2563eb;
+  font-size:23px;
+  font-weight:900;
+}
+.menuBtn{
+  font-size:24px;
+  background:#eef2ff;
+  color:#1d4ed8;
+}
+.userBadge{
+  background:#f1f5f9;
+  border-radius:20px;
+  padding:8px 12px;
+  font-size:13px;
+}
+.sideMenu{
+  position:fixed;
+  top:65px;
+  right:0;
+  width:280px;
+  max-width:90%;
+  height:calc(100vh - 65px);
+  background:white;
+  box-shadow:-10px 0 35px #0002;
+  z-index:100;
+  padding:18px;
+  transform:translateX(110%);
+  transition:.25s;
+  overflow:auto;
+}
+.sideMenu.open{transform:translateX(0)}
+.menuItem{
+  display:block;
+  width:100%;
+  text-align:right;
+  background:#f8fafc;
+  margin-bottom:9px;
+}
+.menuItem:hover{background:#e0e7ff}
+
+.main{
+  padding:20px;
+  max-width:1250px;
+  margin:auto;
+}
+.pageTitle{
+  font-size:25px;
+  font-weight:900;
+  margin:10px 0 20px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:15px;
+}
+.card{
+  background:white;
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 5px 20px #0000000d;
+  border:1px solid #e8edf4;
+}
+.card h3{margin-top:0}
+.classCard{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.classIcon{
+  width:50px;
+  height:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:15px;
+  background:#dbeafe;
+  font-size:25px;
+}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row button{flex:1}
+
+.badge{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:15px;
+  font-size:12px;
+  background:#e0e7ff;
+  color:#3730a3;
+}
+.badge.admin{background:#fef3c7;color:#92400e}
+.badge.teacher{background:#dcfce7;color:#166534}
+.badge.student{background:#e0f2fe;color:#075985}
+
+.empty{
+  padding:40px 20px;
+  text-align:center;
+  color:#64748b;
+}
+
+/* CLASSROOM */
+#classRoom{
+  position:fixed;
+  inset:0;
+  background:#0f172a;
+  color:white;
+  z-index:200;
+  display:none;
+  flex-direction:column;
+}
+#classRoom.active{display:flex}
+.classTop{
+  height:58px;
+  background:#111827;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 10px;
+}
+.classTopTitle{font-weight:bold}
+.videoArea{
+  flex:1;
+  overflow:auto;
+  padding:10px;
+}
+.videoGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:10px;
+}
+.videoBox{
+  position:relative;
+  background:#020617;
+  border-radius:15px;
+  overflow:hidden;
+  min-height:180px;
+  border:1px solid #334155;
+}
+.videoBox video{
+  width:100%;
+  height:100%;
+  min-height:180px;
+  object-fit:cover;
+  background:#020617;
+}
+.videoName{
+  position:absolute;
+  bottom:8px;
+  right:8px;
+  background:#0009;
+  border-radius:10px;
+  padding:5px 8px;
+  font-size:12px;
+}
+.noCamera{
+  min-height:180px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:45px;
+}
+.controls{
+  min-height:75px;
+  background:#111827;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:8px;
+}
+.control{
+  background:#334155;
+  color:white;
+  min-width:55px;
+}
+.control.red{background:#dc2626}
+.control.green{background:#16a34a}
+
+.classPanel{
+  position:absolute;
+  bottom:85px;
+  left:10px;
+  right:10px;
+  top:65px;
+  background:white;
+  color:#111827;
+  border-radius:18px;
+  z-index:10;
+  display:none;
+  overflow:hidden;
+  box-shadow:0 15px 50px #0008;
+}
+.classPanel.show{display:block}
+.panelHeader{
+  height:52px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 12px;
+  border-bottom:1px solid #e5e7eb;
+}
+.panelBody{height:calc(100% - 52px);overflow:auto;padding:12px}
+
+/* CHAT */
+.chatMessages{
+  height:calc(100% - 65px);
+  overflow:auto;
+  padding:10px;
+}
+.chatMsg{
+  margin:8px 0;
+  padding:9px 12px;
+  border-radius:13px;
+  background:#f1f5f9;
+}
+.chatMsg strong{display:block;font-size:12px;color:#2563eb}
+.chatInput{
+  display:flex;
+  gap:7px;
+  padding:10px;
+  border-top:1px solid #e5e7eb;
+}
+.chatInput input{margin:0}
+
+/* BOARD */
+.boardToolbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  padding:8px;
+  background:#f8fafc;
+  border-bottom:1px solid #ddd;
+}
+.boardToolbar button{
+  padding:8px 10px;
+  font-size:12px;
+}
+#boardCanvas{
+  display:block;
+  background:white;
+  width:100%;
+  height:calc(100% - 55px);
+  touch-action:none;
+}
+
+/* GROUP */
+.groupLayout{
+  display:grid;
+  grid-template-columns:280px 1fr;
+  gap:15px;
+}
+.groupList{
+  max-height:65vh;
+  overflow:auto;
+}
+.groupItem{
+  padding:12px;
+  background:#f8fafc;
+  border-radius:12px;
+  margin-bottom:8px;
+  cursor:pointer;
+}
+.groupItem.active{background:#dbeafe}
+.groupChat{
+  min-height:500px;
+  display:flex;
+  flex-direction:column;
+}
+.groupChatMessages{
+  flex:1;
+  max-height:55vh;
+  overflow:auto;
+  padding:10px;
+}
+.groupInput{
+  display:flex;
+  gap:8px;
+  padding-top:10px;
+}
+.groupInput input{margin:0}
+
+/* ADMIN */
+.adminTabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:15px;
+}
+.adminTabs button{background:#e2e8f0}
+.adminTabs button.active{background:#2563eb;color:white}
+.adminTable{
+  width:100%;
+  border-collapse:collapse;
+}
+.adminTable th,.adminTable td{
+  border-bottom:1px solid #e5e7eb;
+  padding:10px;
+  text-align:right;
+}
+.adminTable button{padding:7px 9px;font-size:11px}
+
+.record{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px;
+  background:#f8fafc;
+  border-radius:13px;
+  margin-bottom:9px;
+}
+
+@media(max-width:700px){
+  .groupLayout{grid-template-columns:1fr}
+  .groupList{max-height:220px}
+  .videoGrid{grid-template-columns:1fr 1fr}
+  .videoBox video,.noCamera{min-height:130px}
+  .controls{justify-content:flex-start}
+  .control{min-width:48px;padding:9px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- AUTH -->
+<section id="auth">
+  <div class="authBox">
+    <div class="logo">زبان شین</div>
+    <div class="subtitle">سامانه کلاس آنلاین</div>
+
+    <div class="tabs">
+      <button id="loginTab" class="active" onclick="showAuth('login')">ورود</button>
+      <button id="registerTab" onclick="showAuth('register')">ثبت‌نام</button>
+    </div>
+
+    <div id="loginForm">
+      <input id="loginUsername" placeholder="نام کاربری">
+      <input id="loginPassword" type="password" placeholder="رمز عبور">
+      <button class="primary" style="width:100%" onclick="login()">ورود به زبان شین</button>
+    </div>
+
+    <div id="registerForm" class="hidden">
+      <input id="regUsername" placeholder="نام کاربری">
+      <input id="regPassword" type="password" placeholder="رمز عبور">
+      <button class="success" style="width:100%" onclick="register()">ساخت حساب</button>
+    </div>
+
+    <p id="authStatus" style="text-align:center;margin-top:15px"></p>
+  </div>
+</section>
+
+<!-- APP -->
+<div id="app" class="hidden">
+
+  <header class="topbar">
+    <button class="menuBtn" onclick="toggleMenu()">☰</button>
+    <div class="brand">زبان شین</div>
+    <div id="userBadge" class="userBadge"></div>
+  </header>
+
+  <aside id="sideMenu" class="sideMenu">
+    <h3>منوی حساب</h3>
+    <button class="menuItem" onclick="showPage('home');closeMenu()">🏠 خانه</button>
+    <button class="menuItem" onclick="showPage('classes');closeMenu()">📚 کلاس‌ها</button>
+    <button class="menuItem" onclick="showPage('groups');closeMenu()">🧑‍🤝‍🧑 گروه‌های چتی</button>
+    <button class="menuItem" onclick="showPage('recordings');closeMenu()">🎬 کلاس‌های ضبط‌شده</button>
+    <button id="adminMenu" class="menuItem hidden" onclick="showPage('admin');closeMenu()">👑 پنل مدیریت</button>
+    <hr>
+    <button class="menuItem danger" onclick="logout()">خروج از حساب</button>
+  </aside>
+
+  <main class="main">
+
+    <!-- HOME -->
+    <section id="page-home" class="page">
+      <div class="pageTitle">سلام 👋 به زبان شین خوش آمدی</div>
+      <div class="grid">
+        <div class="card">
+          <h3>📚 کلاس‌های من</h3>
+          <p>وارد کلاس‌های آنلاین شو و با بقیه ارتباط داشته باش.</p>
+          <button class="primary" onclick="showPage('classes')">دیدن کلاس‌ها</button>
+        </div>
+        <div class="card">
+          <h3>🧑‍🤝‍🧑 گروه‌های چتی</h3>
+          <p>گروه‌های گفتگو جدا از چت داخل کلاس هستند.</p>
+          <button class="primary" onclick="showPage('groups')">گروه‌ها</button>
+        </div>
+        <div class="card">
+          <h3>🎬 کلاس‌های ضبط‌شده</h3>
+          <p>ضبط‌های ذخیره‌شده کلاس‌ها را ببین.</p>
+          <button class="primary" onclick="showPage('recordings')">ضبط‌ها</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLASSES -->
+    <section id="page-classes" class="page hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="pageTitle">📚 کلاس‌ها</div>
+        <button id="createClassBtn" class="success hidden" onclick="openCreateClass()">➕ ساخت کلاس</button>
+      </div>
+
+      <div id="classesGrid" class="grid"></div>
+    </section>
+
+    <!-- GROUPS -->
+    <section id="page-groups" class="page hidden">
+      <div class="pageTitle">🧑‍🤝‍🧑 گروه‌های چتی</div>
+
+      <div id="createGroupArea" class="card hidden" style="margin-bottom:15px">
+        <h3>➕ ساخت گروه</h3>
+        <input id="groupName" placeholder="نام گروه">
+        <input id="groupDescription" placeholder="توضیح گروه">
+        <button class="success" onclick="createGroup()">ساخت گروه</button>
+      </div>
+
+      <div class="groupLayout">
+        <div class="card groupList" id="groupsList"></div>
+
+        <div class="card groupChat">
+          <h3 id="selectedGroupName">یک گروه را انتخاب کن</h3>
+          <div id="groupMessages" class="groupChatMessages"></div>
+          <div class="groupInput">
+            <input id="groupMessageInput" placeholder="پیام گروه..." onkeydown="if(event.key==='Enter')sendGroupMessage()">
+            <button class="primary" onclick="sendGroupMessage()">ارسال</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECORDINGS -->
+    <section id="page-recordings" class="page hidden">
+      <div class="pageTitle">🎬 کلاس‌های ضبط‌شده</div>
+      <div id="recordingsList"></div>
+    </section>
+
+    <!-- ADMIN -->
+    <section id="page-admin" class="page hidden">
+      <div class="pageTitle">👑 پنل مدیریت</div>
+
+      <div class="adminTabs">
+        <button class="active" onclick="adminTab('users',this)">👥 کاربران</button>
+        <button onclick="adminTab('classes',this)">📚 کلاس‌ها</button>
+        <button onclick="adminTab('groups',this)">🧑‍🤝‍🧑 گروه‌ها</button>
+        <button onclick="adminTab('recordings',this)">🎬 ضبط‌ها</button>
+      </div>
+
+      <div id="adminContent" class="card"></div>
+    </section>
+
+  </main>
+</div>
+
+<!-- CREATE CLASS MODAL -->
+<div id="createClassModal" class="hidden" style="
+position:fixed;inset:0;background:#0008;z-index:500;
+display:flex;align-items:center;justify-content:center;padding:20px">
+  <div class="card" style="width:min(450px,100%)">
+    <h2>➕ ساخت کلاس</h2>
+    <input id="newClassName" placeholder="نام کلاس">
+    <input id="newClassPassword" placeholder="رمز ورود کلاس">
+    <div class="row">
+      <button class="success" onclick="createClass()">ساخت کلاس</button>
+      <button class="gray" onclick="closeCreateClass()">لغو</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLASSROOM -->
+<section id="classRoom">
+
+  <div class="classTop">
+    <button class="gray" onclick="leaveClass()">← خروج</button>
+    <div id="classTitle" class="classTopTitle">کلاس</div>
+    <span id="classRole"></span>
+  </div>
+
+  <div class="videoArea">
+    <div id="videoGrid" class="videoGrid"></div>
+  </div>
+
+  <!-- CHAT PANEL -->
+  <div id="classChatPanel" class="classPanel">
+    <div class="panelHeader">
+      <b>💬 چت کلاس</b>
+      <button class="gray" onclick="togglePanel('classChatPanel')">✕</button>
+    </div>
+    <div class="panelBody" style="padding:0">
+      <div id="classMessages" class="chatMessages"></div>
+      <div class="chatInput">
+        <input id="classMessageInput" placeholder="پیام..." onkeydown="if(event.key==='Enter')sendClassMessage()">
+        <button class="primary" onclick="sendClassMessage()">ارسال</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEMBERS -->
+  <div id="membersPanel" class="classPanel">
+    <div class="panelHeader">
+      <b>👥 اعضای کلاس</b>
+      <button class="gray" onclick="togglePanel('membersPanel')">✕</button>
+    </div>
+    <div id="membersBody" class="panelBody"></div>
+  </div>
+
+  <!-- BOARD -->
+  <div id="boardPanel" class="classPanel">
+    <div class="panelHeader">
+      <b>📝 تخته کلاس</b>
+      <button class="gray" onclick="togglePanel('boardPanel')">✕</button>
+    </div>
+
+    <div class="panelBody" style="padding:0;overflow:hidden">
+
+      <div id="boardToolbar" class="boardToolbar">
+        <button onclick="setBoardTool('pen')">✏️ قلم</button>
+        <button onclick="setBoardTool('line')">╱ خط</button>
+        <button onclick="setBoardTool('rect')">▭ مستطیل</button>
+        <button onclick="setBoardTool('circle')">◯ دایره</button>
+        <button onclick="setBoardTool('text')">🔤 متن</button>
+        <button onclick="setBoardTool('eraser')">🧹 پاک‌کن</button>
+        <button onclick="undoBoard()">↩️</button>
+        <button onclick="redoBoard()">↪️</button>
+        <button class="danger" onclick="clearBoard()">پاک کردن تخته</button>
+        <input id="textSize" type="number" value="24" min="10" max="80" style="width:80px;margin:0">
+      </div>
+
+      <canvas id="boardCanvas"></canvas>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="micBtn" class="control" onclick="toggleMic()">🎤</button>
+    <button id="camBtn" class="control" onclick="toggleCamera()">📷</button>
+    <button class="control" onclick="flipCamera()">🔄</button>
+    <button class="control" onclick="shareScreen()">🖥️</button>
+    <button class="control" onclick="togglePanel('classChatPanel')">💬</button>
+    <button class="control" onclick="togglePanel('membersPanel')">👥</button>
+    <button class="control" onclick="togglePanel('boardPanel')">📝</button>
+    <button id="recordBtn" class="control green" onclick="toggleRecording()">⏺️ ضبط</button>
+    <button class="control red" onclick="leaveClass()">📞 خروج</button>
+  </div>
+</section>
+
+<script>
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+"https://uqqumhmzndgyoigcqnti.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_R3LAX7EYbdYUwjYUwjQRgkmesA_QJ2ZmPtD"
+  .replace("sb_publishable_R3LAX7EYbdYUwjYUwjQRgkmesA_QJ2ZmPtD",
+          "sb_publishable_R3LAX7EYbdYUwjYUwjQRgkmesA_QJ2ZmPtD");
+
+const supabaseClient =
+supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+/* =========================================================
+   GLOBAL STATE
+========================================================= */
+
+let currentUser=null;
+let currentMeeting=null;
+let classChannel=null;
+let groupChannel=null;
+let currentGroup=null;
+
+let localStream=null;
+let screenStream=null;
+
+const peers=new Map();
+const remoteStreams=new Map();
+
+let micOn=true;
+let camOn=true;
+let facingMode="user";
+
+let recording=false;
+let recorder=null;
+let recordChunks=[];
+
+let classMessagesChannel=null;
+let groupMessagesChannel=null;
+
+let boardAllowed=false;
+let boardTool="pen";
+let boardDrawing=false;
+let boardStartX=0;
+let boardStartY=0;
+let boardObjects=[];
+let boardUndo=[];
+let boardRedo=[];
+
+const $=id=>document.getElementById(id);
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+function showAuth(type){
+  $("loginForm").classList.toggle("hidden",type!=="login");
+  $("registerForm").classList.toggle("hidden",type!=="register");
+  $("loginTab").classList.toggle("active",type==="login");
+  $("registerTab").classList.toggle("active",type==="register");
+  $("authStatus").textContent="";
+}
+
+async function register(){
+  const username=$("regUsername").value.trim();
+  const password=$("regPassword").value;
+
+  if(!username||!password){
+    $("authStatus").textContent="نام کاربری و رمز عبور را وارد کن.";
+    return;
+  }
+
+  const {data,error}=await supabaseClient.rpc(
+    "register_username",
+    {p_username:username,p_password:password}
+  );
+
+  if(error){
+    $("authStatus").textContent="ثبت‌نام انجام نشد: "+error.message;
+    return;
+  }
+
+  $("authStatus").textContent="ثبت‌نام با موفقیت انجام شد.";
+  $("loginUsername").value=username;
+  showAuth("login");
+}
+
+async function login(){
+  const username=$("loginUsername").value.trim();
+  const password=$("loginPassword").value;
+
+  if(!username||!password){
+    $("authStatus").textContent="اطلاعات ورود را کامل کن.";
+    return;
+  }
+
+  const {data,error}=await supabaseClient.rpc(
+    "login_username",
+    {p_username:username,p_password:password}
+  );
+
+  if(error||!data){
+    $("authStatus").textContent="نام کاربری یا رمز عبور اشتباه است.";
+    return;
+  }
+
+  let user=data;
+
+  if(Array.isArray(data)) user=data[0];
+
+  const id=user.id||user.user_id;
+  const name=user.username||username;
+  const role=user.role||"student";
+
+  currentUser={
+    id:id,
+    username:name,
+    role:role
+  };
+
+  localStorage.setItem("zabanShinUser",JSON.stringify(currentUser));
+
+  await startApp();
+}
+
+async function tryAutoLogin(){
+  const raw=localStorage.getItem("zabanShinUser");
+  if(!raw)return;
+
+  try{
+    currentUser=JSON.parse(raw);
+
+    if(currentUser&&currentUser.username){
+      const {data}=await supabaseClient
+        .from("profiles")
+        .select("id,username,role")
+        .eq("username",currentUser.username)
+        .maybeSingle();
+
+      if(data){
+        currentUser=data;
+        await startApp();
+      }
+    }
+  }catch(e){}
+}
+
+function logout(){
+  leaveClass(true);
+  localStorage.removeItem("zabanShinUser");
+  currentUser=null;
+  $("app").classList.add("hidden");
+  $("auth").classList.remove("hidden");
+}
+
+async function startApp(){
+  $("auth").classList.add("hidden");
+  $("app").classList.remove("hidden");
+
+  $("userBadge").textContent=
+    currentUser.username+" | "+roleText(currentUser.role);
+
+  const admin=currentUser.role==="admin";
+  const teacher=admin||currentUser.role==="teacher";
+
+  $("adminMenu").classList.toggle("hidden",!admin);
+  $("createClassBtn").classList.toggle("hidden",!teacher);
+  $("createGroupArea").classList.toggle("hidden",!teacher);
+
+  showPage("home");
+  await loadClasses();
+  await loadGroups();
+  await loadRecordings();
+}
+
+function roleText(role){
+  if(role==="admin")return"ادمین";
+  if(role==="teacher")return"معلم";
+  return"دانش‌آموز";
+}
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function toggleMenu(){
+  $("sideMenu").classList.toggle("open");
+}
+
+function closeMenu(){
+  $("sideMenu").classList.remove("open");
+}
+
+function showPage(name){
+  document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
+  const page=$("page-"+name);
+  if(page)page.classList.remove("hidden");
+
+  if(name==="classes")loadClasses();
+  if(name==="groups")loadGroups();
+  if(name==="recordings")loadRecordings();
+  if(name==="admin"){
+    if(currentUser.role==="admin")adminTab("users");
+    else showPage("home");
+  }
+}
+
+/* =========================================================
+   CLASSES
+========================================================= */
+
+function openCreateClass(){
+  $("createClassModal").classList.remove("hidden");
+  $("createClassModal").style.display="flex";
+}
+
+function closeCreateClass(){
+  $("createClassModal").classList.add("hidden");
+}
+
+async function createClass(){
+  if(!currentUser)return;
+
+  if(
+    currentUser.role!=="admin" &&
+    currentUser.role!=="teacher"
+  ){
+    alert("فقط معلم یا ادمین می‌تواند کلاس بسازد.");
+    return;
+  }
+
+  const name=$("newClassName").value.trim();
+  const password=$("newClassPassword").value.trim();
+
+  if(!name){
+    alert("نام کلاس را وارد کن.");
+    return;
+  }
+
+  const {error}=await supabaseClient
+    .from("meetings")
+    .insert({
+      name:name,
+      password:password,
+      owner_id:currentUser.id,
+      owner_name:currentUser.username
+    });
+
+  if(error){
+    alert("ساخت کلاس انجام نشد:\n"+error.message);
+    return;
+  }
+
+  $("newClassName").value="";
+  $("newClassPassword").value="";
+  closeCreateClass();
+  await loadClasses();
+  alert("کلاس با موفقیت ساخته شد.");
+}
+
+async function loadClasses(){
+  const box=$("classesGrid");
+  if(!box)return;
+
+  box.innerHTML="<div class='card'>در حال دریافت کلاس‌ها...</div>";
+
+  const {data,error}=await supabaseClient
+    .from("meetings")
+    .select("*")
+    .order("id",{ascending:false});
+
+  if(error){
+    box.innerHTML="<div class='card'>خطا: "+escapeHtml(error.message)+"</div>";
+    return;
+  }
+
+  if(!data||!data.length){
+    box.innerHTML="<div class='card empty'>هنوز کلاسی ساخته نشده است.</div>";
+    return;
+  }
+
+  box.innerHTML=data.map(c=>`
+    <div class="card classCard">
+      <div class="classIcon">📚</div>
+      <h3>${escapeHtml(c.name||"کلاس بدون نام")}</h3>
+      <div>
+        <span class="badge">معلم: ${escapeHtml(c.owner_name||"نامشخص")}</span>
+      </div>
+      <button class="primary" onclick="joinClass('${c.id}')">🚪 ورود به کلاس</button>
+    </div>
+  `).join("");
+}
+
+async function joinClass(id){
+  const {data,error}=await supabaseClient
+    .from("meetings")
+    .select("*")
+    .eq("id",id)
+    .single();
+
+  if(error||!data){
+    alert("کلاس پیدا نشد.");
+    return;
+  }
+
+  if(data.password){
+    const p=prompt("رمز کلاس را وارد کن:");
+    if(p!==data.password){
+      alert("رمز کلاس اشتباه است.");
+      return;
+    }
+  }
+
+  await enterClass(data);
+}
+
+/* =========================================================
+   WEBRTC CLASS
+========================================================= */
+
+async function enterClass(meeting){
+  currentMeeting=meeting;
+
+  $("classRoom").classList.add("active");
+  $("classTitle").textContent="📚 "+meeting.name;
+  $("classRole").textContent=roleText(currentUser.role);
+
+  boardAllowed=
+    currentUser.role==="admin"||
+    currentUser.role==="teacher";
+
+  $("boardToolbar").style.display=
+    boardAllowed?"flex":"none";
+
+  try{
+    localStream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:facingMode},
+      audio:true
+    });
+  }catch(e){
+    alert("دسترسی دوربین/میکروفون داده نشد. می‌توانی کلاس را باز کنی ولی تصویرت فعال نمی‌شود.");
+    localStream=new MediaStream();
+  }
+
+  addLocalVideo();
+
+  await startClassChannel();
+  await loadClassMessages();
+  setupBoard();
+
+  loadMembers();
+}
+
+function addLocalVideo(){
+  const old=$("localVideoBox");
+  if(old)old.remove();
+
+  const box=document.createElement("div");
+  box.className="videoBox";
+  box.id="localVideoBox";
+
+  const video=document.createElement("video");
+  video.id="localVideo";
+  video.autoplay=true;
+  video.muted=true;
+  video.playsInline=true;
+  video.srcObject=localStream;
+
+  const name=document.createElement("div");
+  name.className="videoName";
+  name.textContent=currentUser.username+" (شما)";
+
+  box.appendChild(video);
+  box.appendChild(name);
+  $("videoGrid").prepend(box);
+}
+
+async function startClassChannel(){
+
+  if(classChannel){
+    try{await supabaseClient.removeChannel(classChannel)}catch(e){}
+  }
+
+  const channelName="zaban-shin-class-"+currentMeeting.id;
+
+  classChannel=supabaseClient.channel(channelName,{
+    config:{
+      broadcast:{self:false},
+      presence:{key:String(currentUser.id)}
+    }
+  });
+
+  classChannel
+    .on("broadcast",{event:"join"},async payload=>{
+      const from=payload.payload;
+      if(!from||from.id===String(currentUser.id))return;
+
+      if(String(currentUser.id)<String(from.id)){
+        await createOffer(String(from.id));
+      }
+    })
+    .on("broadcast",{event:"offer"},async payload=>{
+      const p=payload.payload;
+      if(p.to!==String(currentUser.id))return;
+      await receiveOffer(p);
+    })
+    .on("broadcast",{event:"answer"},async payload=>{
+      const p=payload.payload;
+      if(p.to!==String(currentUser.id))return;
+      const pc=peers.get(p.from);
+      if(pc){
+        await pc.setRemoteDescription(new RTCSessionDescription(p.answer));
+      }
+    })
+    .on("broadcast",{event:"ice"},async payload=>{
+      const p=payload.payload;
+      if(p.to!==String(currentUser.id))return;
+
+      const pc=peers.get(p.from);
+      if(pc&&p.candidate){
+        try{await pc.addIceCandidate(p.candidate)}catch(e){}
+      }
+    })
+    .on("broadcast",{event:"leave"},payload=>{
+      const id=payload.payload?.id;
+      if(id)removePeer(id);
+    })
+    .on("broadcast",{event:"board"},payload=>{
+      if(payload.payload)handleBoardMessage(payload.payload);
+    })
+    .on("presence",{event:"sync"},()=>{
+      loadMembers();
+    })
+    .on("presence",{event:"join"},()=>{
+      loadMembers();
+    })
+    .on("presence",{event:"leave"},()=>{
+      loadMembers();
+    });
+
+  await classChannel.subscribe(async status=>{
+    if(status==="SUBSCRIBED"){
+
+      await classChannel.track({
+        id:String(currentUser.id),
+        name:currentUser.username,
+        role:currentUser.role
+      });
+
+      await broadcast({
+        event:"join",
+        payload:{
+          id:String(currentUser.id),
+          name:currentUser.username
+        }
+      });
+    }
+  });
+}
+
+async function broadcast(obj){
+  if(!classChannel)return;
+  try{
+    await classChannel.send(obj);
+  }catch(e){}
+}
+
+function createPeer(remoteId){
+  remoteId=String(remoteId);
+
+  if(peers.has(remoteId))
+    return peers.get(remoteId);
+
+  const pc=new RTCPeerConnection({
+    iceServers:[
+      {urls:"stun:stun.l.google.com:19302"},
+      {urls:"stun:stun1.l.google.com:19302"}
+    ]
+  });
+
+  if(localStream){
+    localStream.getTracks().forEach(track=>{
+      pc.addTrack(track,localStream);
+    });
+  }
+
+  pc.onicecandidate=e=>{
+    if(e.candidate){
+      broadcast({
+        event:"ice",
+        payload:{
+          from:String(currentUser.id),
+          to:remoteId,
+          candidate:e.candidate
+        }
+      });
+    }
+  };
+
+  pc.ontrack=e=>{
+    const stream=e.streams[0];
+    if(stream)addRemoteVideo(remoteId,stream);
+  };
+
+  pc.onconnectionstatechange=()=>{
+    if(
+      pc.connectionState==="failed"||
+      pc.connectionState==="closed"||
+      pc.connectionState==="disconnected"
+    ){
+      removePeer(remoteId);
+    }
+  };
+
+  peers.set(remoteId,pc);
+  return pc;
+}
+
+async function createOffer(remoteId){
+  const pc=createPeer(remoteId);
+
+  const offer=await pc.createOffer();
+  await pc.setLocalDescription(offer);
+
+  await broadcast({
+    event:"offer",
+    payload:{
+      from:String(currentUser.id),
+      to:remoteId,
+      offer:pc.localDescription
+    }
+  });
+}
+
+async function receiveOffer(p){
+  const pc=createPeer(String(p.from));
+
+  await pc.setRemoteDescription(
+    new RTCSessionDescription(p.offer)
+  );
+
+  const answer=await pc.createAnswer();
+  await pc.setLocalDescription(answer);
+
+  await broadcast({
+    event:"answer",
+    payload:{
+      from:String(currentUser.id),
+      to:String(p.from),
+      answer:pc.localDescription
+    }
+  });
+}
+
+function addRemoteVideo(id,stream){
+  id=String(id);
+
+  let box=$("remote-"+id);
+
+  if(!box){
+    box=document.createElement("div");
+    box.className="videoBox";
+    box.id="remote-"+id;
+
+    const video=document.createElement("video");
+    video.autoplay=true;
+    video.playsInline=true;
+    video.id="video-"+id;
+
+    const name=document.createElement("div");
+    name.className="videoName";
+    name.id="name-"+id;
+    name.textContent="کاربر";
+
+    box.appendChild(video);
+    box.appendChild(name);
+    $("videoGrid").appendChild(box);
+  }
+
+  const video=$("video-"+id);
+  video.srcObject=stream;
+  remoteStreams.set(id,stream);
+
+  loadMembers();
+}
+
+function removePeer(id){
+  id=String(id);
+
+  const pc=peers.get(id);
+  if(pc){
+    try{pc.close()}catch(e){}
+  }
+
+  peers.delete(id);
+  remoteStreams.delete(id);
+
+  const box=$("remote-"+id);
+  if(box)box.remove();
+
+  loadMembers();
+}
+
+/* =========================================================
+   CAMERA / MIC
+========================================================= */
+
+async function toggleMic(){
+  if(!localStream)return;
+
+  const tracks=localStream.getAudioTracks();
+  if(!tracks.length)return;
+
+  micOn=!micOn;
+  tracks.forEach(t=>t.enabled=micOn);
+
+  $("micBtn").textContent=micOn?"🎤":"🔇";
+}
+
+async function toggleCamera(){
+  if(!localStream)return;
+
+  const tracks=localStream.getVideoTracks();
+  if(!tracks.length)return;
+
+  camOn=!camOn;
+  tracks.forEach(t=>t.enabled=camOn);
+
+  $("camBtn").textContent=camOn?"📷":"🚫";
+}
+
+async function flipCamera(){
+  facingMode=facingMode==="user"?"environment":"user";
+
+  try{
+    const newStream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:facingMode},
+      audio:false
+    });
+
+    const newTrack=newStream.getVideoTracks()[0];
+
+    const old=localStream.getVideoTracks()[0];
+    if(old)localStream.removeTrack(old);
+
+    localStream.addTrack(newTrack);
+
+    $("localVideo").srcObject=localStream;
+
+    for(const pc of peers.values()){
+      const sender=pc.getSenders().find(s=>s.track&&s.track.kind==="video");
+      if(sender)await sender.replaceTrack(newTrack);
+    }
+
+  }catch(e){
+    alert("تعویض دوربین در این دستگاه پشتیبانی نشد.");
+  }
+}
+
+async function shareScreen(){
+  if(!navigator.mediaDevices.getDisplayMedia){
+    alert("اشتراک صفحه در این مرورگر پشتیبانی نمی‌شود.");
+    return;
+  }
+
+  try{
+    screenStream=await navigator.mediaDevices.getDisplayMedia({
+      video:true
+    });
+
+    const screenTrack=screenStream.getVideoTracks()[0];
+
+    for(const pc of peers.values()){
+      const sender=pc.getSenders().find(
+        s=>s.track&&s.track.kind==="video"
+      );
+      if(sender)await sender.replaceTrack(screenTrack);
+    }
+
+    $("localVideo").srcObject=screenStream;
+
+    screenTrack.onended=async()=>{
+      const cam=localStream.getVideoTracks()[0];
+
+      for(const pc of peers.values()){
+        const sender=pc.getSenders().find(
+          s=>s.track&&s.track.kind==="video"
+        );
+        if(sender&&cam)await sender.replaceTrack(cam);
+      }
+
+      $("localVideo").srcObject=localStream;
+    };
+
+  }catch(e){}
+}
+
+/* =========================================================
+   CLASS CHAT
+========================================================= */
+
+async function loadClassMessages(){
+  if(!currentMeeting)return;
+
+  const {data}=await supabaseClient
+    .from("messages")
+    .select("*")
+    .eq("meeting_id",currentMeeting.id)
+    .order("id",{ascending:true});
+
+  const box=$("classMessages");
+  box.innerHTML="";
+
+  (data||[]).forEach(addClassMessage);
+
+  if(classMessagesChannel){
+    try{await supabaseClient.removeChannel(classMessagesChannel)}catch(e){}
+  }
+
+  classMessagesChannel=supabaseClient.channel(
+    "zaban-shin-messages-"+currentMeeting.id
+  );
+
+  classMessagesChannel
+    .on(
+      "postgres_changes",
+      {
+        event:"INSERT",
+        schema:"public",
+        table:"messages",
+        filter:"meeting_id=eq."+currentMeeting.id
+      },
+      payload=>{
+        addClassMessage(payload.new);
+      }
+    )
+    .subscribe();
+}
+
+function addClassMessage(m){
+  const box=$("classMessages");
+  if(!box)return;
+
+  const div=document.createElement("div");
+  div.className="chatMsg";
+  div.innerHTML=
+    "<strong>"+escapeHtml(m.user_name||"کاربر")+"</strong>"+
+    escapeHtml(m.text||"");
+
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+}
+
+async function sendClassMessage(){
+  const input=$("classMessageInput");
+  const text=input.value.trim();
+
+  if(!text||!currentMeeting)return;
+
+  const {error}=await supabaseClient
+    .from("messages")
+    .insert({
+      meeting_id:currentMeeting.id,
+      user_id:currentUser.id,
+      user_name:currentUser.username,
+      text:text
+    });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  input.value="";
+}
+
+/* =========================================================
+   MEMBERS
+========================================================= */
+
+async function loadMembers(){
+  const body=$("membersBody");
+  if(!body||!classChannel)return;
+
+  const state=classChannel.presenceState();
+
+  const members=[];
+
+  Object.keys(state).forEach(key=>{
+    const arr=state[key]||[];
+    arr.forEach(x=>{
+      members.push(x);
+    });
+  });
+
+  body.innerHTML=members.map(m=>`
+    <div class="card" style="margin-bottom:8px">
+      <b>${escapeHtml(m.name||"کاربر")}</b>
+      <span class="badge ${m.role||"student"}">
+        ${roleText(m.role||"student")}
+      </span>
+    </div>
+  `).join("")||"<p>عضوی نیست.</p>";
+}
+
+/* =========================================================
+   CLASS PANELS
+========================================================= */
+
+function togglePanel(id){
+  const p=$(id);
+  if(!p)return;
+
+  document.querySelectorAll(".classPanel").forEach(x=>{
+    if(x.id!==id)x.classList.remove("show");
+  });
+
+  p.classList.toggle("show");
+}
+
+/* =========================================================
+   WHITEBOARD
+========================================================= */
+
+function setupBoard(){
+  const canvas=$("boardCanvas");
+  const parent=canvas.parentElement;
+
+  function resize(){
+    const old=document.createElement("canvas");
+    old.width=canvas.width;
+    old.height=canvas.height;
+
+    if(canvas.width&&canvas.height){
+      old.getContext("2d").drawImage(canvas,0,0);
+    }
+
+    canvas.width=parent.clientWidth;
+    canvas.height=Math.max(350,parent.clientHeight-55);
+
+    drawBoard();
+  }
+
+  window.removeEventListener("resize",resize);
+  window.addEventListener("resize",resize);
+
+  resize();
+
+  canvas.onpointerdown=boardPointerDown;
+  canvas.onpointermove=boardPointerMove;
+  canvas.onpointerup=boardPointerUp;
+  canvas.onpointercancel=boardPointerUp;
+
+  drawBoard();
+}
+
+function setBoardTool(tool){
+  if(!boardAllowed){
+    alert("فقط معلم و ادمین می‌توانند روی تخته بنویسند.");
+    return;
+  }
+
+  boardTool=tool;
+}
+
+function boardPoint(e){
+  const c=$("boardCanvas");
+  const r=c.getBoundingClientRect();
+
+  return {
+    x:(e.clientX-r.left)*(c.width/r.width),
+    y:(e.clientY-r.top)*(c.height/r.height)
+  };
+}
+
+function boardPointerDown(e){
+  if(!boardAllowed)return;
+
+  const p=boardPoint(e);
+
+  if(boardTool==="text"){
+    const text=prompt("متن را وارد کن:");
+    if(!text)return;
+
+    boardUndo.push(JSON.stringify(boardObjects));
+    boardRedo=[];
+
+    boardObjects.push({
+      type:"text",
+      x:p.x,
+      y:p.y,
+      text:text,
+      size:parseInt($("textSize").value)||24
+    });
+
+    drawBoard();
+    sendBoardState();
+    return;
+  }
+
+  boardDrawing=true;
+  boardStartX=p.x;
+  boardStartY=p.y;
+
+  if(boardTool==="pen"||boardTool==="eraser"){
+    boardUndo.push(JSON.stringify(boardObjects));
+    boardRedo=[];
+
+    boardObjects.push({
+      type:"path",
+      points:[[p.x,p.y]],
+      erase:boardTool==="eraser"
+    });
+  }
+}
+
+function boardPointerMove(e){
+  if(!boardAllowed||!boardDrawing)return;
+
+  const p=boardPoint(e);
+
+  if(boardTool==="pen"||boardTool==="eraser"){
+    const obj=boardObjects[boardObjects.length-1];
+    obj.points.push([p.x,p.y]);
+    drawBoard();
+    return;
+  }
+
+  drawBoard();
+  const ctx=$("boardCanvas").getContext("2d");
+
+  ctx.save();
+  ctx.strokeStyle="#2563eb";
+  ctx.lineWidth=3;
+
+  const x=boardStartX;
+  const y=boardStartY;
+
+  if(boardTool==="line"){
+    ctx.beginPath();
+    ctx.moveTo(x,y);
+    ctx.lineTo(p.x,p.y);
+    ctx.stroke();
+  }
+
+  if(boardTool==="rect"){
+    ctx.strokeRect(x,y,p.x-x,p.y-y);
+  }
+
+  if(boardTool==="circle"){
+    const r=Math.sqrt(
+      Math.pow(p.x-x,2)+Math.pow(p.y-y,2)
+    );
+    ctx.beginPath();
+    ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
+function boardPointerUp(e){
+  if(!boardAllowed||!boardDrawing)return;
+
+  boardDrawing=false;
+  const p=boardPoint(e);
+
+  if(["line","rect","circle"].includes(boardTool)){
+    boardUndo.push(JSON.stringify(boardObjects));
+    boardRedo=[];
+
+    boardObjects.push({
+      type:boardTool,
+      x:boardStartX,
+      y:boardStartY,
+      x2:p.x,
+      y2:p.y
+    });
+
+    drawBoard();
+    sendBoardState();
+  }else{
+    sendBoardState();
+  }
+}
+
+function drawBoard(){
+  const c=$("boardCanvas");
+  if(!c)return;
+
+  const ctx=c.getContext("2d");
+
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.fillStyle="white";
+  ctx.fillRect(0,0,c.width,c.height);
+
+  boardObjects.forEach(o=>{
+    ctx.save();
+
+    if(o.type==="path"){
+      ctx.strokeStyle=o.erase?"white":"#111827";
+      ctx.lineWidth=o.erase?20:3;
+      ctx.lineCap="round";
+      ctx.beginPath();
+
+      o.points.forEach((p,i)=>{
+        if(i===0)ctx.moveTo(p[0],p[1]);
+        else ctx.lineTo(p[0],p[1]);
+      });
+
+      ctx.stroke();
+    }
+
+    if(o.type==="line"){
+      ctx.strokeStyle="#111827";
+      ctx.lineWidth=3;
+      ctx.beginPath();
+      ctx.moveTo(o.x,o.y);
+      ctx.lineTo(o.x2,o.y2);
+      ctx.stroke();
+    }
+
+    if(o.type==="rect"){
+      ctx.strokeStyle="#111827";
+      ctx.lineWidth=3;
+      ctx.strokeRect(
+        o.x,o.y,o.x2-o.x,o.y2-o.y
+      );
+    }
+
+    if(o.type==="circle"){
+      const r=Math.sqrt(
+        Math.pow(o.x2-o.x,2)+
+        Math.pow(o.y2-o.y,2)
+      );
+
+      ctx.strokeStyle="#111827";
+      ctx.lineWidth=3;
+      ctx.beginPath();
+      ctx.arc(o.x,o.y,r,0,Math.PI*2);
+      ctx.stroke();
+    }
+
+    if(o.type==="text"){
+      ctx.fillStyle="#111827";
+      ctx.font=o.size+"px Tahoma";
+      ctx.fillText(o.text,o.x,o.y);
+    }
+
+    ctx.restore();
+  });
+}
+
+function undoBoard(){
+  if(!boardAllowed||!boardObjects.length)return;
+
+  boardRedo.push(JSON.stringify(boardObjects));
+  boardUndo.push(JSON.stringify(boardObjects));
+
+  boardObjects.pop();
+  drawBoard();
+  sendBoardState();
+}
+
+function redoBoard(){
+  if(!boardAllowed||!boardRedo.length)return;
+
+  const state=boardRedo.pop();
+
+  boardUndo.push(JSON.stringify(boardObjects));
+  boardObjects=JSON.parse(state);
+
+  drawBoard();
+  sendBoardState();
+}
+
+function clearBoard(){
+  if(!boardAllowed)return;
+
+  if(!confirm("تخته پاک شود؟"))return;
+
+  boardUndo.push(JSON.stringify(boardObjects));
+  boardRedo=[];
+  boardObjects=[];
+
+  drawBoard();
+  sendBoardState();
+}
+
+function sendBoardState(){
+  if(!classChannel||!boardAllowed)return;
+
+  broadcast({
+    event:"board",
+    payload:{
+      senderId:String(currentUser.id),
+      senderRole:currentUser.role,
+      objects:boardObjects
+    }
+  });
+}
+
+function handleBoardMessage(p){
+  if(
+    p.senderRole!=="teacher"&&
+    p.senderRole!=="admin"
+  )return;
+
+  boardObjects=Array.isArray(p.objects)?p.objects:[];
+  drawBoard();
+}
+
+/* =========================================================
+   RECORDING
+========================================================= */
+
+async function toggleRecording(){
+  if(recording){
+    stopRecording();
+    return;
+  }
+
+  await startRecording();
+}
+
+async function startRecording(){
+  if(!localStream||!localStream.getTracks().length){
+    alert("برای ضبط باید حداقل دوربین یا میکروفون فعال باشد.");
+    return;
+  }
+
+  try{
+
+    /*
+      ضبط از Stream محلی شروع می‌شود.
+      اگر مرورگر اجازه دهد، تصویر کلاس از ویدئوی فعلی
+      و صدای محلی ضبط می‌شود.
+    */
+
+    const stream=localStream;
+
+    const options={
+      mimeType:"video/webm;codecs=vp8,opus"
+    };
+
+    recorder=new MediaRecorder(
+      stream,
+      MediaRecorder.isTypeSupported(options.mimeType)
+      ?options
+      :undefined
+    );
+
+    recordChunks=[];
+
+    recorder.ondataavailable=e=>{
+      if(e.data&&e.data.size)
+        recordChunks.push(e.data);
+    };
+
+    recorder.onstop=async()=>{
+      const blob=new Blob(recordChunks,{
+        type:"video/webm"
+      });
+
+      await saveRecording(blob);
+    };
+
+    recorder.start(1000);
+    recording=true;
+
+    $("recordBtn").textContent="⏹️ توقف ضبط";
+    $("recordBtn").classList.remove("green");
+    $("recordBtn").classList.add("red");
+
+  }catch(e){
+    alert("ضبط کلاس در این مرورگر امکان‌پذیر نیست.");
+  }
+}
+
+function stopRecording(){
+  if(recorder&&recording){
+    recorder.stop();
+    recording=false;
+
+    $("recordBtn").textContent="⏺️ ضبط";
+    $("recordBtn").classList.remove("red");
+    $("recordBtn").classList.add("green");
+  }
+}
+
+async function saveRecording(blob){
+
+  const filename=
+    "recordings/"+
+    currentMeeting.id+"/"+
+    Date.now()+"-"+safeFileName(currentUser.username)+".webm";
+
+  const {error}=await supabaseClient
+    .storage
+    .from("recordings")
+    .upload(filename,blob,{
+      contentType:"video/webm",
+      upsert:false
+    });
+
+  if(error){
+    /*
+      اگر Storage تنظیم نشده باشد، فایل را حداقل
+      در دستگاه کاربر ذخیره می‌کنیم.
+    */
+    downloadBlob(blob,"zaban-shin-class.webm");
+    alert(
+      "ضبط روی دستگاه ذخیره شد.\n"+
+      "برای ذخیره در بخش کلاس‌های ضبط‌شده، Storage را طبق راهنمای بعد از کد بساز."
+    );
+    return;
+  }
+
+  const {data:urlData}=
+    supabaseClient.storage
+      .from("recordings")
+      .getPublicUrl(filename);
+
+  const publicUrl=urlData.publicUrl;
+
+  const {error:dbError}=await supabaseClient
+    .from("recordings")
+    .insert({
+      meeting_id:currentMeeting.id,
+      user_id:currentUser.id,
+      user_name:currentUser.username,
+      title:currentMeeting.name,
+      storage_path:filename,
+      public_url:publicUrl
+    });
+
+  if(dbError){
+    downloadBlob(blob,"zaban-shin-class.webm");
+    alert("فایل ساخته شد ولی ثبت اطلاعات ضبط در دیتابیس انجام نشد.");
+    return;
+  }
+
+  alert("🎉 کلاس ضبط و ذخیره شد.");
+}
+
+function downloadBlob(blob,name){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=name;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+
+async function loadRecordings(){
+  const box=$("recordingsList");
+  if(!box)return;
+
+  const {data,error}=await supabaseClient
+    .from("recordings")
+    .select("*")
+    .order("id",{ascending:false});
+
+  if(error){
+    box.innerHTML=
+      "<div class='card'>"+
+      "برای فعال شدن این بخش باید جدول recordings را بسازی."+
+      "</div>";
+    return;
+  }
+
+  if(!data||!data.length){
+    box.innerHTML="<div class='card empty'>هنوز ضبطی وجود ندارد.</div>";
+    return;
+  }
+
+  box.innerHTML=data.map(r=>`
+    <div class="record">
+      <div>
+        <b>🎬 ${escapeHtml(r.title||"کلاس ضبط‌شده")}</b>
+        <br>
+        <small>ضبط توسط: ${escapeHtml(r.user_name||"کاربر")}</small>
+      </div>
+      <a href="${escapeAttr(r.public_url||"#")}" target="_blank">
+        <button class="primary">▶️ پخش</button>
+      </a>
+    </div>
+  `).join("");
+}
+
+/* =========================================================
+   GROUPS
+========================================================= */
+
+async function loadGroups(){
+  const box=$("groupsList");
+  if(!box)return;
+
+  const {data,error}=await supabaseClient
+    .from("chat_groups")
+    .select("*")
+    .order("id",{ascending:false});
+
+  if(error){
+    box.innerHTML=
+      "<div class='empty'>"+
+      "جدول گروه‌های چتی هنوز ساخته نشده است."+
+      "</div>";
+    return;
+  }
+
+  if(!data||!data.length){
+    box.innerHTML="<div class='empty'>هنوز گروهی ساخته نشده.</div>";
+    return;
+  }
+
+  box.innerHTML=data.map(g=>`
+    <div class="groupItem" onclick="selectGroup('${g.id}')">
+      <b>🧑‍🤝‍🧑 ${escapeHtml(g.name)}</b>
+      <br>
+      <small>${escapeHtml(g.description||"")}</small>
+    </div>
+  `).join("");
+}
+
+async function createGroup(){
+  if(
+    currentUser.role!=="admin"&&
+    currentUser.role!=="teacher"
+  ){
+    alert("فقط معلم و ادمین می‌توانند گروه بسازند.");
+    return;
+  }
+
+  const name=$("groupName").value.trim();
+  const description=$("groupDescription").value.trim();
+
+  if(!name){
+    alert("نام گروه را وارد کن.");
+    return;
+  }
+
+  const {error}=await supabaseClient
+    .from("chat_groups")
+    .insert({
+      name:name,
+      description:description,
+      owner_id:currentUser.id,
+      owner_name:currentUser.username
+    });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  $("groupName").value="";
+  $("groupDescription").value="";
+  loadGroups();
+}
+
+async function selectGroup(id){
+  const {data,error}=await supabaseClient
+    .from("chat_groups")
+    .select("*")
+    .eq("id",id)
+    .single();
+
+  if(error||!data)return;
+
+  currentGroup=data;
+  $("selectedGroupName").textContent=
+    "🧑‍🤝‍🧑 "+data.name;
+
+  await loadGroupMessages();
+
+  if(groupMessagesChannel){
+    try{
+      await supabaseClient.removeChannel(groupMessagesChannel);
+    }catch(e){}
+  }
+
+  groupMessagesChannel=supabaseClient.channel(
+    "zaban-shin-group-"+id
+  );
+
+  groupMessagesChannel
+    .on(
+      "postgres_changes",
+      {
+        event:"INSERT",
+        schema:"public",
+        table:"chat_group_messages",
+        filter:"group_id=eq."+id
+      },
+      payload=>{
+        addGroupMessage(payload.new);
+      }
+    )
+    .subscribe();
+}
+
+async function loadGroupMessages(){
+  if(!currentGroup)return;
+
+  const {data}=await supabaseClient
+    .from("chat_group_messages")
+    .select("*")
+    .eq("group_id",currentGroup.id)
+    .order("id",{ascending:true});
+
+  $("groupMessages").innerHTML="";
+  (data||[]).forEach(addGroupMessage);
+}
+
+function addGroupMessage(m){
+  const box=$("groupMessages");
+  if(!box)return;
+
+  const div=document.createElement("div");
+  div.className="chatMsg";
+  div.innerHTML=
+    "<strong>"+escapeHtml(m.user_name||"کاربر")+
+    "</strong>"+
+    escapeHtml(m.text||"");
+
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+}
+
+async function sendGroupMessage(){
+  if(!currentGroup){
+    alert("اول یک گروه را انتخاب کن.");
+    return;
+  }
+
+  const input=$("groupMessageInput");
+  const text=input.value.trim();
+
+  if(!text)return;
+
+  const {error}=await supabaseClient
+    .from("chat_group_messages")
+    .insert({
+      group_id:currentGroup.id,
+      user_id:currentUser.id,
+      user_name:currentUser.username,
+      text:text
+    });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  input.value="";
+}
+
+/* =========================================================
+   ADMIN PANEL
+========================================================= */
+
+async function adminTab(tab,button){
+
+  if(currentUser.role!=="admin"){
+    alert("دسترسی فقط برای ادمین است.");
+    return;
+  }
+
+  if(button){
+    document.querySelectorAll(".adminTabs button")
+      .forEach(b=>b.classList.remove("active"));
+
+    button.classList.add("active");
+  }
+
+  if(tab==="users")await adminUsers();
+  if(tab==="classes")await adminClasses();
+  if(tab==="groups")await adminGroups();
+  if(tab==="recordings")await adminRecordings();
+}
+
+async function adminUsers(){
+
+  const {data,error}=await supabaseClient
+    .from("profiles")
+    .select("id,username,role")
+    .order("username");
+
+  if(error){
+    $("adminContent").innerHTML=
+      "<p>"+escapeHtml(error.message)+"</p>";
+    return;
+  }
+
+  $("adminContent").innerHTML=`
+    <h3>👥 مدیریت کاربران</h3>
+    <div style="overflow:auto">
+      <table class="adminTable">
+        <thead>
+          <tr>
+            <th>کاربر</th>
+            <th>نقش</th>
+            <th>تغییر نقش</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${(data||[]).map(u=>`
+            <tr>
+              <td>${escapeHtml(u.username)}</td>
+              <td>
+                <span class="badge ${u.role}">
+                  ${roleText(u.role)}
+                </span>
+              </td>
+              <td>
+                <button class="success"
+                  onclick="changeRole('${u.id}','teacher')">
+                  معلم
+                </button>
+
+                <button class="gray"
+                  onclick="changeRole('${u.id}','student')">
+                  دانش‌آموز
+                </button>
+
+                <button class="warning"
+                  onclick="changeRole('${u.id}','admin')">
+                  👑 ادمین
+                </button>
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+
+    <hr>
+
+    <p>
+      برای امنیت، اول شخص جدید را ادمین کن و بعد خودت را از ادمینی خارج کن.
+    </p>
+  `;
+}
+
+async function changeRole(id,role){
+
+  if(currentUser.role!=="admin"){
+    alert("دسترسی غیرمجاز.");
+    return;
+  }
+
+  if(
+    id===currentUser.id&&
+    role!=="admin"
+  ){
+    if(!confirm(
+      "داری خودت را از ادمینی خارج می‌کنی. ادامه می‌دهی؟"
+    ))return;
+  }
+
+  const {error}=await supabaseClient
+    .from("profiles")
+    .update({role:role})
+    .eq("id",id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  if(id===currentUser.id){
+    currentUser.role=role;
+    localStorage.setItem(
+      "zabanShinUser",
+      JSON.stringify(currentUser)
+    );
+
+    if(role!=="admin"){
+      $("adminMenu").classList.add("hidden");
+    }
+  }
+
+  await adminUsers();
+}
+
+async function adminClasses(){
+
+  const {data,error}=await supabaseClient
+    .from("meetings")
+    .select("*")
+    .order("id",{ascending:false});
+
+  if(error){
+    $("adminContent").innerHTML=
+      "<p>"+escapeHtml(error.message)+"</p>";
+    return;
+  }
+
+  $("adminContent").innerHTML=`
+    <h3>📚 مدیریت کلاس‌ها</h3>
+
+    ${(data||[]).map(c=>`
+      <div class="record">
+        <div>
+          <b>${escapeHtml(c.name)}</b>
+          <br>
+          <small>سازنده: ${escapeHtml(c.owner_name||"")}</small>
+        </div>
+        <button class="danger"
+          onclick="deleteClass('${c.id}')">
+          حذف
+        </button>
+      </div>
+    `).join("")||"<p>کلاسی نیست.</p>"}
+  `;
+}
+
+async function deleteClass(id){
+  if(!confirm("کلاس حذف شود؟"))return;
+
+  const {error}=await supabaseClient
+    .from("meetings")
+    .delete()
+    .eq("id",id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  adminClasses();
+  loadClasses();
+}
+
+async function adminGroups(){
+
+  const {data,error}=await supabaseClient
+    .from("chat_groups")
+    .select("*")
+    .order("id",{ascending:false});
+
+  if(error){
+    $("adminContent").innerHTML=
+      "<p>جدول گروه‌ها ساخته نشده است.</p>";
+    return;
+  }
+
+  $("adminContent").innerHTML=`
+    <h3>🧑‍🤝‍🧑 مدیریت گروه‌ها</h3>
+
+    ${(data||[]).map(g=>`
+      <div class="record">
+        <div>
+          <b>${escapeHtml(g.name)}</b>
+          <br>
+          <small>${escapeHtml(g.description||"")}</small>
+        </div>
+
+        <button class="danger"
+          onclick="deleteGroup('${g.id}')">
+          حذف
+        </button>
+      </div>
+    `).join("")||"<p>گروهی نیست.</p>"}
+  `;
+}
+
+async function deleteGroup(id){
+
+  if(!confirm("گروه حذف شود؟"))return;
+
+  const {error}=await supabaseClient
+    .from("chat_groups")
+    .delete()
+    .eq("id",id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  adminGroups();
+  loadGroups();
+}
+
+async function adminRecordings(){
+
+  const {data,error}=await supabaseClient
+    .from("recordings")
+    .select("*")
+    .order("id",{ascending:false});
+
+  if(error){
+    $("adminContent").innerHTML=
+      "<p>جدول recordings ساخته نشده است.</p>";
+    return;
+  }
+
+  $("adminContent").innerHTML=`
+    <h3>🎬 مدیریت ضبط‌ها</h3>
+
+    ${(data||[]).map(r=>`
+      <div class="record">
+        <div>
+          <b>${escapeHtml(r.title||"ضبط")}</b>
+          <br>
+          <small>${escapeHtml(r.user_name||"")}</small>
+        </div>
+
+        <div>
+          <a href="${escapeAttr(r.public_url||"#")}" target="_blank">
+            <button class="primary">پخش</button>
+          </a>
+
+          <button class="danger"
+            onclick="deleteRecording('${r.id}')">
+            حذف
+          </button>
+        </div>
+      </div>
+    `).join("")||"<p>ضبطی نیست.</p>"}
+  `;
+}
+
+async function deleteRecording(id){
+
+  if(!confirm("این ضبط حذف شود؟"))return;
+
+  const {error}=await supabaseClient
+    .from("recordings")
+    .delete()
+    .eq("id",id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  adminRecordings();
+  loadRecordings();
+}
+
+/* =========================================================
+   LEAVE CLASS
+========================================================= */
+
+async function leaveClass(silent=false){
+
+  if(!currentMeeting&&!localStream)return;
+
+  if(recording)stopRecording();
+
+  if(classChannel){
+    try{
+      await broadcast({
+        event:"leave",
+        payload:{id:String(currentUser.id)}
+      });
+    }catch(e){}
+
+    try{
+      await supabaseClient.removeChannel(classChannel);
+    }catch(e){}
+
+    classChannel=null;
+  }
+
+  if(classMessagesChannel){
+    try{
+      await supabaseClient.removeChannel(classMessagesChannel);
+    }catch(e){}
+    classMessagesChannel=null;
+  }
+
+  peers.forEach(pc=>{
+    try{pc.close()}catch(e){}
+  });
+
+  peers.clear();
+  remoteStreams.clear();
+
+  if(localStream){
+    localStream.getTracks().forEach(t=>t.stop());
+    localStream=null;
+  }
+
+  if(screenStream){
+    screenStream.getTracks().forEach(t=>t.stop());
+    screenStream=null;
+  }
+
+  $("videoGrid").innerHTML="";
+  $("classRoom").classList.remove("active");
+
+  document.querySelectorAll(".classPanel")
+    .forEach(x=>x.classList.remove("show"));
+
+  currentMeeting=null;
+
+  if(!silent)showPage("classes");
+}
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHtml(str){
+  return String(str??"")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function escapeAttr(str){
+  return escapeHtml(str);
+}
+
+function safeFileName(str){
+  return String(str||"user")
+    .replace(/[^\w\u0600-\u06FF-]/g,"_");
+}
+
+/* =========================================================
+   START
+========================================================= */
+
+window.addEventListener("load",()=>{
+  tryAutoLogin();
+});
+</script>
+
+</body>
+</html>
