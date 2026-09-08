@@ -1,0 +1,3749 @@
+<!--
+============================================================
+نسخه جدید درسگاه آنلاین
+ورود: نام کاربری + رمز عبور
+ثبت نام: نام و نام خانوادگی + نام کاربری + رمز عبور
+
+نکته:
+رمز مدیر داخل این فایل نوشته نشده است.
+نقش مدیر از دیتابیس خوانده می‌شود.
+============================================================
+-->
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1">
+
+<title>درسگاه آنلاین</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+ box-sizing:border-box;
+}
+
+body{
+ margin:0;
+ background:#050b15;
+ color:#fff;
+ font-family:Tahoma,Arial,sans-serif;
+}
+
+button,
+input,
+select,
+textarea{
+ font-family:inherit;
+}
+
+button{
+ cursor:pointer;
+}
+
+.hidden{
+ display:none!important;
+}
+
+header{
+ height:70px;
+ padding:0 20px;
+ background:#071426;
+ border-bottom:1px solid #1d416a;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ position:sticky;
+ top:0;
+ z-index:100;
+}
+
+.logo{
+ color:#ffd21c;
+ font-size:21px;
+ font-weight:bold;
+}
+
+.container{
+ width:min(1250px,94%);
+ margin:25px auto;
+}
+
+.card{
+ background:#0b1729;
+ border:1px solid #1b3d63;
+ border-radius:18px;
+ padding:20px;
+ margin-bottom:18px;
+ box-shadow:0 12px 35px #0006;
+}
+
+.auth{
+ width:min(450px,94%);
+ margin:70px auto;
+}
+
+input,
+select,
+textarea{
+ width:100%;
+ padding:13px;
+ background:#071321;
+ border:1px solid #274a70;
+ border-radius:10px;
+ color:#fff;
+ margin:6px 0;
+ outline:none;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+ border-color:#2a9cff;
+}
+
+.btn{
+ padding:11px 16px;
+ border:0;
+ border-radius:10px;
+ background:#116ac4;
+ color:#fff;
+ font-weight:bold;
+ margin:4px;
+}
+
+.btn.yellow{
+ background:#ffd21c;
+ color:#111;
+}
+
+.btn.green{
+ background:#15964c;
+}
+
+.btn.red{
+ background:#d83b3b;
+}
+
+.btn.gray{
+ background:#26384d;
+}
+
+.btn:disabled{
+ opacity:.45;
+ cursor:not-allowed;
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:
+ repeat(auto-fit,minmax(220px,1fr));
+ gap:15px;
+}
+
+.stat{
+ background:#09182b;
+ border:1px solid #1b3d63;
+ border-radius:15px;
+ padding:18px;
+}
+
+.stat strong{
+ display:block;
+ color:#ffd21c;
+ font-size:30px;
+ margin-top:7px;
+}
+
+.tabs{
+ display:flex;
+ flex-wrap:wrap;
+ gap:8px;
+ margin-bottom:18px;
+}
+
+.tab{
+ border:0;
+ background:#10243e;
+ color:#c8d8eb;
+ padding:11px 15px;
+ border-radius:10px;
+}
+
+.tab.active{
+ background:#176dc7;
+ color:#fff;
+}
+
+.badge{
+ display:inline-block;
+ padding:5px 9px;
+ border-radius:8px;
+ font-size:12px;
+}
+
+.badge.admin{
+ background:#5e4a00;
+ color:#ffe36b;
+}
+
+.badge.teacher{
+ background:#103e70;
+ color:#79c5ff;
+}
+
+.badge.student{
+ background:#12492f;
+ color:#7be7a4;
+}
+
+.notice{
+ padding:13px;
+ border-radius:12px;
+ background:#0d223a;
+ border:1px solid #23547e;
+ margin:10px 0;
+ color:#d9e8f7;
+}
+
+.muted{
+ color:#9db1c8;
+ font-size:13px;
+}
+
+.userbox,
+.classbox,
+.request{
+ background:#081526;
+ border:1px solid #21476a;
+ border-radius:14px;
+ padding:14px;
+ margin:8px 0;
+}
+
+.scroll{
+ overflow:auto;
+}
+
+table{
+ width:100%;
+ border-collapse:collapse;
+}
+
+th,
+td{
+ padding:11px;
+ border-bottom:1px solid #203d59;
+ text-align:right;
+ white-space:nowrap;
+}
+
+th{
+ color:#ffd21c;
+}
+
+.room{
+ display:grid;
+ grid-template-columns:1fr 340px;
+ gap:15px;
+}
+
+@media(max-width:850px){
+
+ .room{
+  grid-template-columns:1fr;
+ }
+
+}
+
+.videos{
+ display:grid;
+ grid-template-columns:
+ repeat(auto-fit,minmax(220px,1fr));
+ gap:12px;
+}
+
+.video{
+ background:#02060b;
+ border:1px solid #1d4165;
+ border-radius:14px;
+ min-height:180px;
+ overflow:hidden;
+ position:relative;
+}
+
+.video video{
+ width:100%;
+ height:100%;
+ min-height:180px;
+ object-fit:cover;
+ background:#02060b;
+}
+
+.vname{
+ position:absolute;
+ bottom:7px;
+ right:7px;
+ background:#000c;
+ padding:5px 9px;
+ border-radius:7px;
+}
+
+.chat{
+ height:420px;
+ overflow:auto;
+ background:#06101d;
+ border-radius:12px;
+ padding:10px;
+}
+
+.message{
+ padding:9px;
+ border-bottom:1px solid #1b344f;
+}
+
+#board{
+ width:100%;
+ height:560px;
+ background:white;
+ border-radius:14px;
+ touch-action:none;
+}
+
+#toast{
+ display:none;
+ position:fixed;
+ left:15px;
+ bottom:15px;
+ z-index:9999;
+ background:#10263e;
+ border:1px solid #2b618e;
+ padding:13px 18px;
+ border-radius:12px;
+}
+
+.guide{
+ line-height:2;
+}
+
+.guide b{
+ color:#ffd21c;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="toast"></div>
+
+<!-- ======================================================
+LOGIN / REGISTER
+====================================================== -->
+
+<div id="authPage">
+
+ <div class="card auth">
+
+  <h1 id="authTitle">
+   🎓 ورود به درسگاه
+  </h1>
+
+  <div id="registerFields" class="hidden">
+
+   <input
+    id="regName"
+    type="text"
+    placeholder="نام و نام خانوادگی">
+
+   <input
+    id="regUsername"
+    type="text"
+    placeholder="نام کاربری">
+
+  </div>
+
+  <div id="loginUsernameBox">
+
+   <input
+    id="loginUsername"
+    type="text"
+    placeholder="نام کاربری">
+
+  </div>
+
+  <input
+   id="authPassword"
+   type="password"
+   placeholder="رمز عبور">
+
+  <button
+   class="btn yellow"
+   style="width:100%"
+   onclick="submitAuth()">
+
+   ورود
+
+  </button>
+
+  <div style="text-align:center;margin-top:12px">
+
+   <button
+    class="btn gray"
+    onclick="toggleAuthMode()">
+
+    ساخت حساب جدید
+
+   </button>
+
+  </div>
+
+  <div class="notice">
+   برای امنیت بیشتر، رمز عبور شما در این صفحه نمایش داده نمی‌شود
+   و رمز مدیر نیز داخل کد سایت قرار ندارد.
+  </div>
+
+ </div>
+
+</div>
+
+
+<!-- ======================================================
+MAIN
+====================================================== -->
+
+<div id="mainPage" class="hidden">
+
+<header>
+
+ <div class="logo">
+  🎓 درسگاه آنلاین
+ </div>
+
+ <div>
+
+  <span id="headerUser"></span>
+
+  <button
+   class="btn red"
+   onclick="logout()">
+
+   خروج
+
+  </button>
+
+ </div>
+
+</header>
+
+
+<div class="container">
+
+
+<!-- ======================================================
+WELCOME
+====================================================== -->
+
+<div class="card">
+
+ <h2 id="welcome"></h2>
+
+ <div
+  id="roleText"
+  class="muted">
+ </div>
+
+</div>
+
+
+<!-- ======================================================
+ADMIN PANEL
+====================================================== -->
+
+<div
+ id="adminPanel"
+ class="hidden">
+
+ <div class="card">
+
+  <h2>
+   👑 پنل مدیریت
+  </h2>
+
+  <div class="grid">
+
+   <div class="stat">
+    👥 کاربران
+    <strong id="statUsers">0</strong>
+   </div>
+
+   <div class="stat">
+    👨‍🏫 معلم‌ها
+    <strong id="statTeachers">0</strong>
+   </div>
+
+   <div class="stat">
+    👨‍🎓 دانش‌آموزها
+    <strong id="statStudents">0</strong>
+   </div>
+
+   <div class="stat">
+    🏫 کلاس‌ها
+    <strong id="statClasses">0</strong>
+   </div>
+
+   <div class="stat">
+    🚪 جلسات ثبت‌شده
+    <strong id="statSessions">0</strong>
+   </div>
+
+  </div>
+
+ </div>
+
+
+ <div class="card">
+
+  <div class="tabs">
+
+   <button
+    class="tab active"
+    onclick="adminTab('users',this)">
+    👥 کاربران
+   </button>
+
+   <button
+    class="tab"
+    onclick="adminTab('teachers',this)">
+    👨‍🏫 معلم‌ها
+   </button>
+
+   <button
+    class="tab"
+    onclick="adminTab('students',this)">
+    👨‍🎓 دانش‌آموزها
+   </button>
+
+   <button
+    class="tab"
+    onclick="adminTab('classes',this)">
+    🏫 کلاس‌ها
+   </button>
+
+   <button
+    class="tab"
+    onclick="adminTab('sessions',this)">
+    🚪 ورود و خروج
+   </button>
+
+   <button
+    class="tab"
+    onclick="adminTab('activity',this)">
+    📊 فعالیت‌ها
+   </button>
+
+   <button
+    class="tab"
+    onclick="adminTab('messages',this)">
+    💬 پیام‌ها
+   </button>
+
+  </div>
+
+  <div id="adminContent"></div>
+
+ </div>
+
+</div>
+
+
+<!-- ======================================================
+TEACHER
+====================================================== -->
+
+<div
+ id="teacherPanel"
+ class="hidden">
+
+ <div class="card">
+
+  <h2>
+   👨‍🏫 ساخت کلاس
+  </h2>
+
+  <input
+   id="newClassName"
+   placeholder="نام کلاس">
+
+  <label>
+   <input
+    id="allowMic"
+    type="checkbox"
+    checked>
+   اجازه درخواست میکروفون
+  </label>
+
+  <br>
+
+  <label>
+   <input
+    id="allowCamera"
+    type="checkbox"
+    checked>
+   اجازه درخواست دوربین
+  </label>
+
+  <br>
+
+  <label>
+   <input
+    id="allowChat"
+    type="checkbox"
+    checked>
+   فعال بودن چت
+  </label>
+
+  <br><br>
+
+  <button
+   class="btn yellow"
+   onclick="createClass()">
+
+   ➕ ایجاد کلاس
+
+  </button>
+
+ </div>
+
+</div>
+
+
+<!-- ======================================================
+GUIDE
+====================================================== -->
+
+<div class="card guide">
+
+ <h2>
+  📚 درسگاه راهنما
+ </h2>
+
+ <div class="notice">
+
+  <b>میکروفون:</b><br>
+
+  اگر این گزینه فعال باشد،
+  دانش‌آموز می‌تواند برای صحبت کردن درخواست اجازه بفرستد.
+  بعد از تأیید معلم، می‌تواند میکروفونش را روشن کند.
+  اگر این گزینه غیرفعال باشد،
+  دانش‌آموز نمی‌تواند درخواست صحبت کردن بفرستد
+  و کنترل میکروفون او فقط در اختیار معلم است.
+
+ </div>
+
+ <div class="notice">
+
+  <b>دوربین:</b><br>
+
+  اگر این گزینه فعال باشد،
+  دانش‌آموز می‌تواند برای روشن کردن دوربین درخواست اجازه بفرستد.
+  بعد از تأیید معلم، می‌تواند دوربینش را روشن کند.
+  اگر این گزینه غیرفعال باشد،
+  دانش‌آموز نمی‌تواند درخواست فعال کردن دوربین بفرستد
+  و کنترل دوربین او در اختیار معلم است.
+
+ </div>
+
+ <div class="notice">
+
+  <b>تخته:</b><br>
+
+  فقط معلم می‌تواند روی تخته بنویسد،
+  پاک کند یا آن را تغییر دهد.
+  دانش‌آموز تخته را فقط مشاهده می‌کند.
+
+ </div>
+
+ <div class="notice">
+
+  <b>چت:</b><br>
+
+  اگر چت فعال باشد،
+  کاربران کلاس می‌توانند پیام ارسال کنند.
+  اگر چت غیرفعال باشد،
+  ارسال پیام برای کلاس بسته می‌شود.
+
+ </div>
+
+</div>
+
+
+<!-- ======================================================
+CLASSES
+====================================================== -->
+
+<div class="card">
+
+ <h2>
+  🏫 کلاس‌ها
+ </h2>
+
+ <div id="classList"></div>
+
+</div>
+
+
+<!-- ======================================================
+ROOM
+====================================================== -->
+
+<div
+ id="roomPanel"
+ class="hidden">
+
+ <div class="card">
+
+  <button
+   class="btn red"
+   onclick="leaveRoom()">
+
+   ← خروج از کلاس
+
+  </button>
+
+  <h2 id="roomTitle"></h2>
+
+  <div
+   id="roomInfo"
+   class="notice">
+  </div>
+
+ </div>
+
+
+ <div class="room">
+
+
+  <div>
+
+   <div class="card">
+
+    <h3>
+     🎥 کلاس آنلاین
+    </h3>
+
+    <div
+     id="videos"
+     class="videos">
+    </div>
+
+    <br>
+
+    <button
+     class="btn"
+     onclick="toggleMic()">
+     🎤 میکروفون
+    </button>
+
+    <button
+     class="btn"
+     onclick="toggleCamera()">
+     📷 دوربین
+    </button>
+
+    <button
+     class="btn gray"
+     onclick="requestMic()">
+     🙋 درخواست صحبت
+    </button>
+
+    <button
+     class="btn gray"
+     onclick="requestCamera()">
+     🙋 درخواست دوربین
+    </button>
+
+   </div>
+
+
+   <div class="card">
+
+    <h3>
+     📝 تخته کلاس
+    </h3>
+
+    <div id="boardTools"></div>
+
+    <canvas id="board"></canvas>
+
+   </div>
+
+  </div>
+
+
+  <div>
+
+   <div class="card">
+
+    <h3>
+     💬 چت
+    </h3>
+
+    <div
+     id="chat"
+     class="chat">
+    </div>
+
+    <input
+     id="chatInput"
+     placeholder="پیام خود را بنویسید...">
+
+    <button
+     class="btn yellow"
+     onclick="sendMessage()">
+
+     ارسال
+
+    </button>
+
+   </div>
+
+
+   <div
+    id="teacherRequests"
+    class="card hidden">
+
+    <h3>
+     🔔 درخواست‌های دانش‌آموزان
+    </h3>
+
+    <div id="requests"></div>
+
+   </div>
+
+
+   <div
+    id="teacherStudents"
+    class="card hidden">
+
+    <h3>
+     👥 کنترل دانش‌آموزان
+    </h3>
+
+    <div id="studentControls"></div>
+
+   </div>
+
+  </div>
+
+ </div>
+
+</div>
+
+
+</div>
+</div>
+
+
+<script>
+
+/* ========================================================
+SUPABASE
+======================================================== */
+
+const SUPABASE_URL =
+"https://uqqumhmzndgyoigcqnti.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_R3LAX7EYbdYUwjQRgkmesA_QJ2ZmPtD";
+
+const db =
+supabase.createClient(
+ SUPABASE_URL,
+ SUPABASE_KEY
+);
+
+
+/*
+------------------------------------------------------------
+وضعیت برنامه
+------------------------------------------------------------
+*/
+
+let currentUser=null;
+let currentProfile=null;
+
+let currentMeeting=null;
+let currentSession=null;
+
+let localStream=null;
+
+let authMode="login";
+
+let peers=new Map();
+
+let boardObjects=[];
+let boardCtx=null;
+let boardDrawing=false;
+let boardLast=null;
+
+let roomChannels=[];
+
+
+/* ========================================================
+TOAST
+======================================================== */
+
+function toast(text){
+
+ const box=document.getElementById("toast");
+
+ box.textContent=text;
+
+ box.style.display="block";
+
+ clearTimeout(window.toastTimer);
+
+ window.toastTimer=setTimeout(()=>{
+  box.style.display="none";
+ },3500);
+
+}
+
+
+/* ========================================================
+AUTH MODE
+======================================================== */
+
+function toggleAuthMode(){
+
+ authMode=
+ authMode==="login"
+ ? "register"
+ : "login";
+
+ document
+ .getElementById("registerFields")
+ .classList.toggle(
+  "hidden",
+  authMode==="login"
+ );
+
+ document
+ .getElementById("loginUsernameBox")
+ .classList.toggle(
+  "hidden",
+  authMode==="register"
+ );
+
+ document
+ .getElementById("authTitle")
+ .textContent=
+ authMode==="login"
+ ? "🎓 ورود به درسگاه"
+ : "📝 ساخت حساب جدید";
+
+ document
+ .querySelector("#authPage .btn.yellow")
+ .textContent=
+ authMode==="login"
+ ? "ورود"
+ : "ثبت‌نام";
+
+}
+
+
+/* ========================================================
+AUTH
+======================================================== */
+
+/*
+برای username/password واقعی،
+ورود توسط RPC دیتابیس انجام می‌شود.
+
+رمز عبور هرگز در جدول profiles به‌صورت ساده ذخیره نمی‌شود.
+*/
+
+async function submitAuth(){
+
+ if(authMode==="register"){
+
+  const name=
+   document
+   .getElementById("regName")
+   .value.trim();
+
+  const username=
+   document
+   .getElementById("regUsername")
+   .value.trim()
+   .toLowerCase();
+
+  const password=
+   document
+   .getElementById("authPassword")
+   .value;
+
+  if(!name || !username || !password){
+   toast("همه قسمت‌ها را کامل کنید");
+   return;
+  }
+
+  if(username.length<3){
+   toast("نام کاربری حداقل ۳ حرف باشد");
+   return;
+  }
+
+  if(password.length<8){
+   toast("رمز عبور باید حداقل ۸ کاراکتر باشد");
+   return;
+  }
+
+  const {data,error}=
+   await db.rpc(
+    "register_username",
+    {
+     p_name:name,
+     p_username:username,
+     p_password:password
+    }
+   );
+
+  if(error){
+   toast(error.message);
+   return;
+  }
+
+  if(!data || !data.user_id){
+   toast("ثبت‌نام انجام نشد");
+   return;
+  }
+
+  /*
+  توکن نشست توسط RPC برنمی‌گردد.
+  برای پروژه واقعی بهتر است احراز هویت اختصاصی
+  با Edge Function یا Auth انجام شود.
+  */
+
+  toast("حساب ساخته شد. اکنون وارد شوید.");
+
+  authMode="login";
+
+  document
+   .getElementById("registerFields")
+   .classList.add("hidden");
+
+  document
+   .getElementById("loginUsernameBox")
+   .classList.remove("hidden");
+
+  document
+   .getElementById("authTitle")
+   .textContent="🎓 ورود به درسگاه";
+
+  return;
+
+ }
+
+
+ const username=
+  document
+  .getElementById("loginUsername")
+  .value.trim()
+  .toLowerCase();
+
+ const password=
+  document
+  .getElementById("authPassword")
+  .value;
+
+ if(!username || !password){
+  toast("نام کاربری و رمز عبور را وارد کنید");
+  return;
+ }
+
+ /*
+ این تابع باید در Supabase ساخته شود.
+ */
+
+ const {data,error}=
+  await db.rpc(
+   "login_username",
+   {
+    p_username:username,
+    p_password:password
+   }
+  );
+
+ if(error){
+  toast("نام کاربری یا رمز عبور اشتباه است");
+  return;
+ }
+
+ if(!data || !data.user_id){
+  toast("نام کاربری یا رمز عبور اشتباه است");
+  return;
+ }
+
+ /*
+ برای حفظ امنیت،
+ این نمونه بدون قرار دادن رمز مدیر در HTML
+ کار می‌کند.
+ */
+
+ currentUser={
+  id:data.user_id,
+  name:data.name,
+  username:data.username,
+  role:data.role
+ };
+
+ currentProfile=currentUser;
+
+ await showMain();
+
+}
+
+
+/* ========================================================
+SHOW MAIN
+======================================================== */
+
+async function showMain(){
+
+ document
+ .getElementById("authPage")
+ .classList.add("hidden");
+
+ document
+ .getElementById("mainPage")
+ .classList.remove("hidden");
+
+ document
+ .getElementById("headerUser")
+ .textContent=
+ currentProfile.name+" ";
+
+ document
+ .getElementById("welcome")
+ .textContent=
+ "سلام "+currentProfile.name+" 👋";
+
+ document
+ .getElementById("roleText")
+ .textContent=
+ "نقش: "+roleName(currentProfile.role);
+
+ if(currentProfile.role==="admin"){
+
+  document
+   .getElementById("adminPanel")
+   .classList.remove("hidden");
+
+  await loadAdmin();
+
+ }
+
+ if(currentProfile.role==="teacher"){
+
+  document
+   .getElementById("teacherPanel")
+   .classList.remove("hidden");
+
+ }
+
+ await loadClasses();
+
+}
+
+
+/* ========================================================
+ROLE
+======================================================== */
+
+function roleName(role){
+
+ if(role==="admin")return "مدیر";
+ if(role==="teacher")return "معلم";
+
+ return "دانش‌آموز";
+
+}
+
+
+/* ========================================================
+LOGOUT
+======================================================== */
+
+async function logout(){
+
+ if(currentSession){
+
+  await db.rpc(
+   "leave_class",
+   {
+    p_session_id:currentSession
+   }
+  );
+
+ }
+
+ if(localStream){
+
+  localStream
+   .getTracks()
+   .forEach(t=>t.stop());
+
+  localStream=null;
+
+ }
+
+ for(const pc of peers.values()){
+
+  try{
+   pc.close();
+  }catch(e){}
+
+ }
+
+ peers.clear();
+
+ currentUser=null;
+ currentProfile=null;
+
+ location.reload();
+
+}
+
+
+/* ========================================================
+CLASSES
+======================================================== */
+
+async function loadClasses(){
+
+ const {data,error}=
+  await db
+  .from("meetings")
+  .select(`
+   *,
+   profiles:teacher_id(name)
+  `)
+  .order(
+   "created_at",
+   {ascending:false}
+  );
+
+ if(error){
+
+  toast("خطا در دریافت کلاس‌ها");
+  return;
+
+ }
+
+ const box=
+  document.getElementById("classList");
+
+ if(!data || !data.length){
+
+  box.innerHTML=
+   "<div class='notice'>کلاسی وجود ندارد.</div>";
+
+  return;
+
+ }
+
+ box.innerHTML=
+ data.map(c=>{
+
+  const teacher=
+   c.profiles?.name || "معلم";
+
+  return `
+
+   <div class="classbox">
+
+    <h3>
+     🏫 ${escapeHtml(c.name)}
+    </h3>
+
+    <div class="muted">
+     معلم:
+     ${escapeHtml(teacher)}
+    </div>
+
+    <div class="muted">
+     تاریخ ایجاد:
+     ${new Date(c.created_at)
+       .toLocaleString("fa-IR")}
+    </div>
+
+    <br>
+
+    <button
+     class="btn yellow"
+     onclick="joinClass(${c.id})">
+
+     ورود به کلاس
+
+    </button>
+
+    ${
+     currentProfile.role==="admin"
+     ||
+     (
+      currentProfile.role==="teacher"
+      &&
+      c.teacher_id===currentUser.id
+     )
+     ?
+     `
+      <button
+       class="btn red"
+       onclick="deleteClass(${c.id})">
+
+       حذف کلاس
+
+      </button>
+     `
+     :
+     ""
+    }
+
+   </div>
+
+  `;
+
+ }).join("");
+
+}
+
+
+/* ========================================================
+CREATE CLASS
+======================================================== */
+
+async function createClass(){
+
+ if(currentProfile.role!=="teacher"){
+  toast("فقط معلم می‌تواند کلاس بسازد");
+  return;
+ }
+
+ const name=
+  document
+  .getElementById("newClassName")
+  .value.trim();
+
+ if(!name){
+  toast("نام کلاس را وارد کنید");
+  return;
+ }
+
+ const {error}=
+  await db
+  .from("meetings")
+  .insert({
+
+   name:name,
+
+   teacher_id:currentUser.id,
+
+   allow_mic_requests:
+    document
+    .getElementById("allowMic")
+    .checked,
+
+   allow_camera_requests:
+    document
+    .getElementById("allowCamera")
+    .checked,
+
+   allow_chat:
+    document
+    .getElementById("allowChat")
+    .checked
+
+  });
+
+ if(error){
+  toast(error.message);
+  return;
+ }
+
+ document
+ .getElementById("newClassName")
+ .value="";
+
+ toast("کلاس ساخته شد");
+
+ await loadClasses();
+
+}
+
+
+/* ========================================================
+DELETE CLASS
+======================================================== */
+
+async function deleteClass(id){
+
+ if(!confirm(
+  "آیا از حذف این کلاس مطمئن هستید؟"
+ ))return;
+
+ const {error}=
+  await db
+  .from("meetings")
+  .delete()
+  .eq("id",id);
+
+ if(error){
+  toast(error.message);
+  return;
+ }
+
+ toast("کلاس حذف شد");
+
+ await loadClasses();
+
+ if(currentProfile.role==="admin")
+  await loadAdmin();
+
+}
+
+
+/* ========================================================
+JOIN
+======================================================== */
+
+async function joinClass(id){
+
+ const {data:meeting,error}=
+  await db
+  .from("meetings")
+  .select("*")
+  .eq("id",id)
+  .single();
+
+ if(error || !meeting){
+  toast("کلاس پیدا نشد");
+  return;
+ }
+
+ currentMeeting=meeting;
+
+ const {data:session,error:sessionError}=
+  await db
+  .from("class_sessions")
+  .insert({
+   meeting_id:id,
+   user_id:currentUser.id
+  })
+  .select()
+  .single();
+
+ if(sessionError){
+  toast(sessionError.message);
+  return;
+ }
+
+ currentSession=session.id;
+
+ await db.rpc(
+  "log_activity",
+  {
+   p_action:"class_join",
+   p_meeting_id:id,
+   p_details:{
+    class_name:meeting.name
+   }
+  }
+ );
+
+ const isTeacher=
+  currentProfile.role==="teacher"
+  &&
+  meeting.teacher_id===currentUser.id;
+
+ await db
+  .from("meeting_participants")
+  .upsert({
+
+   meeting_id:id,
+
+   user_id:currentUser.id,
+
+   mic_allowed:isTeacher,
+
+   camera_allowed:isTeacher,
+
+   mic_muted_by_teacher:false,
+
+   camera_blocked_by_teacher:false
+
+  });
+
+ document
+ .getElementById("roomPanel")
+ .classList.remove("hidden");
+
+ document
+ .getElementById("roomTitle")
+ .textContent=
+ "🏫 "+meeting.name;
+
+ document
+ .getElementById("roomInfo")
+ .textContent=
+ isTeacher
+ ? "شما معلم این کلاس هستید."
+ : "تخته در حالت مشاهده است.";
+
+ if(isTeacher){
+
+  document
+  .getElementById("teacherRequests")
+  .classList.remove("hidden");
+
+  document
+  .getElementById("teacherStudents")
+  .classList.remove("hidden");
+
+  setupTeacherBoard();
+
+ }else{
+
+  setupStudentBoard();
+
+ }
+
+ setupBoard();
+
+ await startMedia();
+
+ await loadChat();
+
+ await loadRequests();
+
+ await loadParticipants();
+
+ setupRealtime();
+
+ window.scrollTo({
+  top:
+   document
+   .getElementById("roomPanel")
+   .offsetTop-80,
+  behavior:"smooth"
+ });
+
+}
+
+
+/* ========================================================
+LEAVE
+======================================================== */
+
+async function leaveRoom(){
+
+ if(!currentMeeting)return;
+
+ if(currentSession){
+
+  await db.rpc(
+   "leave_class",
+   {
+    p_session_id:currentSession
+   }
+  );
+
+ }
+
+ await db.rpc(
+  "log_activity",
+  {
+   p_action:"class_leave",
+   p_meeting_id:currentMeeting.id,
+   p_details:{
+    class_name:currentMeeting.name
+   }
+  }
+ );
+
+ await db
+  .from("meeting_participants")
+  .delete()
+  .eq("meeting_id",currentMeeting.id)
+  .eq("user_id",currentUser.id);
+
+ if(localStream){
+
+  localStream
+   .getTracks()
+   .forEach(t=>t.stop());
+
+  localStream=null;
+
+ }
+
+ for(const pc of peers.values()){
+
+  try{
+   pc.close();
+  }catch(e){}
+
+ }
+
+ peers.clear();
+
+ roomChannels.forEach(c=>{
+
+  try{
+   db.removeChannel(c);
+  }catch(e){}
+
+ });
+
+ roomChannels=[];
+
+ currentMeeting=null;
+ currentSession=null;
+
+ document
+ .getElementById("roomPanel")
+ .classList.add("hidden");
+
+}
+
+
+/* ========================================================
+MEDIA
+======================================================== */
+
+async function startMedia(){
+
+ if(!navigator.mediaDevices){
+  toast("مرورگر امکان دسترسی رسانه‌ای ندارد");
+  return;
+ }
+
+ try{
+
+  localStream=
+   await navigator.mediaDevices.getUserMedia({
+    audio:true,
+    video:true
+   });
+
+  addVideo(
+   currentUser.id,
+   currentProfile.name,
+   localStream,
+   true
+  );
+
+ }catch(e){
+
+  toast("دسترسی دوربین یا میکروفون داده نشد");
+
+ }
+
+}
+
+
+/* ========================================================
+VIDEO
+======================================================== */
+
+function addVideo(
+ id,
+ name,
+ stream,
+ local
+){
+
+ let old=
+  document.getElementById(
+   "video_"+id
+  );
+
+ if(old){
+
+  old
+   .querySelector("video")
+   .srcObject=stream;
+
+  return;
+
+ }
+
+ const div=
+  document.createElement("div");
+
+ div.className="video";
+
+ div.id="video_"+id;
+
+ div.innerHTML=`
+
+  <video
+   autoplay
+   playsinline
+   ${local?"muted":""}>
+  </video>
+
+  <div class="vname">
+   ${escapeHtml(name)}
+  </div>
+
+ `;
+
+ div
+ .querySelector("video")
+ .srcObject=stream;
+
+ document
+ .getElementById("videos")
+ .appendChild(div);
+
+}
+
+
+function removeVideo(id){
+
+ const x=
+  document.getElementById(
+   "video_"+id
+  );
+
+ if(x)x.remove();
+
+}
+
+
+/* ========================================================
+MIC
+======================================================== */
+
+async function toggleMic(){
+
+ if(!localStream)return;
+
+ const p=
+  await getMyParticipant();
+
+ if(!p)return;
+
+ if(
+  currentProfile.role==="student"
+  &&
+  (
+   !p.mic_allowed
+   ||
+   p.mic_muted_by_teacher
+  )
+ ){
+
+  toast("اجازه میکروفون ندارید");
+  return;
+
+ }
+
+ const track=
+  localStream
+  .getAudioTracks()[0];
+
+ if(track)
+  track.enabled=
+   !track.enabled;
+
+}
+
+
+/* ========================================================
+CAMERA
+======================================================== */
+
+async function toggleCamera(){
+
+ if(!localStream)return;
+
+ const p=
+  await getMyParticipant();
+
+ if(!p)return;
+
+ if(
+  currentProfile.role==="student"
+  &&
+  (
+   !p.camera_allowed
+   ||
+   p.camera_blocked_by_teacher
+  )
+ ){
+
+  toast("اجازه دوربین ندارید");
+  return;
+
+ }
+
+ const track=
+  localStream
+  .getVideoTracks()[0];
+
+ if(track)
+  track.enabled=
+   !track.enabled;
+
+}
+
+
+/* ========================================================
+MY PARTICIPANT
+======================================================== */
+
+async function getMyParticipant(){
+
+ const {data}=
+  await db
+  .from("meeting_participants")
+  .select("*")
+  .eq(
+   "meeting_id",
+   currentMeeting.id
+  )
+  .eq(
+   "user_id",
+   currentUser.id
+  )
+  .single();
+
+ return data;
+
+}
+
+
+/* ========================================================
+REQUEST MIC
+======================================================== */
+
+async function requestMic(){
+
+ if(!currentMeeting)return;
+
+ if(!currentMeeting.allow_mic_requests){
+
+  toast(
+   "درخواست میکروفون غیرفعال است"
+  );
+
+  return;
+ }
+
+ const {error}=
+  await db
+  .from("permission_requests")
+  .insert({
+
+   meeting_id:
+    currentMeeting.id,
+
+   student_id:
+    currentUser.id,
+
+   type:"microphone"
+
+  });
+
+ if(error){
+
+  toast(
+   "درخواست ارسال نشد"
+  );
+
+  return;
+
+ }
+
+ toast(
+  "درخواست برای معلم ارسال شد"
+ );
+
+}
+
+
+/* ========================================================
+REQUEST CAMERA
+======================================================== */
+
+async function requestCamera(){
+
+ if(!currentMeeting)return;
+
+ if(!currentMeeting.allow_camera_requests){
+
+  toast(
+   "درخواست دوربین غیرفعال است"
+  );
+
+  return;
+
+ }
+
+ const {error}=
+  await db
+  .from("permission_requests")
+  .insert({
+
+   meeting_id:
+    currentMeeting.id,
+
+   student_id:
+    currentUser.id,
+
+   type:"camera"
+
+  });
+
+ if(error){
+
+  toast(
+   "درخواست ارسال نشد"
+  );
+
+  return;
+
+ }
+
+ toast(
+  "درخواست دوربین برای معلم ارسال شد"
+ );
+
+}
+
+
+/* ========================================================
+REQUESTS
+======================================================== */
+
+async function loadRequests(){
+
+ if(
+  !currentMeeting
+  ||
+  currentProfile.role!=="teacher"
+ )
+ return;
+
+ const {data}=
+  await db
+  .from("permission_requests")
+  .select(`
+   *,
+   profiles:student_id(name)
+  `)
+  .eq(
+   "meeting_id",
+   currentMeeting.id
+  )
+  .eq(
+   "status",
+   "pending"
+  )
+  .order("created_at");
+
+ const box=
+  document.getElementById(
+   "requests"
+  );
+
+ if(!data || !data.length){
+
+  box.innerHTML=
+   "<div class='muted'>درخواستی وجود ندارد.</div>";
+
+  return;
+
+ }
+
+ box.innerHTML=
+ data.map(r=>`
+
+  <div class="request">
+
+   <b>
+    ${escapeHtml(
+     r.profiles?.name||"دانش‌آموز"
+    )}
+   </b>
+
+   <div class="muted">
+
+    ${
+     r.type==="microphone"
+     ?
+     "🎤 درخواست میکروفون"
+     :
+     "📷 درخواست دوربین"
+    }
+
+   </div>
+
+   <button
+    class="btn green"
+    onclick=
+     "answerRequest(${r.id},'approved')">
+
+    تأیید
+
+   </button>
+
+   <button
+    class="btn red"
+    onclick=
+     "answerRequest(${r.id},'rejected')">
+
+    رد
+
+   </button>
+
+  </div>
+
+ `).join("");
+
+}
+
+
+/* ========================================================
+ANSWER REQUEST
+======================================================== */
+
+async function answerRequest(
+ id,
+ status
+){
+
+ const {error}=
+  await db.rpc(
+   "teacher_answer_request",
+   {
+    p_request_id:id,
+    p_status:status
+   }
+  );
+
+ if(error){
+
+  toast(error.message);
+  return;
+
+ }
+
+ toast(
+  status==="approved"
+  ?
+  "درخواست تأیید شد"
+  :
+  "درخواست رد شد"
+ );
+
+ await loadRequests();
+
+}
+
+
+/* ========================================================
+PARTICIPANTS
+======================================================== */
+
+async function loadParticipants(){
+
+ if(
+  !currentMeeting
+  ||
+  currentProfile.role!=="teacher"
+ )
+ return;
+
+ const {data}=
+  await db
+  .from("meeting_participants")
+  .select(`
+   *,
+   profiles:user_id(name,role)
+  `)
+  .eq(
+   "meeting_id",
+   currentMeeting.id
+  );
+
+ const box=
+  document.getElementById(
+   "studentControls"
+  );
+
+ const students=
+  (data||[])
+  .filter(
+   x=>x.user_id!==currentUser.id
+  );
+
+ if(!students.length){
+
+  box.innerHTML=
+   "<div class='muted'>دانش‌آموزی داخل کلاس نیست.</div>";
+
+  return;
+
+ }
+
+ box.innerHTML=
+ students.map(p=>`
+
+  <div class="userbox">
+
+   <b>
+    ${escapeHtml(
+     p.profiles?.name||"دانش‌آموز"
+    )}
+   </b>
+
+   <br><br>
+
+   <button
+    class="btn red"
+    onclick=
+     "teacherMute('${p.user_id}',
+     ${!p.mic_muted_by_teacher})">
+
+    ${
+     p.mic_muted_by_teacher
+     ?
+     "باز کردن میکروفون"
+     :
+     "قطع میکروفون"
+    }
+
+   </button>
+
+   <button
+    class="btn red"
+    onclick=
+     "teacherCamera('${p.user_id}',
+     ${!p.camera_blocked_by_teacher})">
+
+    ${
+     p.camera_blocked_by_teacher
+     ?
+     "باز کردن دوربین"
+     :
+     "قطع دوربین"
+    }
+
+   </button>
+
+  </div>
+
+ `).join("");
+
+}
+
+
+/* ========================================================
+GET PARTICIPANT
+======================================================== */
+
+async function getParticipant(userId){
+
+ const {data}=
+  await db
+  .from("meeting_participants")
+  .select("*")
+  .eq(
+   "meeting_id",
+   currentMeeting.id
+  )
+  .eq(
+   "user_id",
+   userId
+  )
+  .single();
+
+ return data;
+
+}
+
+
+/* ========================================================
+TEACHER MIC CONTROL
+======================================================== */
+
+async function teacherMute(
+ userId,
+ value
+){
+
+ const p=
+  await getParticipant(userId);
+
+ if(!p)return;
+
+ const {error}=
+  await db.rpc(
+   "teacher_control_student",
+   {
+    p_meeting_id:
+     currentMeeting.id,
+
+    p_user_id:
+     userId,
+
+    p_mic_allowed:
+     p.mic_allowed,
+
+    p_camera_allowed:
+     p.camera_allowed,
+
+    p_muted:value,
+
+    p_camera_blocked:
+     p.camera_blocked_by_teacher
+   }
+  );
+
+ if(error){
+
+  toast(error.message);
+  return;
+
+ }
+
+ await loadParticipants();
+
+}
+
+
+/* ========================================================
+TEACHER CAMERA CONTROL
+======================================================== */
+
+async function teacherCamera(
+ userId,
+ value
+){
+
+ const p=
+  await getParticipant(userId);
+
+ if(!p)return;
+
+ const {error}=
+  await db.rpc(
+   "teacher_control_student",
+   {
+    p_meeting_id:
+     currentMeeting.id,
+
+    p_user_id:
+     userId,
+
+    p_mic_allowed:
+     p.mic_allowed,
+
+    p_camera_allowed:
+     p.camera_allowed,
+
+    p_muted:
+     p.mic_muted_by_teacher,
+
+    p_camera_blocked:value
+   }
+  );
+
+ if(error){
+
+  toast(error.message);
+  return;
+
+ }
+
+ await loadParticipants();
+
+}
+
+
+/* ========================================================
+CHAT
+======================================================== */
+
+async function loadChat(){
+
+ if(!currentMeeting)return;
+
+ const {data}=
+  await db
+  .from("messages")
+  .select("*")
+  .eq(
+   "meeting_id",
+   currentMeeting.id
+  )
+  .order(
+   "created_at",
+   {ascending:true}
+  );
+
+ const box=
+  document.getElementById("chat");
+
+ box.innerHTML="";
+
+ (data||[])
+ .forEach(addMessage);
+
+ box.scrollTop=box.scrollHeight;
+
+}
+
+
+function addMessage(m){
+
+ const box=
+  document.getElementById("chat");
+
+ const div=
+  document.createElement("div");
+
+ div.className="message";
+
+ div.innerHTML=`
+
+  <b>
+   ${escapeHtml(m.user_name)}
+  </b>
+
+  <div>
+   ${escapeHtml(m.text)}
+  </div>
+
+  <small class="muted">
+   ${new Date(
+    m.created_at
+   ).toLocaleTimeString("fa-IR")}
+  </small>
+
+ `;
+
+ box.appendChild(div);
+
+ box.scrollTop=box.scrollHeight;
+
+}
+
+
+async function sendMessage(){
+
+ if(!currentMeeting)return;
+
+ if(!currentMeeting.allow_chat){
+
+  toast("چت غیرفعال است");
+  return;
+
+ }
+
+ const input=
+  document.getElementById(
+   "chatInput"
+  );
+
+ const text=
+  input.value.trim();
+
+ if(!text)return;
+
+ const {error}=
+  await db
+  .from("messages")
+  .insert({
+
+   meeting_id:
+    currentMeeting.id,
+
+   user_id:
+    currentUser.id,
+
+   user_name:
+    currentProfile.name,
+
+   text:text
+
+  });
+
+ if(error){
+
+  toast(error.message);
+  return;
+
+ }
+
+ input.value="";
+
+}
+
+
+/* ========================================================
+REALTIME
+======================================================== */
+
+function setupRealtime(){
+
+ const channel=
+  db.channel(
+   "class-"+
+   currentMeeting.id+
+   "-"+
+   currentUser.id
+  );
+
+ channel
+ .on(
+  "postgres_changes",
+  {
+   event:"INSERT",
+   schema:"public",
+   table:"messages",
+   filter:
+    "meeting_id=eq."+
+    currentMeeting.id
+  },
+  payload=>{
+   addMessage(payload.new);
+  }
+ )
+ .on(
+  "postgres_changes",
+  {
+   event:"INSERT",
+   schema:"public",
+   table:"permission_requests",
+   filter:
+    "meeting_id=eq."+
+    currentMeeting.id
+  },
+  async()=>{
+   await loadRequests();
+  }
+ )
+ .on(
+  "postgres_changes",
+  {
+   event:"UPDATE",
+   schema:"public",
+   table:"permission_requests",
+   filter:
+    "meeting_id=eq."+
+    currentMeeting.id
+  },
+  async()=>{
+   await loadRequests();
+  }
+ )
+ .on(
+  "postgres_changes",
+  {
+   event:"INSERT",
+   schema:"public",
+   table:"meeting_participants",
+   filter:
+    "meeting_id=eq."+
+    currentMeeting.id
+  },
+  async payload=>{
+
+   await loadParticipants();
+
+   await createPeerIfNeeded(
+    payload.new.user_id
+   );
+
+  }
+ )
+ .on(
+  "postgres_changes",
+  {
+   event:"UPDATE",
+   schema:"public",
+   table:"meeting_participants",
+   filter:
+    "meeting_id=eq."+
+    currentMeeting.id
+  },
+  async payload=>{
+
+   if(
+    payload.new.user_id===
+    currentUser.id
+   ){
+
+    if(
+     payload.new.mic_muted_by_teacher
+     &&
+     localStream
+    ){
+
+     const t=
+      localStream
+      .getAudioTracks()[0];
+
+     if(t)t.enabled=false;
+
+    }
+
+    if(
+     payload.new.camera_blocked_by_teacher
+     &&
+     localStream
+    ){
+
+     const t=
+      localStream
+      .getVideoTracks()[0];
+
+     if(t)t.enabled=false;
+
+    }
+
+   }
+
+   await loadParticipants();
+
+  }
+ )
+ .subscribe();
+
+ roomChannels.push(channel);
+
+}
+
+
+/* ========================================================
+WEBRTC
+======================================================== */
+
+async function createPeerIfNeeded(
+ userId
+){
+
+ if(
+  userId===currentUser.id
+  ||
+  peers.has(userId)
+ )
+ return;
+
+ const pc=
+  new RTCPeerConnection({
+
+   iceServers:[
+    {
+     urls:
+      "stun:stun.l.google.com:19302"
+    }
+   ]
+
+  });
+
+ peers.set(userId,pc);
+
+ if(localStream){
+
+  localStream
+  .getTracks()
+  .forEach(track=>{
+   pc.addTrack(
+    track,
+    localStream
+   );
+  });
+
+ }
+
+ pc.ontrack=e=>{
+
+  if(e.streams[0]){
+
+   addVideo(
+    userId,
+    "شرکت‌کننده",
+    e.streams[0],
+    false
+   );
+
+  }
+
+ };
+
+ pc.onicecandidate=async e=>{
+
+  if(!e.candidate)return;
+
+  await db
+   .from("rtc_signals")
+   .insert({
+
+    meeting_id:
+     currentMeeting.id,
+
+    sender_id:
+     currentUser.id,
+
+    receiver_id:
+     userId,
+
+    type:"ice",
+
+    payload:
+     e.candidate.toJSON()
+
+   });
+
+ };
+
+ if(
+  currentUser.id<
+  userId
+ ){
+
+  const offer=
+   await pc.createOffer();
+
+  await pc.setLocalDescription(
+   offer
+  );
+
+  await db
+   .from("rtc_signals")
+   .insert({
+
+    meeting_id:
+     currentMeeting.id,
+
+    sender_id:
+     currentUser.id,
+
+    receiver_id:
+     userId,
+
+    type:"offer",
+
+    payload:offer
+
+   });
+
+ }
+
+}
+
+
+/* ========================================================
+BOARD
+======================================================== */
+
+function setupBoard(){
+
+ const canvas=
+  document.getElementById("board");
+
+ boardCtx=
+  canvas.getContext("2d");
+
+ resizeBoard();
+
+ window.addEventListener(
+  "resize",
+  resizeBoard
+ );
+
+ canvas.onpointerdown=e=>{
+
+  if(
+   currentProfile.role!=="teacher"
+  )
+  return;
+
+  boardDrawing=true;
+
+  boardLast={
+   x:e.offsetX,
+   y:e.offsetY
+  };
+
+ };
+
+ canvas.onpointermove=e=>{
+
+  if(!boardDrawing)return;
+
+  if(
+   currentProfile.role!=="teacher"
+  )
+  return;
+
+  const x=e.offsetX;
+  const y=e.offsetY;
+
+  boardCtx.beginPath();
+
+  boardCtx.moveTo(
+   boardLast.x,
+   boardLast.y
+  );
+
+  boardCtx.lineTo(x,y);
+
+  boardCtx.strokeStyle="#111";
+
+  boardCtx.lineWidth=4;
+
+  boardCtx.lineCap="round";
+
+  boardCtx.stroke();
+
+  boardObjects.push({
+
+   type:"line",
+
+   x1:boardLast.x,
+   y1:boardLast.y,
+
+   x2:x,
+   y2:y
+
+  });
+
+  boardLast={x,y};
+
+ };
+
+ canvas.onpointerup=()=>{
+
+  boardDrawing=false;
+
+  saveBoard();
+
+ };
+
+ canvas.onpointercancel=()=>{
+
+  boardDrawing=false;
+
+ };
+
+ loadBoard();
+
+}
+
+
+function resizeBoard(){
+
+ const canvas=
+  document.getElementById(
+   "board"
+  );
+
+ if(!canvas)return;
+
+ canvas.width=
+  canvas.clientWidth;
+
+ canvas.height=560;
+
+ redrawBoard();
+
+}
+
+
+function redrawBoard(){
+
+ if(!boardCtx)return;
+
+ const canvas=
+  document.getElementById(
+   "board"
+  );
+
+ boardCtx.clearRect(
+  0,
+  0,
+  canvas.width,
+  canvas.height
+ );
+
+ boardCtx.fillStyle="#fff";
+
+ boardCtx.fillRect(
+  0,
+  0,
+  canvas.width,
+  canvas.height
+ );
+
+ boardCtx.strokeStyle="#111";
+
+ boardCtx.lineWidth=4;
+
+ boardCtx.lineCap="round";
+
+ boardObjects.forEach(o=>{
+
+  if(o.type==="line"){
+
+   boardCtx.beginPath();
+
+   boardCtx.moveTo(
+    o.x1,
+    o.y1
+   );
+
+   boardCtx.lineTo(
+    o.x2,
+    o.y2
+   );
+
+   boardCtx.stroke();
+
+  }
+
+ });
+
+}
+
+
+async function loadBoard(){
+
+ if(!currentMeeting)return;
+
+ const {data}=
+  await db
+  .from("whiteboard_state")
+  .select("objects")
+  .eq(
+   "meeting_id",
+   currentMeeting.id
+  )
+  .maybeSingle();
+
+ boardObjects=
+  data?.objects||[];
+
+ redrawBoard();
+
+}
+
+
+let boardTimer=null;
+
+async function saveBoard(){
+
+ if(
+  currentProfile.role!=="teacher"
+ )
+ return;
+
+ clearTimeout(boardTimer);
+
+ boardTimer=
+  setTimeout(async()=>{
+
+   await db
+    .from("whiteboard_state")
+    .upsert({
+
+     meeting_id:
+      currentMeeting.id,
+
+     objects:
+      boardObjects,
+
+     updated_by:
+      currentUser.id,
+
+     updated_at:
+      new Date().toISOString()
+
+    });
+
+  },300);
+
+}
+
+
+function setupTeacherBoard(){
+
+ document
+ .getElementById("boardTools")
+ .innerHTML=`
+
+  <button
+   class="btn yellow"
+   onclick="clearBoard()">
+
+   🗑 پاک کردن تخته
+
+  </button>
+
+  <span class="muted">
+   فقط معلم می‌تواند تخته را ویرایش کند.
+  </span>
+
+ `;
+
+}
+
+
+function setupStudentBoard(){
+
+ document
+ .getElementById("boardTools")
+ .innerHTML=`
+
+  <div class="notice">
+
+   👀 حالت مشاهده فعال است.
+   شما فقط می‌توانید تخته را ببینید.
+
+  </div>
+
+ `;
+
+}
+
+
+async function clearBoard(){
+
+ if(
+  currentProfile.role!=="teacher"
+ )
+ return;
+
+ if(!confirm(
+  "کل تخته پاک شود؟"
+ ))
+ return;
+
+ boardObjects=[];
+
+ redrawBoard();
+
+ await saveBoard();
+
+}
+
+
+/* ========================================================
+ADMIN
+======================================================== */
+
+async function loadAdmin(){
+
+ const {data:users}=
+  await db
+  .from("profiles")
+  .select("*");
+
+ const list=users||[];
+
+ document
+ .getElementById("statUsers")
+ .textContent=list.length;
+
+ document
+ .getElementById("statTeachers")
+ .textContent=
+  list.filter(
+   x=>x.role==="teacher"
+  ).length;
+
+ document
+ .getElementById("statStudents")
+ .textContent=
+  list.filter(
+   x=>x.role==="student"
+  ).length;
+
+ const {count:classes}=await db
+  .from("meetings")
+  .select("*",{
+   count:"exact",
+   head:true
+  });
+
+ document
+ .getElementById("statClasses")
+ .textContent=
+  classes||0;
+
+ const {count:sessions}=await db
+  .from("class_sessions")
+  .select("*",{
+   count:"exact",
+   head:true
+  });
+
+ document
+ .getElementById("statSessions")
+ .textContent=
+  sessions||0;
+
+ await adminUsers(
+  document.getElementById(
+   "adminContent"
+  )
+ );
+
+}
+
+
+async function adminTab(
+ type,
+ button
+){
+
+ document
+ .querySelectorAll(".tab")
+ .forEach(x=>
+  x.classList.remove("active")
+ );
+
+ button.classList.add("active");
+
+ const box=
+  document.getElementById(
+   "adminContent"
+  );
+
+ box.innerHTML=
+  "<div class='notice'>در حال دریافت اطلاعات...</div>";
+
+ if(type==="users")
+  await adminUsers(box);
+
+ if(type==="teachers")
+  await adminUsers(box,"teacher");
+
+ if(type==="students")
+  await adminUsers(box,"student");
+
+ if(type==="classes")
+  await adminClasses(box);
+
+ if(type==="sessions")
+  await adminSessions(box);
+
+ if(type==="activity")
+  await adminActivity(box);
+
+ if(type==="messages")
+  await adminMessages(box);
+
+}
+
+
+/* ========================================================
+ADMIN USERS
+======================================================== */
+
+async function adminUsers(
+ box,
+ role=null
+){
+
+ let query=
+  db
+  .from("profiles")
+  .select("*")
+  .order(
+   "created_at",
+   {ascending:false}
+  );
+
+ if(role)
+  query=query.eq(
+   "role",
+   role
+  );
+
+ const {data,error}=
+  await query;
+
+ if(error){
+
+  box.innerHTML=
+   "<div class='notice'>خطا در دریافت کاربران</div>";
+
+  return;
+
+ }
+
+ box.innerHTML=`
+
+ <div class="scroll">
+
+ <table>
+
+ <tr>
+
+  <th>نام</th>
+  <th>نام کاربری</th>
+  <th>نقش</th>
+  <th>تاریخ ثبت‌نام</th>
+  <th>مدیریت</th>
+
+ </tr>
+
+ ${
+ (data||[]).map(u=>`
+
+  <tr>
+
+   <td>
+    ${escapeHtml(u.name)}
+   </td>
+
+   <td>
+    ${escapeHtml(u.username||"-")}
+   </td>
+
+   <td>
+
+    <span
+     class="badge ${u.role}">
+
+     ${roleName(u.role)}
+
+    </span>
+
+   </td>
+
+   <td>
+    ${new Date(
+     u.created_at
+    ).toLocaleString("fa-IR")}
+   </td>
+
+   <td>
+
+    ${
+     u.id!==currentUser.id
+     ?
+     `
+
+      <select
+       onchange=
+        "changeRole(
+         '${u.id}',
+         this.value
+        )">
+
+       <option
+        value="student"
+        ${u.role==="student"
+         ?"selected"
+         :""}>
+
+        دانش‌آموز
+
+       </option>
+
+       <option
+        value="teacher"
+        ${u.role==="teacher"
+         ?"selected"
+         :""}>
+
+        معلم
+
+       </option>
+
+       <option
+        value="admin"
+        ${u.role==="admin"
+         ?"selected"
+         :""}>
+
+        مدیر
+
+       </option>
+
+      </select>
+
+      <button
+       class="btn red"
+       onclick=
+        "deleteUser('${u.id}')">
+
+       حذف
+
+      </button>
+
+     `
+     :
+     `
+      <span class="muted">
+       حساب مدیر فعلی
+      </span>
+     `
+    }
+
+   </td>
+
+  </tr>
+
+ `).join("")
+ }
+
+ </table>
+
+ </div>
+
+ `;
+
+}
+
+
+/* ========================================================
+CHANGE ROLE
+======================================================== */
+
+async function changeRole(
+ id,
+ role
+){
+
+ const {error}=
+  await db.rpc(
+   "admin_set_role",
+   {
+    target_user:id,
+    new_role:role
+   }
+  );
+
+ if(error){
+
+  toast(error.message);
+
+  await loadAdmin();
+
+  return;
+
+ }
+
+ toast("نقش کاربر تغییر کرد");
+
+ await loadAdmin();
+
+}
+
+
+/* ========================================================
+DELETE USER
+======================================================== */
+
+async function deleteUser(id){
+
+ if(!confirm(
+  "حذف کامل این کاربر انجام شود؟"
+ ))
+ return;
+
+ const {error}=
+  await db.rpc(
+   "admin_delete_user",
+   {
+    target_user:id
+   }
+  );
+
+ if(error){
+
+  toast(error.message);
+  return;
+
+ }
+
+ toast("کاربر حذف شد");
+
+ await loadAdmin();
+
+}
+
+
+/* ========================================================
+ADMIN CLASSES
+======================================================== */
+
+async function adminClasses(
+ box
+){
+
+ const {data,error}=
+  await db
+  .from("meetings")
+  .select(`
+   *,
+   profiles:teacher_id(name)
+  `)
+  .order(
+   "created_at",
+   {ascending:false}
+  );
+
+ if(error){
+
+  box.innerHTML=
+   "<div class='notice'>خطا</div>";
+
+  return;
+
+ }
+
+ box.innerHTML=`
+
+ <div class="scroll">
+
+ <table>
+
+ <tr>
+
+  <th>کلاس</th>
+  <th>معلم</th>
+  <th>تاریخ ایجاد</th>
+  <th>عملیات</th>
+
+ </tr>
+
+ ${
+ (data||[]).map(c=>`
+
+  <tr>
+
+   <td>
+    ${escapeHtml(c.name)}
+   </td>
+
+   <td>
+    ${escapeHtml(
+     c.profiles?.name||"-"
+    )}
+   </td>
+
+   <td>
+    ${new Date(
+     c.created_at
+    ).toLocaleString("fa-IR")}
+   </td>
+
+   <td>
+
+    <button
+     class="btn red"
+     onclick=
+      "deleteClass(${c.id})">
+
+     حذف کلاس
+
+    </button>
+
+   </td>
+
+  </tr>
+
+ `).join("")
+ }
+
+ </table>
+
+ </div>
+
+ `;
+
+}
+
+
+/* ========================================================
+ADMIN SESSIONS
+======================================================== */
+
+async function adminSessions(
+ box
+){
+
+ const {data,error}=
+  await db
+  .from("class_sessions")
+  .select(`
+   *,
+   profiles:user_id(name,username),
+   meetings:meeting_id(name)
+  `)
+  .order(
+   "joined_at",
+   {ascending:false}
+  )
+  .limit(1000);
+
+ if(error){
+
+  box.innerHTML=
+   "<div class='notice'>خطا در دریافت سابقه حضور</div>";
+
+  return;
+
+ }
+
+ box.innerHTML=`
+
+ <div class="scroll">
+
+ <table>
+
+ <tr>
+
+  <th>کاربر</th>
+  <th>نام کاربری</th>
+  <th>کلاس</th>
+  <th>ورود</th>
+  <th>خروج</th>
+  <th>مدت حضور</th>
+
+ </tr>
+
+ ${
+ (data||[]).map(s=>{
+
+  const start=
+   new Date(s.joined_at);
+
+  const end=
+   s.left_at
+   ?
+   new Date(s.left_at)
+   :
+   new Date();
+
+  const minutes=
+   Math.max(
+    0,
+    Math.round(
+     (end-start)/60000
+    )
+   );
+
+  return `
+
+   <tr>
+
+    <td>
+     ${escapeHtml(
+      s.profiles?.name||"-"
+     )}
+    </td>
+
+    <td>
+     ${escapeHtml(
+      s.profiles?.username||"-"
+     )}
+    </td>
+
+    <td>
+     ${escapeHtml(
+      s.meetings?.name||"-"
+     )}
+    </td>
+
+    <td>
+     ${start.toLocaleString("fa-IR")}
+    </td>
+
+    <td>
+
+     ${
+      s.left_at
+      ?
+      new Date(
+       s.left_at
+      ).toLocaleString("fa-IR")
+      :
+      "🟢 داخل کلاس"
+     }
+
+    </td>
+
+    <td>
+     ${minutes} دقیقه
+    </td>
+
+   </tr>
+
+  `;
+
+ }).join("")
+ }
+
+ </table>
+
+ </div>
+
+ `;
+
+}
+
+
+/* ========================================================
+ADMIN ACTIVITY
+======================================================== */
+
+async function adminActivity(
+ box
+){
+
+ const {data,error}=
+  await db
+  .from("activity_logs")
+  .select(`
+   *,
+   profiles:user_id(name),
+   meetings:meeting_id(name)
+  `)
+  .order(
+   "created_at",
+   {ascending:false}
+  )
+  .limit(1000);
+
+ if(error){
+
+  box.innerHTML=
+   "<div class='notice'>خطا</div>";
+
+  return;
+
+ }
+
+ box.innerHTML=`
+
+ <div class="scroll">
+
+ <table>
+
+ <tr>
+
+  <th>کاربر</th>
+  <th>کلاس</th>
+  <th>فعالیت</th>
+  <th>زمان</th>
+
+ </tr>
+
+ ${
+ (data||[]).map(a=>`
+
+  <tr>
+
+   <td>
+    ${escapeHtml(
+     a.profiles?.name||"-"
+    )}
+   </td>
+
+   <td>
+    ${escapeHtml(
+     a.meetings?.name||"-"
+    )}
+   </td>
+
+   <td>
+    ${escapeHtml(a.action)}
+   </td>
+
+   <td>
+    ${new Date(
+     a.created_at
+    ).toLocaleString("fa-IR")}
+   </td>
+
+  </tr>
+
+ `).join("")
+ }
+
+ </table>
+
+ </div>
+
+ `;
+
+}
+
+
+/* ========================================================
+ADMIN MESSAGES
+======================================================== */
+
+async function adminMessages(
+ box
+){
+
+ const {data,error}=
+  await db
+  .from("messages")
+  .select(`
+   *,
+   meetings:meeting_id(name)
+  `)
+  .order(
+   "created_at",
+   {ascending:false}
+  )
+  .limit(1000);
+
+ if(error){
+
+  box.innerHTML=
+   "<div class='notice'>خطا در دریافت پیام‌ها</div>";
+
+  return;
+
+ }
+
+ box.innerHTML=`
+
+ <div class="scroll">
+
+ <table>
+
+ <tr>
+
+  <th>کاربر</th>
+  <th>کلاس</th>
+  <th>پیام</th>
+  <th>زمان</th>
+  <th>حذف</th>
+
+ </tr>
+
+ ${
+ (data||[]).map(m=>`
+
+  <tr>
+
+   <td>
+    ${escapeHtml(m.user_name)}
+   </td>
+
+   <td>
+    ${escapeHtml(
+     m.meetings?.name||"-"
+    )}
+   </td>
+
+   <td>
+    ${escapeHtml(m.text)}
+   </td>
+
+   <td>
+    ${new Date(
+     m.created_at
+    ).toLocaleString("fa-IR")}
+   </td>
+
+   <td>
+
+    <button
+     class="btn red"
+     onclick=
+      "deleteMessage(${m.id})">
+
+     حذف
+
+    </button>
+
+   </td>
+
+  </tr>
+
+ `).join("")
+ }
+
+ </table>
+
+ </div>
+
+ `;
+
+}
+
+
+/* ========================================================
+DELETE MESSAGE
+======================================================== */
+
+async function deleteMessage(id){
+
+ if(!confirm(
+  "این پیام حذف شود؟"
+ ))
+ return;
+
+ const {error}=
+  await db
+  .from("messages")
+  .delete()
+  .eq("id",id);
+
+ if(error){
+
+  toast(error.message);
+  return;
+
+ }
+
+ toast("پیام حذف شد");
+
+ await adminMessages(
+  document.getElementById(
+   "adminContent"
+  )
+ );
+
+}
+
+
+/* ========================================================
+ESCAPE HTML
+======================================================== */
+
+function escapeHtml(text){
+
+ return String(text??"")
+  .replaceAll("&","&amp;")
+  .replaceAll("<","&lt;")
+  .replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;")
+  .replaceAll("'","&#039;");
+
+}
+
+</script>
+
+</body>
+</html>
