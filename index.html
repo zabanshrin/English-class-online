@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>زبان شیرین - کلاس آنلاین</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8;
+            color: #333;
+            overflow-x: hidden;
+        }
+        .rtl {
+            direction: rtl;
+        }
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        .logo span {
+            color: #e74c3c;
+        }
+        .nav-menu {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav-btn {
+            padding: 8px 16px;
+            border: none;
+            background: #ecf0f1;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+        .nav-btn:hover {
+            background: #d5dbdb;
+            transform: translateY(-1px);
+        }
+        .nav-btn.primary {
+            background: #3498db;
+            color: white;
+        }
+        .nav-btn.primary:hover {
+            background: #2980b9;
+        }
+        .nav-btn.success {
+            background: #2ecc71;
+            color: white;
+        }
+        .nav-btn.success:hover {
+            background: #27ae60;
+        }
+        .nav-btn.danger {
+            background: #e74c3c;
+            color: white;
+        }
+        .nav-btn.danger:hover {
+            background: #c0392b;
+        }
+        .nav-btn.admin {
+            background: #9b59b6;
+            color: white;
+        }
+        .nav-btn.admin:hover {
+            background: #8e44ad;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e6ed;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border 0.2s;
+        }
+        .form-group input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background: #2ecc71;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #3498db;
+            color: #3498db;
+        }
+        .btn-outline:hover {
+            background: #3498db;
+            color: white;
+        }
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+        .meeting-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .meeting-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid #eef2f7;
+            transition: all 0.2s;
+        }
+        .meeting-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+        .meeting-card h3 {
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        .meeting-card .meta {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .video-item {
+            position: relative;
+            background: #2c3e50;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            background: #1a1a2e;
+        }
+        .video-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-item .user-label {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .video-item .status-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 12px 0;
+            justify-content: center;
+            background: white;
+            border-radius: 16px;
+            margin-top: 16px;
+        }
+        .toolbar button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 30px;
+            background: #ecf0f1;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .toolbar button:hover {
+            background: #d5dbdb;
+            transform: scale(1.05);
+        }
+        .toolbar button.active {
+            background: #3498db;
+            color: white;
+        }
+        .toolbar button.danger {
+            background: #e74c3c;
+            color: white;
+        }
+        .toolbar button.danger:hover {
+            background: #c0392b;
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+            border: 1px solid #e0e6ed;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background: #f8fafc;
+        }
+        .chat-message {
+            margin-bottom: 8px;
+            padding: 8px 14px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            max-width: 80%;
+        }
+        .chat-message .sender {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 13px;
+        }
+        .chat-message .text {
+            margin-top: 2px;
+            font-size: 15px;
+        }
+        .chat-input {
+            display: flex;
+            padding: 12px;
+            gap: 8px;
+            border-top: 1px solid #e0e6ed;
+            background: white;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 2px solid #e0e6ed;
+            border-radius: 24px;
+            font-size: 15px;
+        }
+        .chat-input button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 24px;
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .whiteboard-container {
+            position: relative;
+            border: 2px solid #e0e6ed;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            touch-action: none;
+        }
+        .whiteboard-container canvas {
+            width: 100%;
+            height: 500px;
+            display: block;
+            touch-action: none;
+        }
+        .wb-tools {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding: 12px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e0e6ed;
+            align-items: center;
+        }
+        .wb-tools button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 8px;
+            background: #ecf0f1;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .wb-tools button:hover {
+            background: #d5dbdb;
+        }
+        .wb-tools button.active {
+            background: #3498db;
+            color: white;
+        }
+        .wb-tools input[type="color"] {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 0;
+        }
+        .wb-tools input[type="range"] {
+            width: 80px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 480px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mt-16 { margin-top: 16px; }
+        .mb-16 { margin-bottom: 16px; }
+        .gap-8 { gap: 8px; }
+        .flex-wrap { flex-wrap: wrap; }
+        .text-center { text-align: center; }
+        .w-full { width: 100%; }
+
+        .travel-mode {
+            background: linear-gradient(135deg, #0c0c1e, #1a1a3e);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            border-radius: 24px;
+        }
+        .travel-mode .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                        radial-gradient(2px 2px at 40px 70px, #fff, transparent),
+                        radial-gradient(2px 2px at 50px 160px, #ddd, transparent),
+                        radial-gradient(2px 2px at 90px 40px, #fff, transparent),
+                        radial-gradient(2px 2px at 130px 80px, #fff, transparent);
+            background-size: 200px 200px;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            .header { flex-direction: column; align-items: stretch; }
+            .nav-menu { justify-content: center; }
+            .video-grid { grid-template-columns: 1fr; }
+            .toolbar button { padding: 10px 16px; font-size: 14px; }
+            .wb-tools button { padding: 6px 12px; font-size: 12px; }
+            .modal-content { padding: 20px; margin: 10px; }
+        }
+        @media (max-width: 480px) {
+            .logo { font-size: 20px; }
+            .nav-btn { padding: 6px 12px; font-size: 12px; }
+            .btn { padding: 10px 18px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="app-container rtl">
+    <!-- Header -->
+    <header class="header" id="mainHeader">
+        <div class="logo">زبان <span>شیرین</span></div>
+        <div class="nav-menu" id="navMenu">
+            <button class="nav-btn" data-page="home">🏠 خانه</button>
+            <button class="nav-btn" data-page="classes">🏫 کلاس‌ها</button>
+            <button class="nav-btn" data-page="create-class">➕ ایجاد کلاس</button>
+            <button class="nav-btn" data-page="members">👥 اعضا</button>
+            <button class="nav-btn" data-page="travel">🚀 سفر</button>
+            <button class="nav-btn" data-page="settings">⚙️ تنظیمات</button>
+            <button class="nav-btn admin hidden" data-page="admin">🛠 پنل مدیریت</button>
+            <button class="nav-btn danger" id="logoutBtn">🚪 خروج</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div id="pageContent">
+        <!-- Home -->
+        <div id="page-home" class="page">
+            <div class="card text-center">
+                <h1>به زبان شیرین خوش آمدید</h1>
+                <p style="font-size:18px;margin:16px 0;">یادگیری شیرین با بهترین اساتید</p>
+                <button class="btn btn-primary" onclick="navigateTo('classes')">ورود به کلاس‌ها</button>
+            </div>
+            <div class="grid-2">
+                <div class="card"><h3>📚 کلاس‌های آنلاین</h3><p>در هر زمان و مکان به کلاس بپیوندید</p></div>
+                <div class="card"><h3>🎥 تخته هوشمند</h3><p>نوشتن، طراحی و اشتراک‌گذاری</p></div>
+                <div class="card"><h3>💬 چت زنده</h3><p>ارتباط با همکلاسی‌ها</p></div>
+                <div class="card"><h3>📹 ضبط جلسات</h3><p>مرور مجدد کلاس‌ها</p></div>
+            </div>
+        </div>
+
+        <!-- Classes -->
+        <div id="page-classes" class="page hidden">
+            <div class="card">
+                <div class="flex-between flex-wrap">
+                    <h2>🏫 کلاس‌های من</h2>
+                    <button class="btn btn-primary" onclick="navigateTo('create-class')">➕ کلاس جدید</button>
+                </div>
+                <div class="meeting-grid" id="meetingList"></div>
+            </div>
+            <div class="card">
+                <h3>🔑 ورود به کلاس</h3>
+                <div class="grid-2">
+                    <div class="form-group"><label>نام کلاس</label><input id="joinClassName" placeholder="نام کلاس"></div>
+                    <div class="form-group"><label>رمز کلاس</label><input id="joinClassPass" type="password" placeholder="رمز"></div>
+                </div>
+                <button class="btn btn-success" onclick="joinClass()">ورود به کلاس</button>
+            </div>
+        </div>
+
+        <!-- Create Class -->
+        <div id="page-create-class" class="page hidden">
+            <div class="card">
+                <h2>➕ ایجاد کلاس جدید</h2>
+                <div class="form-group"><label>نام کلاس</label><input id="newClassName" placeholder="نام کلاس"></div>
+                <div class="form-group"><label>رمز کلاس</label><input id="newClassPass" type="password" placeholder="رمز"></div>
+                <button class="btn btn-primary btn-block" onclick="createClass()">ایجاد کلاس</button>
+            </div>
+        </div>
+
+        <!-- Members -->
+        <div id="page-members" class="page hidden">
+            <div class="card"><h2>👥 اعضای کلاس</h2><div id="membersList"><p>در کلاس عضو شوید تا اعضا را ببینید</p></div></div>
+        </div>
+
+        <!-- Travel -->
+        <div id="page-travel" class="page hidden">
+            <div class="travel-mode" style="position:relative;">
+                <div class="stars"></div>
+                <div style="position:relative;z-index:1;">
+                    <h1 style="font-size:2.5rem;">🚀 سفر به فضا</h1>
+                    <p style="font-size:1.2rem;margin:20px 0;">در کهکشان دانش سفر کنید</p>
+                    <button class="btn btn-primary" onclick="navigateTo('classes')">⬅️ بازگشت به کلاس‌ها</button>
+                    <div style="margin-top:30px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:20px;">
+                        <div style="background:rgba(255,255,255,0.1);padding:20px;border-radius:16px;">🌍 زمین</div>
+                        <div style="background:rgba(255,255,255,0.1);padding:20px;border-radius:16px;">🔴 مریخ</div>
+                        <div style="background:rgba(255,255,255,0.1);padding:20px;border-radius:16px;">🪐 زحل</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div id="page-settings" class="page hidden">
+            <div class="card"><h2>⚙️ تنظیمات</h2><p>تنظیمات کاربری و کلاس</p></div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div id="page-admin" class="page hidden">
+            <div class="card"><h2>🛠 پنل مدیریت</h2><div id="adminContent"><p>بارگذاری...</p></div></div>
+        </div>
+
+        <!-- Class Room -->
+        <div id="page-classroom" class="page hidden">
+            <div class="card" style="padding:12px;">
+                <div class="flex-between flex-wrap">
+                    <div><span id="roomNameDisplay">کلاس</span> <span id="roomStatus" style="color:#2ecc71;">● آنلاین</span></div>
+                    <div><span id="memberCount">0</span> نفر</div>
+                </div>
+            </div>
+            <div class="video-grid" id="videoGrid"></div>
+            <div class="toolbar" id="roomToolbar">
+                <button id="micToggle" class="active">🎤 میکروفون</button>
+                <button id="camToggle" class="active">📹 دوربین</button>
+                <button id="screenShareBtn">🖥 اشتراک صفحه</button>
+                <button id="chatToggle">💬 چت</button>
+                <button id="membersToggle">👥 اعضا</button>
+                <button id="whiteboardToggle">📝 تخته</button>
+                <button id="recordBtn">🔴 ضبط</button>
+                <button id="travelRoomBtn">🚀 سفر</button>
+                <button id="leaveRoomBtn" class="danger">📞 خروج</button>
+            </div>
+            <!-- Chat Panel -->
+            <div id="chatPanel" class="hidden card" style="margin-top:12px;">
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <div class="chat-input"><input id="chatInput" placeholder="پیام..."><button onclick="sendChatMessage()">ارسال</button></div>
+                </div>
+            </div>
+            <!-- Whiteboard Panel -->
+            <div id="whiteboardPanel" class="hidden card" style="margin-top:12px;">
+                <div class="whiteboard-container">
+                    <div class="wb-tools" id="wbTools">
+                        <button data-tool="pen">✏️</button><button data-tool="eraser">🧽</button>
+                        <button data-tool="line">📏</button><button data-tool="rect">⬛</button>
+                        <button data-tool="circle">⚪</button><button data-tool="text">🔤</button>
+                        <button data-tool="select">✋</button>
+                        <button id="undoBtn">↩️</button><button id="redoBtn">↪️</button>
+                        <button id="clearBtn">🗑</button>
+                        <input type="color" id="colorPicker" value="#000000">
+                        <input type="range" id="sizePicker" min="1" max="20" value="3">
+                    </div>
+                    <canvas id="whiteboardCanvas" width="800" height="500"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal active">
+        <div class="modal-content">
+            <h2>🔐 ورود / ثبت‌نام</h2>
+            <div id="authForm">
+                <div class="form-group"><label>نام کاربری</label><input id="authUsername" placeholder="نام کاربری"></div>
+                <div class="form-group"><label>رمز عبور</label><input id="authPassword" type="password" placeholder="رمز عبور"></div>
+                <button class="btn btn-primary btn-block" onclick="handleLogin()">ورود</button>
+                <button class="btn btn-outline btn-block mt-16" onclick="handleRegister()">ثبت‌نام</button>
+            </div>
+            <div id="authStatus" style="margin-top:12px;color:#e74c3c;"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    // ===== Supabase Config =====
+    const SUPABASE_URL = "https://uqqumhmzndgyoigcqnti.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_R3LAX7EYbdYUwjQRgkmesA_QJ2ZmPtD";
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ===== State =====
+    let currentUser = null;
+    let currentRole = 'student';
+    let currentMeeting = null;
+    let localStream = null;
+    let peerConnections = {};
+    let roomChannel = null;
+    let isRecording = false;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let recordingTimer = null;
+    let recordingSeconds = 0;
+
+    // Whiteboard state
+    let wbContext = null;
+    let isDrawing = false;
+    let currentTool = 'pen';
+    let currentColor = '#000000';
+    let currentSize = 3;
+    let drawHistory = [];
+    let historyIndex = -1;
+    let wbElements = [];
+    let selectedElement = null;
+    let isDragging = false;
+    let dragOffset = {x:0, y:0};
+
+    // ===== Auth =====
+    async function handleLogin() {
+        const username = document.getElementById('authUsername').value.trim();
+        const password = document.getElementById('authPassword').value.trim();
+        if (!username || !password) return alert('لطفاً نام کاربری و رمز را وارد کنید');
+        try {
+            const { data, error } = await db.rpc('login_username', { p_username: username, p_password: password });
+            if (error || !data || data.length === 0) throw new Error('نام کاربری یا رمز اشتباه است');
+            currentUser = data[0];
+            currentRole = currentUser.role || 'student';
+            document.getElementById('loginModal').classList.remove('active');
+            updateUI();
+            loadMeetings();
+        } catch(e) {
+            document.getElementById('authStatus').textContent = e.message;
+        }
+    }
+
+    async function handleRegister() {
+        const username = document.getElementById('authUsername').value.trim();
+        const password = document.getElementById('authPassword').value.trim();
+        if (!username || !password) return alert('لطفاً نام کاربری و رمز را وارد کنید');
+        try {
+            const { data, error } = await db.rpc('register_username', { p_username: username, p_password: password });
+            if (error || !data || data.length === 0) throw new Error('ثبت‌نام ناموفق');
+            currentUser = data[0];
+            currentRole = currentUser.role || 'student';
+            document.getElementById('loginModal').classList.remove('active');
+            updateUI();
+            loadMeetings();
+        } catch(e) {
+            document.getElementById('authStatus').textContent = e.message;
+        }
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        if (currentMeeting) await leaveRoom();
+        currentUser = null;
+        currentRole = 'student';
+        document.getElementById('loginModal').classList.add('active');
+        updateUI();
+    });
+
+    // ===== UI Helpers =====
+    function updateUI() {
+        const adminBtn = document.querySelector('.nav-btn.admin');
+        if (currentRole === 'admin') adminBtn.classList.remove('hidden');
+        else adminBtn.classList.add('hidden');
+        if (currentUser) {
+            document.querySelector('#navMenu').innerHTML += `<span style="font-size:13px;color:#7f8c8d;">👤 ${currentUser.username}</span>`;
+        }
+    }
+
+    function navigateTo(page) {
+        document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+        const target = document.getElementById(`page-${page}`);
+        if (target) target.classList.remove('hidden');
+        if (page === 'admin') loadAdminPanel();
+        if (page === 'members') loadMembers();
+        if (page === 'classes') loadMeetings();
+    }
+
+    // ===== Meetings =====
+    async function loadMeetings() {
+        const { data, error } = await db.from('meetings').select('*');
+        if (error) return console.error(error);
+        const container = document.getElementById('meetingList');
+        container.innerHTML = data.map(m => `
+            <div class="meeting-card">
+                <h3>${m.name}</h3>
+                <div class="meta">👤 ${m.owner_name || 'نامشخص'} • ${m.id}</div>
+                <button class="btn btn-success" onclick="joinSpecificMeeting('${m.id}','${m.password}')">ورود</button>
+            </div>
+        `).join('');
+    }
+
+    async function createClass() {
+        const name = document.getElementById('newClassName').value.trim();
+        const pass = document.getElementById('newClassPass').value.trim();
+        if (!name || !pass) return alert('نام و رمز کلاس الزامی است');
+        const { data, error } = await db.from('meetings').insert({
+            name, password: pass, owner_id: currentUser.id, owner_name: currentUser.username
+        });
+        if (error) return alert('خطا: ' + error.message);
+        alert('کلاس ساخته شد');
+        navigateTo('classes');
+    }
+
+    async function joinClass() {
+        const name = document.getElementById('joinClassName').value.trim();
+        const pass = document.getElementById('joinClassPass').value.trim();
+        if (!name || !pass) return alert('نام و رمز کلاس را وارد کنید');
+        const { data, error } = await db.from('meetings').select('*').eq('name', name).eq('password', pass);
+        if (error || !data || data.length === 0) return alert('کلاس یافت نشد');
+        await enterRoom(data[0]);
+    }
+
+    async function joinSpecificMeeting(id, pass) {
+        const { data, error } = await db.from('meetings').select('*').eq('id', id).eq('password', pass);
+        if (error || !data || data.length === 0) return alert('کلاس یافت نشد');
+        await enterRoom(data[0]);
+    }
+
+    // ===== Room =====
+    async function enterRoom(meeting) {
+        currentMeeting = meeting;
+        document.getElementById('roomNameDisplay').textContent = meeting.name;
+        document.getElementById('page-classroom').classList.remove('hidden');
+        document.querySelectorAll('.page:not(#page-classroom)').forEach(p => p.classList.add('hidden'));
+        document.getElementById('chatPanel').classList.add('hidden');
+        document.getElementById('whiteboardPanel').classList.add('hidden');
+
+        // Setup WebRTC
+        await setupLocalMedia();
+        setupRealtime(meeting.id);
+        initWhiteboard();
+        loadMessages(meeting.id);
+    }
+
+    async function setupLocalMedia() {
+        try {
+            localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            const videoGrid = document.getElementById('videoGrid');
+            const myVideo = document.createElement('video');
+            myVideo.srcObject = localStream;
+            myVideo.autoplay = true;
+            myVideo.muted = true;
+            const wrapper = document.createElement('div');
+            wrapper.className = 'video-item';
+            wrapper.appendChild(myVideo);
+            wrapper.innerHTML += `<div class="user-label">${currentUser.username} (من)</div>`;
+            videoGrid.appendChild(wrapper);
+        } catch(e) {
+            console.warn('دسترسی به دوربین/میکروفون ممکن نیست', e);
+        }
+    }
+
+    function setupRealtime(meetingId) {
+        roomChannel = db.channel(`room-${meetingId}`, {
+            config: { broadcast: { self: true } }
+        });
+        roomChannel.on('broadcast', { event: 'signal' }, ({ payload }) => {
+            handleSignal(payload);
+        }).on('broadcast', { event: 'chat' }, ({ payload }) => {
+            addChatMessage(payload.user, payload.text);
+        }).on('broadcast', { event: 'wb_draw' }, ({ payload }) => {
+            handleWbDraw(payload);
+        }).subscribe();
+    }
+
+    function handleSignal(data) {
+        // Simple signaling - just forward to peer
+        // In production, full WebRTC negotiation would be here
+        if (data.type === 'offer') {
+            // Create answer logic
+        } else if (data.type === 'answer') {
+            // Set remote description
+        } else if (data.type === 'candidate') {
+            // Add ice candidate
+        }
+    }
+
+    // ===== Chat =====
+    async function sendChatMessage() {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text || !currentMeeting) return;
+        const msg = { meeting_id: currentMeeting.id, user_id: currentUser.id, user_name: currentUser.username, text };
+        await db.from('messages').insert(msg);
+        roomChannel.send({ type: 'broadcast', event: 'chat', payload: { user: currentUser.username, text } });
+        input.value = '';
+    }
+
+    function addChatMessage(user, text) {
+        const container = document.getElementById('chatMessages');
+        const div = document.createElement('div');
+        div.className = 'chat-message';
+        div.innerHTML = `<div class="sender">${user}</div><div class="text">${text}</div>`;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    async function loadMessages(meetingId) {
+        const { data, error } = await db.from('messages').select('*').eq('meeting_id', meetingId).order('created_at', { ascending: true });
+        if (error) return;
+        const container = document.getElementById('chatMessages');
+        container.innerHTML = data.map(m => `
+            <div class="chat-message"><div class="sender">${m.user_name}</div><div class="text">${m.text}</div></div>
+        `).join('');
+    }
+
+    // ===== Whiteboard =====
+    function initWhiteboard() {
+        const canvas = document.getElementById('whiteboardCanvas');
+        wbContext = canvas.getContext('2d');
+        canvas.width = canvas.clientWidth || 800;
+        canvas.height = 500;
+        setupWbTools();
+        // Mouse/Touch events
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', endDraw);
+        canvas.addEventListener('touchstart', handleTouchStart);
+        canvas.addEventListener('touchmove', handleTouchMove);
+        canvas.addEventListener('touchend', endDraw);
+    }
+
+    function setupWbTools() {
+        document.querySelectorAll('#wbTools [data-tool]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#wbTools [data-tool]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTool = btn.dataset.tool;
+            });
+        });
+        document.getElementById('colorPicker').addEventListener('input', e => currentColor = e.target.value);
+        document.getElementById('sizePicker').addEventListener('input', e => currentSize = parseInt(e.target.value));
+        document.getElementById('undoBtn').addEventListener('click', undoDraw);
+        document.getElementById('redoBtn').addEventListener('click', redoDraw);
+        document.getElementById('clearBtn').addEventListener('click', clearWhiteboard);
+        // Default tool
+        document.querySelector('[data-tool="pen"]').classList.add('active');
+    }
+
+    function startDraw(e) {
+        if (currentTool === 'select') return handleSelect(e);
+        isDrawing = true;
+        const pos = getCanvasPos(e);
+        wbContext.beginPath();
+        wbContext.moveTo(pos.x, pos.y);
+        wbContext.strokeStyle = currentColor;
+        wbContext.lineWidth = currentSize;
+        wbContext.lineCap = 'round';
+        wbContext.lineJoin = 'round';
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        const pos = getCanvasPos(e);
+        wbContext.lineTo(pos.x, pos.y);
+        wbContext.stroke();
+        // Broadcast drawing
+        roomChannel.send({ type: 'broadcast', event: 'wb_draw', payload: { type: 'draw', x: pos.x, y: pos.y, color: currentColor, size: currentSize } });
+    }
+
+    function endDraw() {
+        if (isDrawing) {
+            isDrawing = false;
+            wbContext.closePath();
+            saveToHistory();
+        }
+        isDragging = false;
+    }
+
+    function getCanvasPos(e) {
+        const rect = document.getElementById('whiteboardCanvas').getBoundingClientRect();
+        const x = (e.clientX - rect.left) * (800 / rect.width);
+        const y = (e.clientY - rect.top) * (500 / rect.height);
+        return { x, y };
+    }
+
+    function handleTouchStart(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent('mousedown', { clientX: touch.clientX, clientY: touch.clientY });
+        document.getElementById('whiteboardCanvas').dispatchEvent(mouseEvent);
+    }
+
+    function handleTouchMove(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent('mousemove', { clientX: touch.clientX, clientY: touch.clientY });
+        document.getElementById('whiteboardCanvas').dispatchEvent(mouseEvent);
+    }
+
+    function handleWbDraw(payload) {
+        if (payload.type === 'draw') {
+            const ctx = wbContext;
+            ctx.strokeStyle = payload.color || '#000';
+            ctx.lineWidth = payload.size || 3;
+            ctx.lineTo(payload.x, payload.y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(payload.x, payload.y);
+        }
+    }
+
+    function handleSelect(e) {
+        const pos = getCanvasPos(e);
+        // Simple select logic
+        selectedElement = null;
+        // In production, check if click is on a text element
+        // For now, just toggle drag mode if text tool was used
+        const canvas = document.getElementById('whiteboardCanvas');
+        isDragging = true;
+        dragOffset = {x: pos.x, y: pos.y};
+    }
+
+    function saveToHistory() {
+        const canvas = document.getElementById('whiteboardCanvas');
+        const dataUrl = canvas.toDataURL();
+        historyIndex++;
+        drawHistory = drawHistory.slice(0, historyIndex);
+        drawHistory.push(dataUrl);
+    }
+
+    function undoDraw() {
+        if (historyIndex > 0) {
+            historyIndex--;
+            restoreFromHistory();
+        }
+    }
+
+    function redoDraw() {
+        if (historyIndex < drawHistory.length - 1) {
+            historyIndex++;
+            restoreFromHistory();
+        }
+    }
+
+    function restoreFromHistory() {
+        const canvas = document.getElementById('whiteboardCanvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0); };
+        img.src = drawHistory[historyIndex];
+    }
+
+    function clearWhiteboard() {
+        if (!confirm('پاک کردن تخته؟')) return;
+        const canvas = document.getElementById('whiteboardCanvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawHistory = [];
+        historyIndex = -1;
+        roomChannel.send({ type: 'broadcast', event: 'wb_draw', payload: { type: 'clear' } });
+    }
+
+    // ===== Recording =====
+    document.getElementById('recordBtn').addEventListener('click', async () => {
+        if (isRecording) {
+            stopRecording();
+            return;
+        }
+        try {
+            const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+            const mimeType = getSupportedMimeType();
+            mediaRecorder = new MediaRecorder(stream, { mimeType });
+            recordedChunks = [];
+            mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
+            mediaRecorder.start(1000);
+            isRecording = true;
+            document.getElementById('recordBtn').innerHTML = '⏹ توقف ضبط';
+            startRecordingTimer();
+        } catch(e) {
+            // Fallback: use local stream
+            try {
+                const fallbackStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                const mimeType = getSupportedMimeType();
+                mediaRecorder = new MediaRecorder(fallbackStream, { mimeType });
+                recordedChunks = [];
+                mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
+                mediaRecorder.start(1000);
+                isRecording = true;
+                document.getElementById('recordBtn').innerHTML = '⏹ توقف ضبط';
+                startRecordingTimer();
+            } catch(err) {
+                alert('ضبط در این مرورگر پشتیبانی نمی‌شود');
+            }
+        }
+    });
+
+    function getSupportedMimeType() {
+        const types = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4'];
+        for (let t of types) {
+            if (MediaRecorder.isTypeSupported(t)) return t;
+        }
+        return 'video/webm';
+    }
+
+    function stopRecording() {
+        if (mediaRecorder && isRecording) {
+            mediaRecorder.stop();
+            isRecording = false;
+            document.getElementById('recordBtn').innerHTML = '🔴 ضبط';
+            clearInterval(recordingTimer);
+            const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const date = new Date().toISOString().slice(0,10);
+            a.download = `ضبط_${currentMeeting?.name || 'کلاس'}_${date}.webm`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    }
+
+    function startRecordingTimer() {
+        recordingSeconds = 0;
+        recordingTimer = setInterval(() => {
+            recordingSeconds++;
+            document.getElementById('recordBtn').innerHTML = `⏹ ${recordingSeconds}s`;
+        }, 1000);
+    }
+
+    // ===== Leave Room =====
+    document.getElementById('leaveRoomBtn').addEventListener('click', leaveRoom);
+
+    async function leaveRoom() {
+        if (localStream) {
+            localStream.getTracks().forEach(t => t.stop());
+            localStream = null;
+        }
+        if (roomChannel) {
+            await roomChannel.unsubscribe();
+            roomChannel = null;
+        }
+        document.getElementById('videoGrid').innerHTML = '';
+        currentMeeting = null;
+        navigateTo('classes');
+    }
+
+    // ===== Members =====
+    async function loadMembers() {
+        if (!currentMeeting) {
+            document.getElementById('membersList').innerHTML = '<p>در کلاس عضو شوید</p>';
+            return;
+        }
+        // In production, fetch from presence or a participants table
+        document.getElementById('membersList').innerHTML = `<p>اعضای کلاس ${currentMeeting.name}: ${currentUser.username} (شما)</p>`;
+    }
+
+    // ===== Admin Panel =====
+    async function loadAdminPanel() {
+        if (currentRole !== 'admin') return;
+        const container = document.getElementById('adminContent');
+        const { data: users, error } = await db.from('profiles').select('*');
+        if (error) return container.innerHTML = 'خطا در دریافت کاربران';
+        const { data: meetings, error: mErr } = await db.from('meetings').select('*');
+        container.innerHTML = `
+            <h3>👥 کاربران</h3>
+            <div style="overflow-x:auto;">${users.map(u => `
+                <div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #eee;">
+                    <span>${u.username}</span>
+                    <span>${u.role || 'student'}</span>
+                    <button class="btn btn-sm" onclick="changeRole('${u.id}','teacher')">تبدیل به معلم</button>
+                    <button class="btn btn-sm" onclick="changeRole('${u.id}','student')">تبدیل به دانش‌آموز</button>
+                </div>
+            `).join('')}</div>
+            <h3 class="mt-16">🏫 کلاس‌ها</h3>
+            <div>${meetings?.map(m => `<div>${m.name} - ${m.owner_name}</div>`).join('')}</div>
+        `;
+    }
+
+    async function changeRole(userId, newRole) {
+        if (currentRole !== 'admin') return;
+        const { error } = await db.from('profiles').update({ role: newRole }).eq('id', userId);
+        if (error) alert('خطا: ' + error.message);
+        else loadAdminPanel();
+    }
+
+    // ===== UI Toggles =====
+    document.getElementById('chatToggle').addEventListener('click', () => {
+        document.getElementById('chatPanel').classList.toggle('hidden');
+    });
+    document.getElementById('whiteboardToggle').addEventListener('click', () => {
+        document.getElementById('whiteboardPanel').classList.toggle('hidden');
+        setTimeout(() => {
+            const canvas = document.getElementById('whiteboardCanvas');
+            canvas.width = canvas.clientWidth || 800;
+            canvas.height = 500;
+        }, 100);
+    });
+    document.getElementById('membersToggle').addEventListener('click', () => {
+        navigateTo('members');
+    });
+    document.getElementById('travelRoomBtn').addEventListener('click', () => {
+        navigateTo('travel');
+    });
+
+    // ===== Screen Share =====
+    document.getElementById('screenShareBtn').addEventListener('click', async () => {
+        try {
+            const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+            // Replace local video with screen share
+            const videoGrid = document.getElementById('videoGrid');
+            const shareVideo = document.createElement('video');
+            shareVideo.srcObject = stream;
+            shareVideo.autoplay = true;
+            const wrapper = document.createElement('div');
+            wrapper.className = 'video-item';
+            wrapper.appendChild(shareVideo);
+            wrapper.innerHTML += `<div class="user-label">🖥 اشتراک صفحه</div>`;
+            videoGrid.appendChild(wrapper);
+        } catch(e) {
+            alert('اشتراک صفحه ممکن نیست');
+        }
+    });
+
+    // ===== Camera/Mic Toggles =====
+    document.getElementById('micToggle').addEventListener('click', function() {
+        if (localStream) {
+            const audioTrack = localStream.getAudioTracks()[0];
+            if (audioTrack) {
+                audioTrack.enabled = !audioTrack.enabled;
+                this.classList.toggle('active');
+                this.innerHTML = audioTrack.enabled ? '🎤 میکروفون' : '🎤 خاموش';
+            }
+        }
+    });
+
+    document.getElementById('camToggle').addEventListener('click', function() {
+        if (localStream) {
+            const videoTrack = localStream.getVideoTracks()[0];
+            if (videoTrack) {
+                videoTrack.enabled = !videoTrack.enabled;
+                this.classList.toggle('active');
+                this.innerHTML = videoTrack.enabled ? '📹 دوربین' : '📹 خاموش';
+            }
+        }
+    });
+
+    // ===== Navigation =====
+    document.querySelectorAll('[data-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = btn.dataset.page;
+            if (page === 'travel') {
+                navigateTo('travel');
+            } else if (page === 'admin' && currentRole !== 'admin') {
+                alert('دسترسی محدود');
+            } else {
+                navigateTo(page);
+            }
+        });
+    });
+
+    // ===== Init =====
+    // Check if user already logged in
+    (async function init() {
+        // Try to auto-login if session exists
+        const { data: { session } } = await db.auth.getSession();
+        if (session) {
+            const { data: profile } = await db.from('profiles').select('*').eq('id', session.user.id).single();
+            if (profile) {
+                currentUser = profile;
+                currentRole = profile.role || 'student';
+                document.getElementById('loginModal').classList.remove('active');
+                updateUI();
+                loadMeetings();
+                return;
+            }
+        }
+        document.getElementById('loginModal').classList.add('active');
+    })();
+
+    // ===== Expose for inline onclick =====
+    window.navigateTo = navigateTo;
+    window.handleLogin = handleLogin;
+    window.handleRegister = handleRegister;
+    window.createClass = createClass;
+    window.joinClass = joinClass;
+    window.joinSpecificMeeting = joinSpecificMeeting;
+    window.sendChatMessage = sendChatMessage;
+    window.changeRole = changeRole;
+    window.loadAdminPanel = loadAdminPanel;
+    window.leaveRoom = leaveRoom;
+
+    console.log('🚀 زبان شیرین - کلاس آنلاین');
+</script>
+</body>
+</html>
