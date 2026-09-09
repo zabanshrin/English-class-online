@@ -1298,6 +1298,473 @@ window.addEventListener('offline', ()=>{
   const restored = await restoreSession();
   if(!restored) openScreen('authScreen');
 })();
+  <script>
+/* =========================================================
+   ADMIN LOGIN PATCH
+   این بخش کدهای قبلی را حذف نمی‌کند.
+   فقط بعد از اجرای کد اصلی، اطلاعات کاربر و role را اصلاح می‌کند.
+   ========================================================= */
+
+(function(){
+
+  const oldShowMain = window.showMain;
+  const oldLogin = window.login;
+
+  /* ---------------------------------------------------------
+     اصلاح login
+     --------------------------------------------------------- */
+
+  window.login = async function(){
+
+    try{
+
+      const usernameEl =
+        document.getElementById("loginUsername") ||
+        document.getElementById("authUsername");
+
+      const passwordEl =
+        document.getElementById("loginPassword") ||
+        document.getElementById("authPassword");
+
+      const username =
+        usernameEl ? usernameEl.value.trim() : "";
+
+      const password =
+        passwordEl ? passwordEl.value : "";
+
+      if(!username || !password){
+
+        if(typeof showAuthMessage === "function"){
+          showAuthMessage(
+            "نام کاربری و رمز عبور را وارد کنید",
+            "error"
+          );
+        }
+
+        return;
+      }
+
+      /* ورود با RPC اصلی Supabase */
+
+      const { data, error } =
+        await db.rpc(
+          "login_username",
+          {
+            p_username: username,
+            p_password: password
+          }
+        );
+
+      if(error){
+
+        console.error(
+          "login_username:",
+          error
+        );
+
+        if(typeof showAuthMessage === "function"){
+          showAuthMessage(
+            error.message ||
+            "نام کاربری یا رمز عبور اشتباه است",
+            "error"
+          );
+        }
+
+        return;
+      }
+
+      /* RPC ممکن است آرایه یا آبجکت برگرداند */
+
+      let result =
+        Array.isArray(data)
+          ? data[0]
+          : data;
+
+      if(
+        typeof result === "string"
+      ){
+
+        try{
+          result = JSON.parse(result);
+        }catch(e){}
+      }
+
+      /* پیدا کردن ID */
+
+      const userId =
+        result?.user_id ||
+        result?.id ||
+        result?.userId;
+
+      /*
+        اگر RPC خودش ID نداد،
+        با username پروفایل را پیدا می‌کنیم.
+      */
+
+      let profile = null;
+
+      if(userId){
+
+        const response =
+          await db
+            .from("profiles")
+            .select(
+              "id,name,username,role"
+            )
+            .eq(
+              "id",
+              userId
+            )
+            .maybeSingle();
+
+        profile = response.data;
+      }
+
+      /*
+        اگر با ID پیدا نشد،
+        با username پیدا می‌کنیم.
+      */
+
+      if(!profile){
+
+        const response =
+          await db
+            .from("profiles")
+            .select(
+              "id,name,username,role"
+            )
+            .eq(
+              "username",
+              username
+            )
+            .maybeSingle();
+
+        profile = response.data;
+      }
+
+      if(!profile){
+
+        if(typeof showAuthMessage === "function"){
+          showAuthMessage(
+            "پروفایل کاربر در دیتابیس پیدا نشد.",
+            "error"
+          );
+        }
+
+        return;
+      }
+
+      /*
+        ساخت currentUser صحیح
+      */
+
+      window.currentUser = {
+
+        id:
+          profile.id,
+
+        name:
+          profile.name ||
+          profile.username ||
+          username,
+
+        username:
+          profile.username ||
+          username,
+
+        role:
+          profile.role ||
+          "student"
+      };
+
+      /*
+        ذخیره کاربر
+      */
+
+      localStorage.setItem(
+        "lesson_user",
+        JSON.stringify(
+          window.currentUser
+        )
+      );
+
+      /*
+        رفتن به صفحه اصلی
+      */
+
+      if(
+        typeof oldShowMain === "function"
+      ){
+
+        await oldShowMain();
+
+      }else{
+
+        const authPage =
+          document.getElementById(
+            "authPage"
+          );
+
+        const mainPage =
+          document.getElementById(
+            "mainPage"
+          );
+
+        authPage?.classList.add(
+          "hidden"
+        );
+
+        mainPage?.classList.remove(
+          "hidden"
+        );
+      }
+
+      /*
+        فعال کردن دسترسی ادمین
+      */
+
+      fixAdminAccess();
+
+    }catch(e){
+
+      console.error(
+        "ADMIN LOGIN PATCH:",
+        e
+      );
+
+      if(typeof showAuthMessage === "function"){
+        showAuthMessage(
+          "خطا در ورود: " +
+          (e?.message || "خطای نامشخص"),
+          "error"
+        );
+      }
+    }
+  };
+
+
+  /* ---------------------------------------------------------
+     اصلاح دسترسی Admin
+     --------------------------------------------------------- */
+
+  function fixAdminAccess(){
+
+    const user =
+      window.currentUser;
+
+    if(!user){
+      return;
+    }
+
+    const role =
+      String(
+        user.role || ""
+      ).toLowerCase().trim();
+
+    console.log(
+      "Current user:",
+      user
+    );
+
+    console.log(
+      "Current role:",
+      role
+    );
+
+    /*
+      پنل ادمین
+    */
+
+    const adminPanel =
+      document.getElementById(
+        "adminPanel"
+      );
+
+    if(adminPanel){
+
+      if(role === "admin"){
+
+        adminPanel.classList.remove(
+          "hidden"
+        );
+
+      }else{
+
+        adminPanel.classList.add(
+          "hidden"
+        );
+      }
+    }
+
+    /*
+      گزینه Admin در منو
+    */
+
+    const adminMenu =
+      document.getElementById(
+        "adminMenuCard"
+      ) ||
+      document.getElementById(
+        "adminMenuItem"
+      );
+
+    if(adminMenu){
+
+      if(role === "admin"){
+
+        adminMenu.classList.remove(
+          "hidden"
+        );
+
+        adminMenu.style.display =
+          "";
+
+      }else{
+
+        adminMenu.classList.add(
+          "hidden"
+        );
+      }
+    }
+
+    /*
+      اگر Admin است،
+      اطلاعات پنل را بارگذاری کن.
+    */
+
+    if(role === "admin"){
+
+      try{
+
+        if(
+          typeof loadAdmin ===
+          "function"
+        ){
+
+          loadAdmin();
+
+        }else if(
+          typeof loadAdminData ===
+          "function"
+        ){
+
+          loadAdminData();
+        }
+
+      }catch(e){
+
+        console.error(
+          "Admin panel error:",
+          e
+        );
+      }
+    }
+  }
+
+
+  /* ---------------------------------------------------------
+     جلوگیری از خطای role در showMain
+     --------------------------------------------------------- */
+
+  const originalShowMain =
+    window.showMain;
+
+  window.showMain = async function(){
+
+    /*
+      اگر currentUser وجود ندارد،
+      از LocalStorage بازیابی کن.
+    */
+
+    if(
+      !window.currentUser
+    ){
+
+      try{
+
+        const saved =
+          localStorage.getItem(
+            "lesson_user"
+          );
+
+        if(saved){
+
+          window.currentUser =
+            JSON.parse(saved);
+        }
+
+      }catch(e){
+
+        console.error(e);
+      }
+    }
+
+    /*
+      اگر باز هم کاربر وجود ندارد،
+      اجازه نده role روی undefined اجرا شود.
+    */
+
+    if(
+      !window.currentUser
+    ){
+
+      console.warn(
+        "currentUser is undefined"
+      );
+
+      return;
+    }
+
+    /*
+      role پیش‌فرض
+    */
+
+    if(
+      !window.currentUser.role
+    ){
+
+      window.currentUser.role =
+        "student";
+    }
+
+    /*
+      اجرای showMain اصلی
+    */
+
+    if(
+      typeof originalShowMain ===
+      "function"
+    ){
+
+      await originalShowMain();
+    }
+
+    /*
+      اصلاح دسترسی Admin
+    */
+
+    fixAdminAccess();
+  };
+
+
+  /*
+    بعد از لود صفحه هم بررسی کن
+  */
+
+  window.addEventListener(
+    "load",
+    function(){
+
+      setTimeout(
+        fixAdminAccess,
+        300
+      );
+
+    }
+  );
+
+})();
+</script>
 </script>
 </body>
 </html>
